@@ -2727,13 +2727,13 @@ html::after {
     <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
   </button>
   <div id="demo-pick" role="dialog" aria-label="Choose a demo">
-    <div class="dp-head"><span>ie-SRS LIVE</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
-    <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
+    <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+    <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
       <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
       <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
       <span class="dp-dur">5:52</span>
     </button>
-    <button class="dp-item" onclick="openDemoPlayer('live/cmdr.html','ie-SRS LIVE // CMDR MOBILE HUB · Commander Walkthrough')">
+    <button class="dp-item" onclick="openDemoPlayer('live/cmdr.html','ie-SRS // CMDR MOBILE HUB · Commander Walkthrough')">
       <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
       <span class="dp-txt"><i>02 · CMDR MOBILE HUB</i><em>Commander walkthrough · iPhone view</em><small>Link · SONAR alert · release · map · comms · scenario · bus</small></span>
       <span class="dp-dur">5:50</span>
@@ -2754,15 +2754,15 @@ html::after {
 </div>
 
 
-<!-- LIVE DEMO PLAYER (ie-SRS LIVE scenario broadcast · live/index.html) -->
-<div id="demo-modal" role="dialog" aria-label="ie-SRS LIVE demo">
+<!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
+<div id="demo-modal" role="dialog" aria-label="ie-SRS demo">
   <div id="demo-modal-inner">
     <div id="demo-modal-chrome">
-      <span id="demo-modal-title">ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</span>
+      <span id="demo-modal-title">ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</span>
       
       <button id="demo-modal-close" onclick="closeDemoPlayer()">✕ CLOSE</button>
     </div>
-    <iframe id="demo-modal-frame" title="ie-SRS LIVE" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <iframe id="demo-modal-frame" title="ie-SRS" allow="autoplay; fullscreen" allowfullscreen></iframe>
   </div>
 </div>
 
@@ -10477,7 +10477,7 @@ function launchSim() {
   };
 
   // ── DEMO PICKER + PLAYER MODAL ──
-  var DEMO_BUILD = '202609071241'; // cache-buster appended to demo URLs; bump on every live/ redeploy
+  var DEMO_BUILD = '202609071415'; // cache-buster appended to demo URLs; bump on every live/ redeploy
   window.openDemoPicker = function() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (!pk) return;
