@@ -437,7 +437,7 @@ body.onhome .homebtn{display:none}
   <div class="lk-foot">Stored on this device only · used to read and write the CMDR bus file</div>
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 2 · SECURITY KEY LOCK — verified by ADMIN over the link; auto-login re-uses a valid session ══ -->
-<div id="lock" role="dialog" aria-label="Security key">
+<div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
   <div class="lk-t2 tsa">Two-step authentication</div>
   <div class="lk-step"><b class="done" role="button" title="Change GitHub key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">GitHub key</span><i></i><b>2</b><span>Security key</span></div>
@@ -2851,7 +2851,8 @@ window.SRADropZone=(function(){
       else{bus.configure({});}
       if(typeof renderAll==='function')renderAll();}catch(e){}}
     function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'},extra||{})));}catch(e){}}
-    function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}return p;}
+    function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}
+      try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
     var RING_KEY='cmdr_keyring';
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
     function reject(t){pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(t,'bad');padOn(true);}
@@ -2875,7 +2876,7 @@ window.SRADropZone=(function(){
       msg(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…','wait');
       digits=key;
       /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
-      try{bus.publish('HELLO',{node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true});}catch(e){}
+      try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true}));}catch(e){}
       /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
       try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site},'*');}catch(e){}
       clearTimeout(waitT);waitT=setTimeout(function(){if(!pending)return;busy=false;msg((pending.hit?'Key matches '+pending.hit.n+', but ':'')+'ADMIN did not answer. Is ADMIN open and the CMDR link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
@@ -2955,6 +2956,8 @@ window.SRADropZone=(function(){
   var HB=10*60*1000,lastHB=Date.now();
   function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true}));}
   setInterval(heartbeat,HB);
+  /* BYE when the page is closed / backgrounded for good, so ADMIN drops the LIVE marker instead of waiting for the TTL */
+  window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}});
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastHB>HB/2)heartbeat();});
   window.CMDR={state:function(){return S;},handle:handle,bus:bus};
 })();
