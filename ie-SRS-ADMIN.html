@@ -1903,6 +1903,29 @@ html::after {
 #demo-btn:active { transform: scale(.96); }
 #demo-btn.open .ring { animation: none; opacity: 0; }
 
+/* ── GITHUB KEY GATE ── */
+#gh-gate { display: none; position: fixed; inset: 0; z-index: 10050; background: rgba(4,8,14,.72); backdrop-filter: blur(6px); align-items: center; justify-content: center; }
+#gh-gate.open { display: flex; }
+#gh-gate .gg { width: 460px; background: linear-gradient(180deg, #0f1826, #0b1220); border: 1px solid rgba(24,212,248,.32); border-radius: 12px; box-shadow: 0 30px 70px rgba(0,0,0,.7), inset 0 1px 0 rgba(24,212,248,.15); padding: 22px 24px 18px; animation: dpIn .22s cubic-bezier(.32,.72,0,1); }
+#gh-gate .gg-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 3px; color: #6e90b0; }
+#gh-gate .gg-title { font-family: 'Orbitron', monospace; font-size: 16px; letter-spacing: 3px; color: #18d4f8; margin: 6px 0 8px; }
+#gh-gate .gg-sub { font-family: 'Rajdhani', sans-serif; font-size: 14px; color: #8fa8c0; line-height: 1.45; margin-bottom: 14px; }
+#gh-gate label { display: block; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2.5px; color: #6e90b0; margin-bottom: 6px; }
+#gh-gate input { width: 100%; box-sizing: border-box; font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: .5px; padding: 11px 12px; border-radius: 6px; border: 1px solid rgba(24,212,248,.25); background: #070d16; color: #e6f1fb; outline: none; }
+#gh-gate input:focus { border-color: rgba(24,212,248,.7); box-shadow: 0 0 0 3px rgba(24,212,248,.12); }
+#gh-gate .gg-repo { font-family: 'Share Tech Mono', monospace; font-size: 10.5px; letter-spacing: 1px; color: #6e90b0; margin: 10px 0 14px; }
+#gh-gate .gg-repo b { color: #18d4f8; font-weight: 400; }
+#gh-gate .gg-row { display: flex; gap: 10px; align-items: center; }
+#gh-gate .gg-go { flex: 1; height: 42px; border: 0; border-radius: 6px; cursor: pointer; background: #18d4f8; color: #04111c; font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 3px; font-weight: 700; transition: background .15s, box-shadow .15s; }
+#gh-gate .gg-go:hover { background: #5ee8ff; box-shadow: 0 0 22px rgba(24,212,248,.35); }
+#gh-gate .gg-go:disabled { opacity: .55; cursor: default; }
+#gh-gate .gg-go.busy { background: transparent; color: #18d4f8; border: 1px solid rgba(24,212,248,.6); }
+#gh-gate .gg-skip { background: none; border: 1px solid rgba(110,144,176,.35); color: #8fa8c0; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2px; padding: 0 14px; height: 42px; border-radius: 6px; cursor: pointer; }
+#gh-gate .gg-skip:hover { border-color: rgba(24,212,248,.5); color: #dbe6f2; }
+#gh-gate .gg-msg { min-height: 18px; margin-top: 12px; font-family: 'Rajdhani', sans-serif; font-size: 13.5px; color: #6e90b0; line-height: 1.4; }
+#gh-gate .gg-msg.ok { color: #6fe3a1; } #gh-gate .gg-msg.bad { color: #ef9a9a; } #gh-gate .gg-msg.wait { color: #18d4f8; }
+#gh-gate .gg-foot { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(24,212,248,.12); font-family: 'Share Tech Mono', monospace; font-size: 9.5px; letter-spacing: 1.5px; color: #4f6a85; }
+
 /* ── DEMO PICKER ── */
 #demo-pick {
   display: none; position: fixed; right: 32px; bottom: 134px; z-index: 10041;
@@ -2727,6 +2750,19 @@ html::after {
   <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
     <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
   </button>
+  <div id="gh-gate" role="dialog" aria-label="GitHub key">
+    <div class="gg">
+      <div class="gg-eyebrow">ie-SRS ADMIN · CMDR LINK</div>
+      <div class="gg-title">GITHUB KEY</div>
+      <div class="gg-sub">Enter the GitHub key for the CMDR link. ADMIN uses it to read and write the shared bus file, so linked phones can check in and verify their security keys.</div>
+      <label for="gg-token">GITHUB KEY</label>
+      <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="github_pat_…">
+      <div class="gg-repo" id="gg-repo"></div>
+      <div class="gg-row"><button class="gg-go" id="gg-go" onclick="GHGATE.connect()">CONNECT</button><button class="gg-skip" onclick="GHGATE.skip()">SKIP</button></div>
+      <div class="gg-msg" id="gg-msg"></div>
+      <div class="gg-foot">STORED IN THIS BROWSER ONLY · FINE-GRAINED PAT · CONTENTS READ/WRITE</div>
+    </div>
+  </div>
   <div id="demo-pick" role="dialog" aria-label="Choose a demo">
     <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
     <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
@@ -10491,6 +10527,33 @@ function launchSim() {
     setTimeout(function() { splash.style.display = 'none'; updateAiStatus(); }, 660);
   };
 
+  // ── GITHUB KEY GATE (opens on load when no token is configured) ──
+  window.GHGATE = (function() {
+    var busy = false, tmr = null;
+    function $g(id) { return document.getElementById(id); }
+    function msg(t, c) { var e = $g('gg-msg'); if (e) { e.textContent = t || ''; e.className = 'gg-msg ' + (c || ''); } }
+    function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
+    function show() { if (!window.SRABus) return; var c = SRABus.cfg(); var r = $g('gg-repo'); if (r) r.innerHTML = '<b>' + (c.repo || '') + '</b> · ' + (c.branch || 'main') + ' · ' + (c.path || 'data/bus.json');
+      $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
+    function hide() { $g('gh-gate').classList.remove('open'); clearTimeout(tmr); busy = false; btn(false); }
+    function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
+      if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a GitHub key (github_pat_… or ghp_…).', 'bad'); return; }
+      busy = true; btn(true); msg('Checking the link…', 'wait');
+      SRABus.configure({ transport: 'github', token: tok });
+      var t0 = Date.now(), armed = false; clearTimeout(tmr);
+      (function tick() { if (!busy) return; var st = SRABus.status();
+        if (st.read === '' || st.read === undefined) armed = true;
+        if (armed || Date.now() - t0 > 1500) {
+          if (st.read === 'ok') { busy = false; var c = SRABus.cfg(); msg('✓ Linked · ' + c.repo, 'ok'); setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
+          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(((st.error || 'GitHub rejected the key').replace(/\bread read\b/, 'read')) + ' — check Resource owner and Contents read/write.', 'bad'); return; } }
+        if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from GitHub. Check the connection and try again.', 'bad'); return; }
+        tmr = setTimeout(tick, 300); })(); }
+    function skip() { hide(); try { hubToast('CMDR link not connected · enter a GitHub key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
+    function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(); if (!c.token) show(); } catch (e) {} }
+    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } }); setTimeout(boot, 900); });
+    return { show: show, connect: connect, skip: skip, boot: boot };
+  })();
+
   // ── DEMO PICKER + PLAYER MODAL ──
   var DEMO_BUILD = '202609071415'; // cache-buster appended to demo URLs; bump on every live/ redeploy
   window.openDemoPicker = function() {
@@ -12818,7 +12881,7 @@ window.SRABus=(function(){
 
   /* ── github contents adapter ── */
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[];
+    var timer=null, sha=null, busy=false, queue=[], alive=true;
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -12839,8 +12902,8 @@ window.SRABus=(function(){
     function describe(e){var m=String(e&&e.message||e);var c=e&&e.status;if(c===401)return m+' — token invalid or expired';if(c===403)return m+' — token cannot write this repo: check Resource owner = thompsonryane-collab and Contents = Read and write';if(c===404)return m+' — repo/branch/file path not found';if(!c&&/fetch/i.test(m))return 'network — no route to api.github.com';return m;}
     function poll(){
       if(busy)return;busy=true;
-      read().then(function(res){sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
-        .catch(function(e){setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
+      read().then(function(res){if(!alive)return;sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
+        .catch(function(e){if(!alive)return;setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
         .then(function(){busy=false;flush();});
     }
     function flush(){
@@ -12860,7 +12923,7 @@ window.SRABus=(function(){
     }
     return {
       start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
-      stop:function(){clearInterval(timer);timer=null;},
+      stop:function(){alive=false;clearInterval(timer);timer=null;},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
