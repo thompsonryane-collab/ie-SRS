@@ -13374,7 +13374,18 @@ window.SRADropZone=(function(){
     var a=SRASec.validate(d.key);
     if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}}
     else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
-  function hookBus(){try{if(!window.SRABus)return;SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.key||!window.SRASec)return;
+  /* ── KEYRING: publish SHA-256 hashes of every enabled security key (never the key itself) so CMDR can reject a
+        non-matching key instantly, even before ADMIN answers. Re-published when User Accounts change or a phone says HELLO. */
+  var ringDigest='', ringLast=0;
+  function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
+  function publishKeyring(force){try{if(!window.SRABus||!window.SRASec||!window.crypto||!crypto.subtle)return;var m=SRASec.keys();var list=Object.keys(m).filter(function(e){return m[e].security&&!m[e].disabled;}).map(function(e){return m[e];});
+    var digest=list.map(function(a){return a.email+':'+a.security;}).sort().join('|');
+    if(!force&&digest===ringDigest&&Date.now()-ringLast<60000)return;
+    Promise.all(list.map(function(a){return sha(a.security);})).then(function(hs){var ring=[];hs.forEach(function(h,i){if(h)ring.push({h:h,n:list[i].name,s:list[i].site||''});});
+      ringDigest=digest;ringLast=Date.now();SRABus.publish('KEYRING',{node:'admin',count:ring.length,ring:ring});});}catch(e){}}
+  window.publishKeyring=publishKeyring;
+  function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
+    SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(true);if(!p.key||!window.SRASec)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
