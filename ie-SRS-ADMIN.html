@@ -13164,7 +13164,7 @@ window.SRABus=(function(){
 
   /* ── chip (status + shortcut to ADM-10) ── */
   var css=document.createElement('style');
-  css.textContent='#cl-chip{position:fixed;right:16px;bottom:16px;z-index:9000;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:20px;background:rgba(8,16,28,.92);border:1px solid rgba(110,144,176,.35);color:#cce0f2;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1.4px;cursor:pointer;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.45)}'+
+  css.textContent='#cl-chip{position:fixed;right:14px;top:calc((var(--chrome-h,40px) - 24px)/2);height:24px;z-index:9000;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:12px;background:rgba(8,16,28,.85);border:1px solid rgba(110,144,176,.35);color:#cce0f2;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1.4px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(10px)}#chrome,#launcher-shell #chrome{padding-right:196px!important}'+
   '#cl-chip i{width:8px;height:8px;border-radius:50%;background:#e05555;box-shadow:0 0 0 3px rgba(224,85,85,.2)}#cl-chip.on i{background:#4db88a;box-shadow:0 0 0 3px rgba(77,184,138,.2)}#cl-chip.warn i{background:#d4a05a}';
   document.head.appendChild(css);
   var chip=document.createElement('button');chip.id='cl-chip';chip.innerHTML='<i></i><span id="cl-txt">CMDR LINK</span>';chip.title='Open ADM-10 CMDR Mobile';chip.onclick=function(){if(typeof openApp==='function')openApp('overlay-adm-cmdr');};document.body.appendChild(chip);
