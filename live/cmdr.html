@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ie-SRS LIVE — CMDR Mobile Hub · Commander Walkthrough · Scenario Broadcast</title>
+<title>ie-SRS — CMDR Mobile Hub · Commander Walkthrough · Scenario Broadcast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -55,6 +55,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #rail i:hover b{display:block}
 #ctl{position:absolute;right:22px;bottom:14px;display:flex;gap:6px;pointer-events:auto}
 #ctl button{width:36px;height:36px;border:1px solid #1a2d42;border-radius:6px;background:rgba(14,24,36,.9);color:var(--tx);font-family:var(--mono);font-size:14px}
+#ctl #bcc{font-family:var(--dsp);font-weight:700;font-size:12px;letter-spacing:1px;color:#5f7a94;position:relative}
+#ctl #bcc.on{color:var(--void);background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(24,212,248,.45)}
+#ctl #bcc.on::after{content:'';position:absolute;left:8px;right:8px;bottom:4px;height:2px;background:var(--void);border-radius:1px}
+body:not(.cc) #cap{display:none}
+body:not(.cc) #capwrap{padding-top:22px}
 #ctl button:hover{border-color:var(--cyan);color:var(--cyan)}
 #meta{position:absolute;left:22px;bottom:18px;font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--txd)}
 #paused{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:var(--dsp);font-size:34px;letter-spacing:8px;color:var(--amber);background:rgba(7,11,18,.8);padding:14px 30px;border:1px solid var(--amber);display:none}
@@ -196,7 +201,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div id="splash">
     <div class="ring"></div>
     <div class="eyebrow">ie-SRS · INTELLIGENT ENERGY · SONAR | RECONNAISSANCE | SIMULATION</div>
-    <h1><span>LIVE</span><br>CMDR MOBILE HUB</h1>
+    <h1><span>ie-SRS</span><br>CMDR MOBILE HUB</h1>
     <div class="sub">Commander walkthrough · the base commander's handset, the ADMIN platform, and the SONAR bus that connects them</div>
     <div class="meta"><span>APPROX. <i>6 MIN</i></span><span>NARRATED</span><span>10 CHAPTERS</span><span>NB SAN DIEGO</span></div>
     <button class="go" onclick="startShow()">▶ START BROADCAST</button>
@@ -298,14 +303,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <!-- HUD -->
   <div id="hud">
     <div id="topbar">
-      <div id="brand"><div class="live"><i></i>LIVE</div><div class="ttl">ie-SRS · <span>CMDR</span> MOBILE HUB</div></div>
+      <div id="brand"><div class="ttl">ie-SRS · <span>CMDR</span> MOBILE HUB</div></div>
       <div id="chapter">00 · STANDBY</div>
-      <div id="clock"><span>MISSION CLOCK</span><b id="clk">04:31:00</b><span>EDT</span></div>
+      <div id="clock"><span>MISSION CLOCK</span><b id="clk">--:--:--</b><span id="tzlbl">ET</span></div>
     </div>
     <div id="paused">PAUSED</div>
     <div id="capwrap"><div id="cap"></div><div id="rail"></div></div>
     <div id="meta">SCENARIO BROADCAST · NB SAN DIEGO · SIMULATED DATA</div>
-    <div id="ctl"><button onclick="prevScene()" title="previous">⏮</button><button onclick="togglePause()" id="bpause" title="pause">⏸</button><button onclick="nextScene()" title="next">⏭</button><button onclick="toggleMute()" id="bmute" title="mute">🔊</button><button onclick="toggleFull()" title="fullscreen">⛶</button></div>
+    <div id="ctl"><button onclick="prevScene()" title="previous">⏮</button><button onclick="togglePause()" id="bpause" title="pause">⏸</button><button onclick="nextScene()" title="next">⏭</button><button onclick="toggleCC()" id="bcc" title="closed captions (off)" aria-pressed="false">CC</button><button onclick="toggleMute()" id="bmute" title="mute">🔊</button><button onclick="toggleFull()" title="fullscreen">⛶</button></div>
   </div>
 
 </div></div>
@@ -1069,10 +1074,10 @@ body.onhome .homebtn{display:none}
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ie-SRS LIVE · CMDR MOBILE HUB · commander walkthrough engine
+   ie-SRS · CMDR MOBILE HUB · commander walkthrough engine
    ═══════════════════════════════════════════════════════════════ */
 var $=function(id){return document.getElementById(id);};
-var SHOW={running:false,muted:false,paused:false,i:-1,t0:0,acc:0,pauseAt:0};
+var SHOW={running:false,muted:false,paused:false,cc:false,i:-1,t0:0,acc:0,pauseAt:0};
 var VO={unsupported:!('speechSynthesis' in window),voice:null};
 
 /* ── stage fit ── */
@@ -1082,7 +1087,8 @@ function toggleFull(){var d=document;if(d.fullscreenElement){d.exitFullscreen();
 
 /* ── mission clock ── */
 var CLK=4*3600+31*60;
-function tickClock(){if(SHOW.running&&!SHOW.paused){CLK++;}var h=Math.floor(CLK/3600),m=Math.floor(CLK%3600/60),s=CLK%60;$('clk').textContent=[h,m,s].map(function(x){return (x<10?'0':'')+x;}).join(':');}
+function tickClock(){var d=new Date(),tz;try{tz=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(d).replace(/^24/,'00');}catch(e){var u=d.getTime()+d.getTimezoneOffset()*60000-4*3600000,e2=new Date(u);tz=[e2.getHours(),e2.getMinutes(),e2.getSeconds()].map(function(x){return (x<10?'0':'')+x;}).join(':');}$('clk').textContent=tz;
+  try{var ab=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',timeZoneName:'short'}).formatToParts(d).filter(function(x){return x.type==='timeZoneName';})[0];if(ab&&$('tzlbl'))$('tzlbl').textContent=ab.value;}catch(e){}}
 setInterval(tickClock,1000);
 
 /* ── voice ── */
@@ -1099,7 +1105,7 @@ function speak(text,onDone,onChunk){
   if(VO.unsupported||SHOW.muted||VO.broken||!speechSynthesis.getVoices().length){silent(0);return;}
   SPK.cancel=false;
   function next(){if(SPK.cancel)return;if(i>=parts.length){onDone();return;}var p=parts[i++];onChunk&&onChunk(p,i-1);var u=new SpeechSynthesisUtterance(sayable(p));u.rate=0.88;u.pitch=1;if(VO.voice)u.voice=VO.voice;var t0=performance.now();
-    u.onend=function(){if(performance.now()-t0<150){VO.broken=true;silent(i);return;}setTimeout(next,220);};
+    u.onend=function(){if(performance.now()-t0<150){VO.broken=true;silent(i);return;}setTimeout(next,160);};
     u.onerror=function(e){if(e&&e.error==='interrupted'&&SPK.cancel)return;VO.broken=true;silent(i);};SPK.utt=u;speechSynthesis.speak(u);}
   speechSynthesis.cancel();setTimeout(next,60);
 }
@@ -1196,10 +1202,10 @@ function foldSec(sec,open){var b=pq('.sec.fold[data-sec="'+sec+'"] .secbody');if
 
 /* ── 01 · CMDR HUB ── */
 SCENES.push({id:'open',chapter:'01 · CMDR HUB',min:24,
- narr:'This is ie-SRS Live. A walkthrough of the CMDR mobile hub: the base commander’s handset view of SONAR, the Shore Outage Notification, Analysis and Response system. On the left, the commander’s iPhone. On the right, the ADMIN platform NAVFAC operates. One message bus connects them. Twelve tiles, one screen, no menus.',
+ narr:'This is ie-SRS. A walkthrough of the CMDR mobile hub: the base commander’s handset view of SONAR, the Shore Outage Notification, Analysis and Response system. On the left, the commander’s iPhone. On the right, the ADMIN platform NAVFAC operates. One message bus connects them. Twelve tiles, one screen, no menus.',
  run:function(){
   lanes(false);
-  T.at(300,function(){big('ie-SRS <span>LIVE</span>','CMDR MOBILE HUB · COMMANDER WALKTHROUGH');});
+  T.at(300,function(){big('ie-<span>SRS</span>','CMDR MOBILE HUB · COMMANDER WALKTHROUGH');});
   T.at(4200,function(){big('','',false);});
   T.at(8500,function(){callout('#p-home .hgrid','iPHONE · BASE COMMANDER',{eb:'CMDR MOBILE HUB',x:428,y:150,ax:414,ay:170});});
   T.at(12500,function(){callout({right:748,cy:200},'NAVFAC · FOUNDRY ADVANA · 140 INSTANCES',{eb:'ie-SRS ADMIN',cls:'amber',x:428,y:230,ax:752,ay:250});});
@@ -1413,14 +1419,14 @@ SCENES.push({id:'scenario',chapter:'09 · SCENARIO · DROP ZONE',min:38,
 
 /* ── 10 · THE BUS ── */
 SCENES.push({id:'close',chapter:'10 · THE BUS · CLOSE',min:28,
- narr:'Six envelope types carry the whole system: HELLO, STATUS, WARNORD, ACK, MSG and DROP. Two transports, one protocol. Every envelope is stamped with node, site, commander and time, and logged to the audit trail on both ends. That is the CMDR mobile hub: the commander sees the base, hears SONAR, answers in seconds, and ADMIN sees every answer. ie-SRS Live.',
+ narr:'Six envelope types carry the whole system: HELLO, STATUS, WARNORD, ACK, MSG and DROP. Two transports, one protocol. Every envelope is stamped with node, site, commander and time, and logged to the audit trail on both ends. That is the CMDR mobile hub: the commander sees the base, hears SONAR, answers in seconds, and ADMIN sees every answer. ie-SRS.',
  run:function(){
   var ENV=[['HELLO','device announce · heartbeat every 10 min','cmdr → admin',''],['STATUS','ADM-04 snapshot · posture · KPIs · users','admin → cmdr','sage'],['WARNORD','SONAR alert · P1–P3 · routed by role','both ways','rose'],['ACK','acknowledgment · who · device · second','cmdr → admin','sage'],['MSG','#all-hands · @site · handset to handset','both ways',''],['DROP','SYS-04 file · 3-way sync · drop / delete','all nodes','amber']];
   T.at(300,function(){$('dim').classList.add('on');var g=$('envgrid');g.innerHTML=ENV.map(function(e){return '<div class="env '+e[3]+'"><div class="ty">'+e[0]+'</div><div class="d">'+e[1]+'</div><div class="dir">'+e[2]+'</div></div>';}).join('');g.classList.add('on');ENV.forEach(function(e,i){setTimeout(function(){g.children[i].classList.add('on');},400+i*420);});});
   var flow=[['HELLO','out',''],['STATUS','in','sage'],['WARNORD','in','rose'],['ACK','out','sage'],['MSG','out',''],['MSG','in','sage'],['DROP','out','amber'],['HELLO','out','']];
   flow.forEach(function(f,i){T.at(1200+i*1500,function(){packet(f[0],f[1],i%3===2?'bc':'gh',f[2],1400);});});
   T.at(15000,function(){callout({right:602,cy:410},'GITHUB CONTENTS API · CROSS-DEVICE<br>BROADCASTCHANNEL · SAME BROWSER',{eb:'TWO TRANSPORTS · ONE PROTOCOL',x:428,y:640,ax:580,ay:520});});
-  T.at(20500,function(){$('envgrid').classList.remove('on');clearCallouts();big('ie-SRS <span>LIVE</span>','CMDR MOBILE HUB · SEE THE BASE · HEAR SONAR · ANSWER IN SECONDS');});
+  T.at(20500,function(){$('envgrid').classList.remove('on');clearCallouts();big('ie-<span>SRS</span>','CMDR MOBILE HUB · SEE THE BASE · HEAR SONAR · ANSWER IN SECONDS');});
  }});
 
 
@@ -1431,16 +1437,17 @@ function resetStage(){stopSpeech();T.reset();clearCallouts();big('', '', false);
 function startShow(){$('splash').style.display='none';SHOW.running=true;if(!VO.unsupported){try{var u=new SpeechSynthesisUtterance(' ');speechSynthesis.speak(u);}catch(e){}}gotoScene(0);}
 function gotoScene(i){if(i<0||i>=SCENES.length){finish();return;}SHOW.i=i;var sc=SCENES[i];resetStage();$('chapter').textContent=sc.chapter;document.querySelectorAll('#rail i').forEach(function(d,k){d.className=k<i?'done':k===i?'on':'';});
   var narrDone=false,fired=false;
-  function maybeEnd(){if(fired)return;if(narrDone&&T.now()>=sc.min*1000){fired=true;T.at(T.now()+2400,function(){if(SHOW.i===i)gotoScene(i+1);});}}
+  function maybeEnd(){if(fired)return;if(narrDone&&T.now()>=sc.min*1000){fired=true;T.at(T.now()+1200,function(){if(SHOW.i===i)gotoScene(i+1);});}}
   sc.run();
   speak(sc.narr,function(){narrDone=true;maybeEnd();},function(chunk){cap(chunk);});
   (function poll(){if(SHOW.i!==i)return;maybeEnd();if(!fired)setTimeout(poll,250);})();}
 function nextScene(){if(SHOW.running)gotoScene(SHOW.i+1);}
 function prevScene(){if(SHOW.running)gotoScene(Math.max(0,SHOW.i-1));}
 function togglePause(){if(!SHOW.running)return;SHOW.paused=!SHOW.paused;$('stage').classList.toggle('paused',SHOW.paused);$('bpause').textContent=SHOW.paused?'▶':'⏸';if(SHOW.paused){T.pausedAt=performance.now();if(!VO.unsupported)speechSynthesis.pause();}else{T.pausedAcc+=performance.now()-T.pausedAt;if(!VO.unsupported)speechSynthesis.resume();}}
+function toggleCC(){SHOW.cc=!SHOW.cc;document.body.classList.toggle('cc',SHOW.cc);var b=$('bcc');b.classList.toggle('on',SHOW.cc);b.setAttribute('aria-pressed',SHOW.cc?'true':'false');b.title='closed captions ('+(SHOW.cc?'on':'off')+')';}
 function toggleMute(){SHOW.muted=!SHOW.muted;$('bmute').textContent=SHOW.muted?'🔇':'🔊';if(SHOW.muted)stopSpeech();}
-function finish(){SHOW.running=false;$('chapter').textContent='END · ie-SRS LIVE';cap('ie-SRS Live · CMDR mobile hub · end of broadcast');big('ie-SRS <span>LIVE</span>','END OF BROADCAST · CMDR MOBILE HUB');}
-addEventListener('keydown',function(e){if(e.code==='Space'){e.preventDefault();if(!SHOW.running)startShow();else togglePause();}else if(e.key==='ArrowRight')nextScene();else if(e.key==='ArrowLeft')prevScene();else if(e.key==='m'||e.key==='M')toggleMute();else if(e.key==='f'||e.key==='F')toggleFull();});
+function finish(){SHOW.running=false;$('chapter').textContent='END · ie-SRS';cap('ie-SRS · CMDR mobile hub · end of broadcast');big('ie-<span>SRS</span>','END OF BROADCAST · CMDR MOBILE HUB');}
+addEventListener('keydown',function(e){if(e.code==='Space'){e.preventDefault();if(!SHOW.running)startShow();else togglePause();}else if(e.key==='ArrowRight')nextScene();else if(e.key==='ArrowLeft')prevScene();else if(e.key==='m'||e.key==='M')toggleMute();else if(e.key==='c'||e.key==='C')toggleCC();else if(e.key==='f'||e.key==='F')toggleFull();});
 resetPhone();seedAdmin();
 </script>
 </body>
