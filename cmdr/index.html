@@ -487,7 +487,7 @@ body.onhome .homebtn{display:none}
         <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
         <button onclick="openBuilder()" id="tile-builder"><div class="ic" style="background:linear-gradient(160deg,#e8a33d,#8a5a12)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3.5"/><path d="M18 12.5v1M18 18.5v1M14.5 16h1M20.5 16h1"/></svg></div><div class="l">Scenario</div></button>
         <button onclick="go('drop')" id="tile-drop"><span class="nl" id="hl-drop"></span><div class="ic" style="background:linear-gradient(160deg,#b0b8c4,#4f5a68)"><svg viewBox="0 0 24 24"><path d="M12 3v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="l">Drop Zone</div></button>
-        <button onclick="openCmdrGuideFiltered('home')" style="position:relative;border-radius:16px;padding:8px;background:rgba(63,214,255,.08);border:1px solid rgba(63,214,255,.25);display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font-size:11px;font-weight:600;-webkit-tap-highlight-color:transparent;" title="Open CMDR Hub Users Guide"><div style="width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#3fe0ff,#0f9ccc);box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 14px rgba(0,0,0,.35);"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16v.01"/></svg></div><span style="text-align:center;line-height:1.2;">GUIDE</span></button>
+        <button onclick="openCmdrGuide()" id="tile-guide"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2z"/></svg></div><div class="l">Guide</div></button>
         <button onclick="go('link')"><span class="nl amber" id="hl-link"></span><div class="ic c-amber"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><div class="l">Link</div></button>
       </div>
       <button onclick="go('dash')"><span class="nl" id="hl-status"></span><div class="ic c-slate"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg></div><div class="l">Status</div></button>
@@ -2846,6 +2846,7 @@ window.SRADropZone=(function(){
            → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
      auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
   var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=25000;
+  var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
   window.LOCK=(function(){
     var digits='', pending=null, waitT=null, busy=false, sess=ls(AUTH_KEY,null);
     function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
@@ -2917,7 +2918,7 @@ window.SRADropZone=(function(){
       result:result,
       session:function(){return valid(sess)?sess:null;},
       signout:function(){sess=null;localStorage.removeItem(AUTH_KEY);show();toast('Signed out','Enter a security key to go LIVE again','amber');},
-      boot:function(){var el=$('lk-session');if(valid(sess)){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
+      boot:function(){var el=$('lk-session');if(valid(sess)&&!LOCK_EACH_LAUNCH){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
     };
   })();
 
@@ -2990,20 +2991,8 @@ window.SRADropZone=(function(){
   window.CMDR={state:function(){return S;},handle:handle,bus:bus};
 })();
 
-
-// ── CMDR GUIDE ──
-function openCmdrGuide() {
-  const pdfUrl = 'https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf';
-  window.open(pdfUrl, 'ie-SRS-CMDR-Guide', 'width=900,height=700,resizable=yes,scrollbars=yes');
-}
-
-function openCmdrGuideFiltered(topic) {
-  // Open guide and pass topic parameter (future feature: scroll to section)
-  const pdfUrl = 'https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf';
-  const anchor = '#' + encodeURIComponent(topic);
-  window.open(pdfUrl + anchor, 'ie-SRS-CMDR-Guide', 'width=900,height=700,resizable=yes,scrollbars=yes');
-}
-
+/* ── CMDR HUB USERS GUIDE ── */
+function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf','ie-SRS-CMDR-Guide');}
 </script>
 </body>
 </html>
