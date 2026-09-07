@@ -13447,7 +13447,7 @@ window.SRADropZone=(function(){
 (function(){
   window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!d.key||!window.SRASec)return;
     var a=SRASec.validate(d.key);
-    if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
+    if(a){try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview window · not marked LIVE');}catch(e){}try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' signed in on the preview (not LIVE)','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
     else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
   /* ── KEYRING: publish SHA-256 hashes of every enabled security key (never the key itself) so CMDR can reject a
         non-matching key instantly, even before ADMIN answers. Re-published when User Accounts change or a phone says HELLO. */
@@ -13484,6 +13484,10 @@ window.SRADropZone=(function(){
   function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(true);if(!p.key||!window.SRASec)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
+    var real=!p.embedded&&(p.transport||'github')==='github';           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
+    if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · device closed');}catch(e){}return;}
+    if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
+        try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
         SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});
