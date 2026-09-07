@@ -2759,7 +2759,7 @@ html::after {
   <div id="demo-modal-inner">
     <div id="demo-modal-chrome">
       <span id="demo-modal-title">ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</span>
-      <a id="demo-modal-full" href="live/" target="_blank" rel="noopener" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#18d4f8;text-decoration:none;border:1px solid rgba(24,212,248,.35);border-radius:3px;padding:4px 10px">OPEN FULL SCREEN ↗</a>
+      
       <button id="demo-modal-close" onclick="closeDemoPlayer()">✕ CLOSE</button>
     </div>
     <iframe id="demo-modal-frame" title="ie-SRS LIVE" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -10477,7 +10477,7 @@ function launchSim() {
   };
 
   // ── DEMO PICKER + PLAYER MODAL ──
-  var DEMO_BUILD = '202609071234'; // cache-buster appended to demo URLs; bump on every live/ redeploy
+  var DEMO_BUILD = '202609071241'; // cache-buster appended to demo URLs; bump on every live/ redeploy
   window.openDemoPicker = function() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (!pk) return;
@@ -10493,9 +10493,8 @@ function launchSim() {
     src += (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
     window.closeDemoPicker();
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame'),
-        t = document.getElementById('demo-modal-title'), full = document.getElementById('demo-modal-full');
+        t = document.getElementById('demo-modal-title');
     if (t && title) t.innerHTML = title;
-    if (full) full.setAttribute('href', src);
     if (fr) fr.setAttribute('src', src);
     if (modal) modal.classList.add('open');
   };
