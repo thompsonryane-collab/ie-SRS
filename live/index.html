@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ie-SRS LIVE — SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</title>
+<title>ie-SRS — SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -26,7 +26,7 @@ html,body{height:100%;background:#03080e;color:var(--tx);font-family:var(--mono)
 #chrome-top{position:absolute;left:0;right:0;top:0;height:6.2%;display:flex;align-items:center;gap:1.2%;padding:0 1.6%;background:linear-gradient(180deg,rgba(3,8,14,.92),rgba(3,8,14,0));pointer-events:none;z-index:5}
 .logo{font-family:var(--dsp);font-weight:900;font-size:1.55vmin;letter-spacing:.14em;color:#fff;display:flex;align-items:center;gap:.5vmin}
 .logo .ie{display:inline-block;border:1.5px solid var(--cyan);border-radius:1.2vmin;padding:0 .7vmin;color:var(--cyan);font-size:1.3vmin;letter-spacing:.05em}
-.logo .a{color:var(--cyan)}
+.logo .wm{letter-spacing:.06em;color:#fff}
 .live{display:flex;align-items:center;gap:.6vmin;font-family:var(--dsp);font-weight:700;font-size:1.15vmin;letter-spacing:.22em;color:#fff;background:var(--red);padding:.5vmin 1vmin;border-radius:.4vmin}
 .live i{width:.8vmin;height:.8vmin;border-radius:50%;background:#fff;animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:.15}}
@@ -134,8 +134,7 @@ body.paused #scene *{animation-play-state:paused!important}
   </svg>
 
   <div id="chrome-top">
-    <div class="logo"><span class="ie">ie</span>SR<span class="a">S</span></div>
-    <div class="live"><i></i>LIVE</div>
+    <div class="logo"><span class="ie">ie</span><span class="wm">SRS</span></div>
     <div class="tkr">SONAR · SHORE OUTAGE NOTIFICATION, ANALYSIS &amp; RESPONSE &nbsp;<b>SCENARIO BROADCAST</b>&nbsp; NB SAN DIEGO · CNRSW</div>
     <div id="chapter"></div>
     <div id="clock">04:19:40 PDT</div>
@@ -161,7 +160,7 @@ body.paused #scene *{animation-play-state:paused!important}
   </div>
 
   <div id="gate">
-    <h1>ie-SRS <span>LIVE</span><br>SONAR · Shore Outage Notification, Analysis &amp; Response</h1>
+    <h1>ie-<span>SRS</span><br>SONAR · Shore Outage Notification, Analysis &amp; Response</h1>
     <p>A simulated cyber-attack takes down utility power at Naval Base San Diego. Watch the facility manager release a SONAR alert, follow it to every commander who needs it, and see it land in the admin platform on Foundry ADVANA — with narration.</p>
     <div id="gate-btns">
       <button id="b-start" onclick="startShow()">&#9654;&nbsp; START BROADCAST</button>
@@ -173,7 +172,7 @@ body.paused #scene *{animation-play-state:paused!important}
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ie-SRS LIVE — scene engine
+   ie-SRS — scene engine
    All visuals are hand-built SVG; timing is narration-driven.
    ═══════════════════════════════════════════════════════════════ */
 'use strict';
@@ -251,7 +250,7 @@ const SCENES=[];
 
 /* 0 — cold open */
 SCENES.push({id:'open',chapter:'COLD OPEN',min:6,
-narr:'ie-SRS Live. This is a scenario broadcast of SONAR, the Shore Outage Notification, Analysis and Response system. Naval Base San Diego, zero four nineteen in the morning. What follows is a simulated cyber-attack against installation energy infrastructure, and the response that SONAR makes possible. I will walk you through it.',
+narr:'ie-SRS. This is a scenario broadcast of SONAR, the Shore Outage Notification, Analysis and Response system. Naval Base San Diego, zero four nineteen in the morning. What follows is a simulated cyber-attack against installation energy infrastructure, and the response that SONAR makes possible. I will walk you through it.',
 cap:'A simulated cyber-attack on Naval Base San Diego — and the response SONAR makes possible.',
 build(g){
   const R={};
@@ -967,7 +966,7 @@ tick(R,t){SCENES[3].tick(R,t);if(R.tlAnim){const k=clamp((performance.now()-R.tl
 
 /* 8 — close */
 SCENES.push({id:'close',chapter:'CLOSE',min:7,
-narr:'Detection to command awareness in ninety seconds. Four roles, nine endpoints, every dispatch audited, and the enterprise picture updated without a single phone call. That is what SONAR buys you. This has been ie-SRS Live. Thank you for watching.',
+narr:'Detection to command awareness in ninety seconds. Four roles, nine endpoints, every dispatch audited, and the enterprise picture updated without a single phone call. That is what SONAR buys you. This has been ie-SRS. Thank you for watching.',
 cap:'Detection to command awareness: 90 seconds. Four roles, nine endpoints, every dispatch audited — no phone calls.',
 build(g){
   const R={};
@@ -999,7 +998,7 @@ function pickVoice(){if(VO.unsupported)return;const vs=speechSynthesis.getVoices
   VO.voice=v;VO.ready=true;}
 if(!VO.unsupported){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 function chunks(text){const s=(text.match(/[^.!?]+[.!?]+["”']?\s*/g)||[text]).map(x=>x.trim()).filter(Boolean);const out=[];for(let i=0;i<s.length;i+=2)out.push((s[i]+' '+(s[i+1]||'')).trim());return out;}
-const SAY=[[/\bie-SRS Live\b/g,'I-E S-R-S, live broadcast'],[/\bie-SRS\b/g,'I-E S-R-S'],[/\bFRCS\b/g,'F-R-C-S'],[/\bCMDR\b/g,'commander'],[/\bADVANA\b/g,'ad-vah-na'],[/\bVPN\b/g,'V-P-N'],[/\bSDG&E\b/g,'S-D-G-and-E'],[/\bNAVFAC\b/g,'nav-fac'],[/\bBESS\b/g,'bess'],[/\bMW\b/g,'megawatts'],[/\bkV\b/g,'kilovolt']];
+const SAY=[[/\bie-SRS\b/g,'I-E S-R-S'],[/\bFRCS\b/g,'F-R-C-S'],[/\bCMDR\b/g,'commander'],[/\bADVANA\b/g,'ad-vah-na'],[/\bVPN\b/g,'V-P-N'],[/\bSDG&E\b/g,'S-D-G-and-E'],[/\bNAVFAC\b/g,'nav-fac'],[/\bBESS\b/g,'bess'],[/\bMW\b/g,'megawatts'],[/\bkV\b/g,'kilovolt']];
 function sayable(t){return SAY.reduce(function(a,r){return a.replace(r[0],r[1]);},t);}
 function speak(text,onDone){text=sayable(text);
   if(VO.unsupported||SHOW.muted){setTimeout(onDone,0);return;}
