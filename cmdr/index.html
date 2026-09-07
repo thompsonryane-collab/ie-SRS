@@ -2846,6 +2846,7 @@ window.SRADropZone=(function(){
            → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
      auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
   var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=25000;
+  var GATE_EACH_LAUNCH=true;   /* true: step 1 GitHub-key screen on every launch, field empty · false: once per device */
   var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
   window.LOCK=(function(){
     var digits='', pending=null, waitT=null, busy=false, sess=ls(AUTH_KEY,null);
@@ -2975,6 +2976,7 @@ window.SRADropZone=(function(){
     function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github')return true;
       if(!c.token){show();return false;}
+      if(GATE_EACH_LAUNCH){show();msg('Enter the GitHub key issued for this device, then your security key.','');return false;}
       if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
