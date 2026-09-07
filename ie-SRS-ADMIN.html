@@ -10190,18 +10190,30 @@ function showSplash() {
   if (window._splashRestart) window._splashRestart();
 }
 
+function linkIsLive() {
+  try { if (!window.SRABus) return false; var c = SRABus.cfg(), st = SRABus.status();
+    return c.transport === 'github' && !!c.token && st.read === 'ok' && st.write !== 'error' && st.connected !== false; } catch (e) { return false; }
+}
 function updateAiStatus() {
   var el  = document.getElementById('ai-status');
   var lbl = el && el.querySelector('.ai-status-lbl');
   if (!el) return;
-  if (window._inedApiKey) {
+  if (linkIsLive()) {                       /* GitHub key verified + CMDR link reading and writing */
+    el.className = 'live';
+    if (lbl) lbl.textContent = 'LIVE';
+    el.title = 'CMDR link LIVE · ' + SRABus.cfg().repo + (window._inedApiKey ? ' · ARIA online' : '');
+  } else if (window._inedApiKey) {
     el.className = 'live';
     if (lbl) lbl.textContent = 'ONLINE';
+    el.title = 'ARIA online · CMDR link not connected';
   } else {
     el.className = 'offline';
     if (lbl) lbl.textContent = 'OFFLINE';
+    el.title = 'CMDR link not connected';
   }
 }
+/* re-evaluate whenever the bus status changes (link up / down / key rejected) */
+document.addEventListener('DOMContentLoaded', function() { try { window.SRABus && SRABus.onStatus(function() { updateAiStatus(); }); } catch (e) {} setTimeout(updateAiStatus, 1200); });
 
 function toggleTheme() {
   var current = document.documentElement.getAttribute('data-theme') || 'dark';
