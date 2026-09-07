@@ -2750,19 +2750,6 @@ html::after {
   <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
     <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
   </button>
-  <div id="gh-gate" role="dialog" aria-label="GitHub key">
-    <div class="gg">
-      <div class="gg-eyebrow">ie-SRS ADMIN · CMDR LINK</div>
-      <div class="gg-title">GITHUB KEY</div>
-      <div class="gg-sub">Enter the GitHub key for the CMDR link. ADMIN uses it to read and write the shared bus file, so linked phones can check in and verify their security keys.</div>
-      <label for="gg-token">GITHUB KEY</label>
-      <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="github_pat_…">
-      <div class="gg-repo" id="gg-repo"></div>
-      <div class="gg-row"><button class="gg-go" id="gg-go" onclick="GHGATE.connect()">CONNECT</button><button class="gg-skip" onclick="GHGATE.skip()">SKIP</button></div>
-      <div class="gg-msg" id="gg-msg"></div>
-      <div class="gg-foot">STORED IN THIS BROWSER ONLY · FINE-GRAINED PAT · CONTENTS READ/WRITE</div>
-    </div>
-  </div>
   <div id="demo-pick" role="dialog" aria-label="Choose a demo">
     <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
     <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
@@ -2792,6 +2779,19 @@ html::after {
 
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
+<div id="gh-gate" role="dialog" aria-label="GitHub key">
+    <div class="gg">
+      <div class="gg-eyebrow">ie-SRS ADMIN · CMDR LINK</div>
+      <div class="gg-title">GITHUB KEY</div>
+      <div class="gg-sub">Enter the GitHub key for the CMDR link. ADMIN uses it to read and write the shared bus file, so linked phones can check in and verify their security keys.</div>
+      <label for="gg-token">GITHUB KEY</label>
+      <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="github_pat_…">
+      <div class="gg-repo" id="gg-repo"></div>
+      <div class="gg-row"><button class="gg-go" id="gg-go" onclick="GHGATE.connect()">CONNECT</button><button class="gg-skip" onclick="GHGATE.skip()">SKIP</button></div>
+      <div class="gg-msg" id="gg-msg"></div>
+      <div class="gg-foot">STORED IN THIS BROWSER ONLY · FINE-GRAINED PAT · CONTENTS READ/WRITE</div>
+    </div>
+  </div>
 <div id="demo-modal" role="dialog" aria-label="ie-SRS demo">
   <div id="demo-modal-inner">
     <div id="demo-modal-chrome">
@@ -10525,6 +10525,7 @@ function launchSim() {
     var demoPick = document.getElementById('demo-pick');
     if (demoPick) demoPick.style.display = 'none';
     setTimeout(function() { splash.style.display = 'none'; updateAiStatus(); }, 660);
+    setTimeout(function() { try { window.GHGATE && GHGATE.boot(); } catch (e) {} }, 720);
   };
 
   // ── GITHUB KEY GATE (opens on load when no token is configured) ──
@@ -10532,8 +10533,9 @@ function launchSim() {
     var busy = false, tmr = null;
     function $g(id) { return document.getElementById(id); }
     function msg(t, c) { var e = $g('gg-msg'); if (e) { e.textContent = t || ''; e.className = 'gg-msg ' + (c || ''); } }
+    function hint(e) { e = String(e || '').replace(/\bread read\b/, 'read'); return /network|no route|failed to fetch/i.test(e) ? e + ' — this browser cannot reach api.github.com (VPN, proxy or content-security policy).' : /401/.test(e) ? e + ' — the key is invalid or expired.' : /403/.test(e) ? e + ' — check Resource owner = thompsonryane-collab and Contents read/write.' : e; }
     function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
-    function show() { if (!window.SRABus) return; var c = SRABus.cfg(); var r = $g('gg-repo'); if (r) r.innerHTML = '<b>' + (c.repo || '') + '</b> · ' + (c.branch || 'main') + ' · ' + (c.path || 'data/bus.json');
+    function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg(); var r = $g('gg-repo'); if (r) r.innerHTML = '<b>' + (c.repo || '') + '</b> · ' + (c.branch || 'main') + ' · ' + (c.path || 'data/bus.json');
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
     function hide() { $g('gh-gate').classList.remove('open'); clearTimeout(tmr); busy = false; btn(false); }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
@@ -10544,13 +10546,20 @@ function launchSim() {
       (function tick() { if (!busy) return; var st = SRABus.status();
         if (st.read === '' || st.read === undefined) armed = true;
         if (armed || Date.now() - t0 > 1500) {
-          if (st.read === 'ok') { busy = false; var c = SRABus.cfg(); msg('✓ Linked · ' + c.repo, 'ok'); setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
-          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(((st.error || 'GitHub rejected the key').replace(/\bread read\b/, 'read')) + ' — check Resource owner and Contents read/write.', 'bad'); return; } }
+          if (st.read === 'ok') { busy = false; var c = SRABus.cfg(); msg('✓ Linked · ' + c.repo, 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
+          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'GitHub rejected the key'), 'bad'); return; } }
         if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from GitHub. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
     function skip() { hide(); try { hubToast('CMDR link not connected · enter a GitHub key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
-    function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(); if (!c.token) show(); } catch (e) {} }
-    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } }); setTimeout(boot, 900); });
+    /* Triggered from the splash ENTER button: show when no key is stored, or the stored key is not currently reading the bus. */
+    function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
+      var need = !c.token || c.transport !== 'github' || st.read !== 'ok';
+      if (!need) return;
+      show();
+      if (c.token && st.read === 'error') msg(hint(st.error || 'The stored key was rejected') + ' Enter a new key.', 'bad');
+      else if (c.token) msg('A key is stored but the link is not confirmed — paste the key and CONNECT.', 'wait');
+    } catch (e) {} }
+    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } }); });
     return { show: show, connect: connect, skip: skip, boot: boot };
   })();
 
@@ -13145,7 +13154,7 @@ window.SRABus=(function(){
   document.head.appendChild(css);
   var chip=document.createElement('button');chip.id='cl-chip';chip.innerHTML='<i></i><span id="cl-txt">CMDR LINK</span>';chip.title='Open ADM-10 CMDR Mobile';chip.onclick=function(){if(typeof openApp==='function')openApp('overlay-adm-cmdr');};document.body.appendChild(chip);
   function paintPanel(){if(typeof admPaintCmdr==='function'&&$('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))try{admPaintCmdr();}catch(e){}}
-  window.admCmdrSave=function(o){bus.configure(Object.assign({node:'admin',site:'*'},o));C.audit('SETTINGS_CMDR_LINK','transport',o.transport);toast('CMDR link: '+o.transport,'ok');bus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN'});};
+  window.admCmdrSave=function(o){if(o&&!o.token)delete o.token;try{delete $('cx-token').dataset.keep;}catch(e){}bus.configure(Object.assign({node:'admin',site:'*'},o));C.audit('SETTINGS_CMDR_LINK','transport',o.transport);toast('CMDR link: '+o.transport,'ok');bus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN'});};
   window.admCmdrTest=function(siteId){
     var s=C.SITE[siteId]; if(!s)return;
     var rec={ts:Date.now(),site:s.id,siteName:s.name,code:'TEST-'+String(Date.now()).slice(-4),test:true,kind:'TEST',msg:'Test SONAR alert released by System Admin to CMDR mobile — no operational outage. Acknowledge on the phone to close the loop.',channels:'Base Commander: mobile+dash'};
@@ -13191,7 +13200,7 @@ window.SRABus=(function(){
     $('cx-peers').innerHTML=ks.length?ks.map(function(k){var p=peers[k],s=C.SITE[k];return '<div class="cm-peer"><div><b>'+esc(p.name||'Commander')+'</b><div class="s">'+esc(s?s.name:k)+' · '+esc(p.app||'')+' · hello '+ago(p.ts)+'</div></div><div class="act"><button onclick="admCmdrTest(\''+esc(k)+'\')">TEST ALERT</button><button onclick="CMDR_LINK.sendStatus(\''+esc(k)+'\');hubToast(\'STATUS → CMDR\',\'ok\',2000)">PUSH HEALTH</button></div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">No phone has linked yet. Open the app (preview at right, or the URL above on an iPhone) — it says hello automatically.</div>';
     $('cx-unacked-n').textContent=un.length?un.length+' open':'';
     $('cx-unacked').innerHTML=un.length?un.map(function(w){return '<div class="cm-peer"><div><b style="color:'+(w.test?'#18d4f8':'#e05555')+'">'+esc(w.code)+'</b> <span class="s">'+esc(w.siteName||w.site)+'</span><div class="s">'+esc(String(w.msg||'').slice(0,90))+'</div></div><div class="s">'+ago(w.ts)+'</div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">Every SONAR alert sent to mobile has been acknowledged.</div>';
-    if(document.activeElement!==$('cx-token')){$('cx-transport').value=c.transport;$('cx-repo').value=c.repo;$('cx-branch').value=c.branch;$('cx-path').value=c.path;$('cx-token').value=c.token;$('cx-poll').value=c.poll;admCmdrGh();}
+    if(document.activeElement!==$('cx-token')){$('cx-transport').value=c.transport;$('cx-repo').value=c.repo;$('cx-branch').value=c.branch;$('cx-path').value=c.path;if(!$('cx-token').dataset.keep)$('cx-token').value='';$('cx-token').placeholder=c.token?'key stored · leave blank to keep · paste to replace':'fine-grained PAT · Contents read/write';$('cx-poll').value=c.poll;admCmdrGh();}
     $('cx-log').innerHTML=(window.CMDR_LINK?CMDR_LINK.events():[]).map(esc).join('<br>')||'—';
     var ak=acked();$('cx-acked-n').textContent=ak.length?ak.length+' recent':'';
     $('cx-acked').innerHTML=ak.length?ak.map(function(w){return '<div class="cm-peer"><div><b style="color:#4db88a">'+esc(w.code)+'</b> <span class="s">'+esc(w.siteName||w.site)+'</span><div class="s">ack by '+esc(w.ack.by||'')+' · '+esc(w.ack.via||'')+' · RTT '+fmtMs(w.ack.ts-w.ts)+'</div></div><div class="s">'+ago(w.ack.ts)+'</div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">No acknowledgments yet.</div>';
