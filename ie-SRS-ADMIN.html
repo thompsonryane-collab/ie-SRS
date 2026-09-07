@@ -1884,22 +1884,52 @@ html::after {
 #enter-btn:hover::before { transform: translateX(100%); }
 #enter-btn:active { transform: scale(.98); }
 
-/* ── DEMO BUTTON ── */
+/* ── DEMO BUTTON (icon only) ── */
 #demo-btn {
-  position: fixed; bottom: 24px; right: 28px; z-index: 10010;
-  padding: 8px 22px;
-  font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 3px;
-  color: #18d4f8; cursor: pointer;
-  background: linear-gradient(135deg, rgba(24,212,248,.08), rgba(77,184,138,.06));
-  border: 1px solid rgba(24,212,248,.28); border-radius: 20px;
-  box-shadow: inset 0 1px 0 rgba(24,212,248,.10);
-  transition: all .22s cubic-bezier(.32,.72,0,1); position: fixed; overflow: hidden;
-  display: block; margin: 0;
+  position: fixed; bottom: 46px; right: 32px; z-index: 10040;
+  width: 72px; height: 72px; padding: 0; margin: 0;
+  border-radius: 50%; cursor: pointer;
+  color: #18d4f8;
+  background: radial-gradient(circle at 50% 40%, rgba(24,212,248,.18), rgba(10,18,30,.96) 70%);
+  border: 1.5px solid rgba(24,212,248,.55);
+  box-shadow: 0 0 0 6px rgba(24,212,248,.06), 0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(24,212,248,.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .22s cubic-bezier(.32,.72,0,1), box-shadow .22s, border-color .22s;
 }
-#demo-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(24,212,248,.07), transparent); transform: translateX(-100%); transition: transform .5s; }
-#demo-btn:hover { border-color: rgba(24,212,248,.6); box-shadow: inset 0 1px 0 rgba(24,212,248,.18), 0 0 22px rgba(24,212,248,.12); color: #5ee8ff; }
-#demo-btn:hover::before { transform: translateX(100%); }
-#demo-btn:active { transform: scale(.98); }
+#demo-btn svg { width: 30px; height: 30px; fill: currentColor; margin-left: 4px; filter: drop-shadow(0 0 8px rgba(24,212,248,.55)); }
+#demo-btn .ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid rgba(24,212,248,.5); animation: demoRing 2.6s ease-out infinite; pointer-events: none; }
+@keyframes demoRing { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(1.65); opacity: 0; } }
+#demo-btn:hover { transform: scale(1.06); border-color: rgba(94,232,255,.9); box-shadow: 0 0 0 8px rgba(24,212,248,.09), 0 0 34px rgba(24,212,248,.35), 0 18px 40px rgba(0,0,0,.55); color: #5ee8ff; }
+#demo-btn:active { transform: scale(.96); }
+#demo-btn.open .ring { animation: none; opacity: 0; }
+
+/* ── DEMO PICKER ── */
+#demo-pick {
+  display: none; position: fixed; right: 32px; bottom: 134px; z-index: 10041;
+  width: 400px; padding: 0 0 8px;
+  background: linear-gradient(180deg, #0f1826, #0b1220);
+  border: 1px solid rgba(24,212,248,.32); border-radius: 12px;
+  box-shadow: 0 30px 70px rgba(0,0,0,.7), 0 0 0 1px rgba(24,212,248,.06), inset 0 1px 0 rgba(24,212,248,.15);
+  transform-origin: bottom right;
+}
+#demo-pick.open { display: block; animation: dpIn .22s cubic-bezier(.32,.72,0,1); }
+@keyframes dpIn { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+#demo-pick::after { content: ''; position: absolute; right: 26px; bottom: -7px; width: 12px; height: 12px; background: #0b1220; border-right: 1px solid rgba(24,212,248,.32); border-bottom: 1px solid rgba(24,212,248,.32); transform: rotate(45deg); }
+#demo-pick .dp-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px 10px; border-bottom: 1px solid rgba(24,212,248,.14); }
+#demo-pick .dp-head span { font-family: 'Orbitron', monospace; font-size: 10px; letter-spacing: 3px; color: #18d4f8; }
+#demo-pick .dp-head b { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2.5px; color: #6e90b0; font-weight: 400; }
+#demo-pick .dp-x { margin-left: auto; background: none; border: 1px solid transparent; color: #6e90b0; font-size: 11px; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; }
+#demo-pick .dp-x:hover { border-color: rgba(229,57,53,.4); color: #ef9a9a; }
+#demo-pick .dp-item { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; width: calc(100% - 16px); margin: 8px 8px 0; padding: 12px 12px; text-align: left; cursor: pointer;
+  background: rgba(24,212,248,.03); border: 1px solid rgba(24,212,248,.12); border-radius: 8px; color: #dbe6f2; transition: background .15s, border-color .15s, transform .15s; }
+#demo-pick .dp-item:hover { background: rgba(24,212,248,.09); border-color: rgba(24,212,248,.5); transform: translateX(2px); }
+#demo-pick .dp-ico { width: 44px; height: 44px; border-radius: 10px; background: rgba(24,212,248,.1); border: 1px solid rgba(24,212,248,.3); display: flex; align-items: center; justify-content: center; }
+#demo-pick .dp-ico svg { width: 24px; height: 24px; fill: none; stroke: #18d4f8; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+#demo-pick .dp-txt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+#demo-pick .dp-txt i { font-style: normal; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 2.5px; color: #18d4f8; }
+#demo-pick .dp-txt em { font-style: normal; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; color: #f2f8ff; letter-spacing: .3px; }
+#demo-pick .dp-txt small { font-family: 'Rajdhani', sans-serif; font-size: 12px; color: #8fa8c0; }
+#demo-pick .dp-dur { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 1px; color: rgba(94,232,255,.7); border: 1px solid rgba(24,212,248,.25); border-radius: 3px; padding: 3px 7px; }
 
 /* ── DEMO PLAYER MODAL ── */
 #demo-modal {
@@ -2693,9 +2723,22 @@ html::after {
 
   <!-- ── BOTTOM BAR ── -->
 
-  <button id="demo-btn" onclick="openDemoPlayer()" title="Play the ie-SRS LIVE scenario broadcast" aria-label="Run live demo">
-    <span style="display:inline-flex;align-items:center;gap:9px"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor"><path d="M6 4l14 8-14 8z"/></svg>RUN LIVE DEMO<span style="font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1.5px;color:rgba(94,232,255,.55);margin-left:6px">5:52</span></span>
+  <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
+    <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
   </button>
+  <div id="demo-pick" role="dialog" aria-label="Choose a demo">
+    <div class="dp-head"><span>ie-SRS LIVE</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+    <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
+      <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
+      <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
+      <span class="dp-dur">5:52</span>
+    </button>
+    <button class="dp-item" onclick="openDemoPlayer('live/cmdr.html','ie-SRS LIVE // CMDR MOBILE HUB · Commander Walkthrough')">
+      <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
+      <span class="dp-txt"><i>02 · CMDR MOBILE HUB</i><em>Commander walkthrough · iPhone view</em><small>Link · SONAR alert · release · map · comms · scenario · bus</small></span>
+      <span class="dp-dur">5:50</span>
+    </button>
+  </div>
   <div id="sp-bottom-bar">
     <div class="bb-dot"></div>
     <span>ie-SRS ADMIN · FOUNDRY ADVANA</span>
@@ -2716,7 +2759,7 @@ html::after {
   <div id="demo-modal-inner">
     <div id="demo-modal-chrome">
       <span id="demo-modal-title">ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</span>
-      <a href="live/" target="_blank" rel="noopener" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#18d4f8;text-decoration:none;border:1px solid rgba(24,212,248,.35);border-radius:3px;padding:4px 10px">OPEN FULL SCREEN ↗</a>
+      <a id="demo-modal-full" href="live/" target="_blank" rel="noopener" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#18d4f8;text-decoration:none;border:1px solid rgba(24,212,248,.35);border-radius:3px;padding:4px 10px">OPEN FULL SCREEN ↗</a>
       <button id="demo-modal-close" onclick="closeDemoPlayer()">✕ CLOSE</button>
     </div>
     <iframe id="demo-modal-frame" title="ie-SRS LIVE" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -10428,13 +10471,30 @@ function launchSim() {
     // Hide demo button — splash is dismissed
     var demoBtn = document.getElementById('demo-btn');
     if (demoBtn) demoBtn.style.display = 'none';
+    var demoPick = document.getElementById('demo-pick');
+    if (demoPick) demoPick.style.display = 'none';
     setTimeout(function() { splash.style.display = 'none'; updateAiStatus(); }, 660);
   };
 
-  // ── DEMO PLAYER MODAL ──
-  window.openDemoPlayer = function() {
-    var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame');
-    if (fr && !fr.getAttribute('src')) fr.setAttribute('src', 'live/');
+  // ── DEMO PICKER + PLAYER MODAL ──
+  window.openDemoPicker = function() {
+    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
+    if (!pk) return;
+    var on = !pk.classList.contains('open');
+    pk.classList.toggle('open', on); if (btn) { btn.classList.toggle('open', on); btn.setAttribute('aria-expanded', on ? 'true' : 'false'); }
+  };
+  window.closeDemoPicker = function() {
+    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
+    if (pk) pk.classList.remove('open'); if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+  };
+  window.openDemoPlayer = function(src, title) {
+    src = src || 'live/';
+    window.closeDemoPicker();
+    var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame'),
+        t = document.getElementById('demo-modal-title'), full = document.getElementById('demo-modal-full');
+    if (t && title) t.innerHTML = title;
+    if (full) full.setAttribute('href', src);
+    if (fr) fr.setAttribute('src', src);
     if (modal) modal.classList.add('open');
   };
   window.closeDemoPlayer = function() {
@@ -10442,7 +10502,12 @@ function launchSim() {
     if (modal) modal.classList.remove('open');
     if (fr) fr.removeAttribute('src');
   };
-  // Close on backdrop click
+  // Close picker on outside click / Escape; close player on backdrop click
+  document.addEventListener('click', function(e) {
+    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
+    if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !(btn && btn.contains(e.target))) window.closeDemoPicker();
+  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { window.closeDemoPicker(); } });
   var demoModal = document.getElementById('demo-modal');
   if (demoModal) {
     demoModal.addEventListener('click', function(e) {
