@@ -2376,6 +2376,7 @@ html::after {
 #fs-btn.active { color: #9ebc52; border-color: rgba(158,188,82,.55); background: rgba(158,188,82,.10); }
 #fs-btn.blocked { color: #c07050; border-color: rgba(192,112,80,.5); }
 #fs-btn svg { display: block; }
+.sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4db88a;box-shadow:0 0 6px #4db88a;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
 </style>
 </head>
 <body>
@@ -2500,9 +2501,9 @@ html::after {
     return {
       id:a[0], name:a[1], region:a[2], regionName:REG[a[2]], regionColor:REGC[a[2]],
       lat:a[3], lon:a[4], mapId:a[5], uic:'N'+String(60000+((seedOf(a[0])%39999))).slice(0,5),
-      fm:{name:pick(r,FIRST)+' '+fmL, email:(fmL.toLowerCase()+'.fm@'+slug+'.navy.mil'), role:'FM — Facility Manager',
+      fm:{first:'Facility', last:'Manager', name:'Facility Manager', email:('fm.'+slug+'@example.mil'), role:'FM — Facility Manager',
           device:r()<.9?'enrolled':'pending', status:p==='offline'?'offline':(r()<.6?'online':'away'), lastSeenMin:rint(r,0,240)},
-      backup:{name:pick(r,FIRST)+' '+bkL, email:(bkL.toLowerCase()+'.bfs@'+slug+'.navy.mil'), role:'Backup Facilities Support',
+      backup:{first:'Backup', last:'Support', name:'Backup Support', email:('bfs.'+slug+'@example.mil'), role:'Backup Facilities Support',
           device:r()<.82?'enrolled':'pending', status:s==='offline'?'offline':(r()<.45?'online':'away'), lastSeenMin:rint(r,0,600)},
       primary:{status:p, version:pick(r,VERS), lastSyncMin:lastSyncMin, uptime:p==='online'?(99+r()).toFixed(2):(90+r()*8).toFixed(2), cpu:rint(r,8,72)},
       secondary:{status:s, version:pick(r,VERS), lastSyncMin:s==='online'?rint(r,0,12):rint(r,30,900), uptime:s==='online'?(99+r()).toFixed(2):(88+r()*10).toFixed(2), cpu:rint(r,5,60)},
@@ -2541,7 +2542,7 @@ html::after {
   var AUDIT_KEY='adm_audit', MSG_KEY='adm_msgs', ACCT_KEY='adm_acct_overrides', WO_KEY='adm_wo_log';
   function audit(action,target,detail){
     var log=lsGet(AUDIT_KEY,[]);
-    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||'sysadmin@navy.mil'),action:action,target:target||'',detail:detail||''});
+    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||'sysadmin@example.mil'),action:action,target:target||'',detail:detail||''});
     if(log.length>400)log.length=400;
     lsSet(AUDIT_KEY,log);
     try{ g.dispatchEvent(new CustomEvent('adm-audit')); }catch(e){}
@@ -2787,7 +2788,15 @@ html::after {
 
     <div class="ca-field">
       <div class="ca-label">Email Address</div>
-      <input class="ca-input" type="email" placeholder="your.name@navy.mil" oninput="clearErr(this)">
+      <input class="ca-input" type="email" placeholder="first.last@example.mil" oninput="clearErr(this)">
+    </div>
+
+    <div class="ca-field">
+      <div class="ca-label">Security Key <span style="color:#6e90b0;letter-spacing:.5px">&mdash; 6 digits &middot; assigning a key activates the account for CMDR hub entry</span></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="ca-input" id="ca-security" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocorrect="off" placeholder="e.g. 482910" style="flex:1;letter-spacing:4px;font-family:'Share Tech Mono',monospace" oninput="clearErr(this);this.value=this.value.replace(/\D/g,'').slice(0,6)">
+        <button type="button" onclick="document.getElementById('ca-security').value=String(Math.floor(100000+Math.random()*900000));clearErr(document.getElementById('ca-security'))" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap">GENERATE</button>
+      </div>
     </div>
 
     <div class="ca-field-row">
@@ -7449,9 +7458,9 @@ if(window.parent!==window){
     return {
       id:a[0], name:a[1], region:a[2], regionName:REG[a[2]], regionColor:REGC[a[2]],
       lat:a[3], lon:a[4], mapId:a[5], uic:&#x27;N&#x27;+String(60000+((seedOf(a[0])%39999))).slice(0,5),
-      fm:{name:pick(r,FIRST)+&#x27; &#x27;+fmL, email:(fmL.toLowerCase()+&#x27;.fm@&#x27;+slug+&#x27;.navy.mil&#x27;), role:&#x27;FM — Facility Manager&#x27;,
+      fm:{first:&#x27;Facility&#x27;, last:&#x27;Manager&#x27;, name:&#x27;Facility Manager&#x27;, email:(&#x27;fm.&#x27;+slug+&#x27;@example.mil&#x27;), role:&#x27;FM — Facility Manager&#x27;,
           device:r()&lt;.9?&#x27;enrolled&#x27;:&#x27;pending&#x27;, status:p===&#x27;offline&#x27;?&#x27;offline&#x27;:(r()&lt;.6?&#x27;online&#x27;:&#x27;away&#x27;), lastSeenMin:rint(r,0,240)},
-      backup:{name:pick(r,FIRST)+&#x27; &#x27;+bkL, email:(bkL.toLowerCase()+&#x27;.bfs@&#x27;+slug+&#x27;.navy.mil&#x27;), role:&#x27;Backup Facilities Support&#x27;,
+      backup:{first:&#x27;Backup&#x27;, last:&#x27;Support&#x27;, name:&#x27;Backup Support&#x27;, email:(&#x27;bfs.&#x27;+slug+&#x27;@example.mil&#x27;), role:&#x27;Backup Facilities Support&#x27;,
           device:r()&lt;.82?&#x27;enrolled&#x27;:&#x27;pending&#x27;, status:s===&#x27;offline&#x27;?&#x27;offline&#x27;:(r()&lt;.45?&#x27;online&#x27;:&#x27;away&#x27;), lastSeenMin:rint(r,0,600)},
       primary:{status:p, version:pick(r,VERS), lastSyncMin:lastSyncMin, uptime:p===&#x27;online&#x27;?(99+r()).toFixed(2):(90+r()*8).toFixed(2), cpu:rint(r,8,72)},
       secondary:{status:s, version:pick(r,VERS), lastSyncMin:s===&#x27;online&#x27;?rint(r,0,12):rint(r,30,900), uptime:s===&#x27;online&#x27;?(99+r()).toFixed(2):(88+r()*10).toFixed(2), cpu:rint(r,5,60)},
@@ -7490,7 +7499,7 @@ if(window.parent!==window){
   var AUDIT_KEY=&#x27;adm_audit&#x27;, MSG_KEY=&#x27;adm_msgs&#x27;, ACCT_KEY=&#x27;adm_acct_overrides&#x27;, WO_KEY=&#x27;adm_wo_log&#x27;;
   function audit(action,target,detail){
     var log=lsGet(AUDIT_KEY,[]);
-    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||&#x27;sysadmin@navy.mil&#x27;),action:action,target:target||&#x27;&#x27;,detail:detail||&#x27;&#x27;});
+    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||&#x27;sysadmin@example.mil&#x27;),action:action,target:target||&#x27;&#x27;,detail:detail||&#x27;&#x27;});
     if(log.length&gt;400)log.length=400;
     lsSet(AUDIT_KEY,log);
     try{ g.dispatchEvent(new CustomEvent(&#x27;adm-audit&#x27;)); }catch(e){}
@@ -9799,6 +9808,10 @@ function submitCreateAccount() {
   check(region,  region  && region.value);
   check(role,    role    && role.value);
   check(exp,     exp     && exp.value);
+  var secEl = document.getElementById('ca-security');
+  var secv  = secEl ? secEl.value.replace(/\D/g,'') : '';
+  if (secv && !/^\d{6}$/.test(secv)) { secEl.style.border = ERR; secEl.style.boxShadow = '0 0 0 3px rgba(255,80,80,.15)'; invalid = true; }
+  else if (secEl) { secEl.style.border = OK; secEl.style.boxShadow = ''; }
   // Installation chips — highlight the container if none selected
   var chipWrap = document.getElementById('ca-installs');
   if (!installs.length) {
@@ -9810,7 +9823,8 @@ function submitCreateAccount() {
 
   var fv = first.value.trim(), lv = last.value.trim(), ev = email.value.trim(),
       sv = station.value.trim(), rv = region.value, rov = role.value, expv = exp.value;
-  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs };
+  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv };
+  if (window.SRASec) { try { window.SRASec.createAccount(record); } catch(e) { console.warn('SRASec create', e); } }
   if (window.ADMIN_CORE) { try { window.ADMIN_CORE.audit('CREATE_ACCOUNT', ev, rov + ' · ' + sv + ' · ' + installs.join('/')); } catch(e) {} }
   if (typeof hubToast === 'function') hubToast('⬡ Account provisioned — ' + fv + ' ' + lv + ' (' + rov.split(' —')[0].split(' (')[0] + ')', 'ok', 3200);
   var frame = document.getElementById('frame-briefing');
@@ -9840,6 +9854,7 @@ function submitCreateAccount() {
     btn.style.color = '';
     document.querySelectorAll('.ca-input').forEach(function(i){i.value='';});
     document.querySelectorAll('.ca-select').forEach(function(s){s.value='';});
+    var se=document.getElementById('ca-security'); if(se)se.value='';
     document.querySelectorAll('.ca-multi-chip.selected').forEach(function(c){c.classList.remove('selected');});
   }, 2000);
 }
@@ -11973,7 +11988,7 @@ document.addEventListener("DOMContentLoaded",function(){
   function pill(t,c){return '<span class="adm-pill" style="color:'+c+';border-color:'+c+'">'+esc(t)+'</span>';}
   function mini(l,v,c,s){return '<div class="adm-mini"><div class="l">'+l+'</div><div class="v" style="color:'+(c||'#cce0f2')+'">'+v+'</div>'+(s?'<div class="l" style="margin-top:2px;text-transform:none;letter-spacing:.5px">'+s+'</div>':'')+'</div>';}
   function tsZ(ts){var d=new Date(ts);return d.toISOString().slice(0,10)+' '+d.toISOString().slice(11,19)+'Z';}
-  function me(){return window._inedApiEmail||'sysadmin@navy.mil';}
+  function me(){return window._inedApiEmail||'sysadmin@example.mil';}
   function toastOk(m){if(typeof hubToast==='function')hubToast(m,'ok',3200);}
   function toastWarn(m){if(typeof hubToast==='function')hubToast(m,'warn',3600);}
   function fillRegions(sel){var s=$(sel);if(!s||s.options.length>1)return;Object.keys(C.REG).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k+' — '+C.REG[k];s.appendChild(o);});}
@@ -12048,8 +12063,15 @@ document.addEventListener("DOMContentLoaded",function(){
   var uSort={k:'site',d:1};
   window.admSortUsers=function(k){uSort.d=uSort.k===k?-uSort.d:1;uSort.k=k;admPaintUsers();};
   function userRows(){
-    var rows=[];
-    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,name:u.name,role:u.role,email:u.email,status:userState(s,w),device:u.device,seen:u.lastSeenMin});});});
+    var rows=[], live=window.SRASec?SRASec.live():{}, now=Date.now();
+    function liveMin(em){var e=live[em];return e?Math.round((now-e.ts)/60000):null;}
+    function isLive(em){var m=liveMin(em);return m!==null&&m<15;}
+    var cu=window.SRASec?SRASec.custom():{};
+    Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
+      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
+        status:a.disabled?'disabled':isLive(em)?'online':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
+    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);var lv=isLive(u.email);
+      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':lv?'online':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12057,31 +12079,105 @@ document.addEventListener("DOMContentLoaded",function(){
     var rows=userRows().filter(function(r){
       if(reg&&r.region!==reg)return false; if(role&&r.who!==role)return false;
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
-      if(q&&(r.site+' '+r.name+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
-    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['name','User','text'],['who','Role','cat'],['email','Email','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
-    rows=cmApply(CFGS.users,rows); $('au-head').innerHTML=cmHead(CFGS.users);
+      if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
+    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
+    rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users);
     var all=userRows();
     $('au-strip').innerHTML=
       mini('Total seats',all.length,'#ffffff')+mini('Online',all.filter(function(r){return r.status==='online';}).length,'#4db88a')+
       mini('Away',all.filter(function(r){return r.status==='away';}).length,'#6e90b0')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
+      mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#4db88a')+
       mini('Showing',rows.length,'#18d4f8');
     $('au-body').innerHTML=rows.length?rows.map(function(r){
-      var c=r.status==='disabled'?'#e05555':C.stColor(r.status);
-      return '<tr><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td>'+esc(r.name)+'</td>'+
-        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':'#c3aaf8')+'">'+(r.who==='fm'?'FM':'BACKUP')+'</span></td>'+
+      var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
+      var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);
+      var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
+      return '<tr'+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
+        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
-        '<td><span class="adm-dot" style="background:'+c+'"></span><span style="color:'+c+'">'+r.status+'</span></td>'+
-        '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+C.ago(r.seen)+'</td>'+
-        '<td><button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
+        '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
+        '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
+        '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+(r.seen>=99999?'never':C.ago(r.seen))+'</td>'+
+        (r.kind==='custom'?
+        '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
+        '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
+        (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
+        '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></td></tr>'
+        :
+        '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
+        '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         '<button class="adm-b sm" onclick="admUserReset(\''+r.siteId+'\',\''+r.who+'\')">RESET</button> '+
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>';}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="9" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="11" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
   window.admUserToggle=function(sid,who){var st=C.acctState(sid,who);st.disabled=!st.disabled;C.setOverride(sid+'|'+who,st);var s=C.SITE[sid];C.audit(st.disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',s[who].email,s.name);toastOk(s[who].name+' '+(st.disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
   window.admUserReset=function(sid,who){var s=C.SITE[sid];C.audit('RESET_API_KEY',s[who].email,s.name);toastOk('Reset link sent to '+s[who].email);};
   window.admUserEnroll=function(sid,who){var s=C.SITE[sid];s[who].device='enrolled';C.audit('ENROLL_DEVICE',s[who].email,s.name);toastOk(s[who].name+': government device enrolled');admPaintUsers();admPaintStrip();};
-  window.admExportUsers=function(){var rows=userRows();var csv='installation,region,user,role,email,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.name,r.role,r.email,r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
+  window.admExportUsers=function(){var rows=userRows();var csv='installation,region,last_name,first_name,role,email,security_key,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.last,r.first,r.role,r.email,r.security||"UNSET",r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
+
+  /* ══ SECURITY KEYS · ACCOUNT ACTIVATION · KEY-AUTH LIVE SESSIONS ══ */
+  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=15*60*1000;
+  function lsJ(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+  function lsW(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  function shortRegion(r){r=String(r||'');if(/Washington/i.test(r))return 'NDW';var m=r.match(/NAVFAC\s+(\w+)/i);return m?('CNR'+m[1].slice(0,2).toUpperCase()):r.slice(0,8).toUpperCase();}
+  var SRASec=window.SRASec={
+    custom:function(){return lsJ(SEC_CUSTOM,{});},
+    saveCustom:function(o){lsW(SEC_CUSTOM,o);SRASec.storeKeys();},
+    createAccount:function(rec){
+      var o=SRASec.custom(); var em=String(rec.email||'').toLowerCase(); if(!em)return null;
+      var name=(rec.first?rec.first.charAt(0)+'. ':'')+(rec.last||''); var key=String(rec.security||'').replace(/\D/g,'');
+      o[em]={name:name.trim()||em,first:rec.first||'',last:rec.last||'',email:em,station:rec.station||'',region:rec.region||'',role:rec.role||'',exp:rec.exp||'',installations:rec.installations||[],
+             security:key,status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0};
+      SRASec.saveCustom(o);
+      if(key)C.audit('ACTIVATE_ACCOUNT',em,'security key assigned at creation');
+      return o[em];
+    },
+    setKey:function(id,key){ // id = email (custom) or siteId|who (site seat)
+      key=String(key||'').replace(/\D/g,''); if(key&&!/^\d{6}$/.test(key))return false;
+      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.security=key;st.active=!!key;if(key&&!st.activatedAt)st.activatedAt=Date.now();C.setOverride(id,st);}
+      else{var o=SRASec.custom();if(!o[id])return false;o[id].security=key;o[id].status=key?'active':'pending';if(key&&!o[id].activatedAt)o[id].activatedAt=Date.now();lsW(SEC_CUSTOM,o);}
+      SRASec.storeKeys(); return true;
+    },
+    /* merged key directory · email → account (consumed by keypad + CMDR) */
+    storeKeys:function(){
+      var m={};
+      C.SITES.forEach(function(site){['fm','backup'].forEach(function(who){var u=site[who];if(!u)return;var st=C.acctState(site.id,who);var sec=st.security||'';
+        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',disabled:!!st.disabled};});});
+      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',disabled:!!a.disabled,installations:a.installations||[]};});
+      lsW(SEC_KEYS,m); return m;
+    },
+    keys:function(){return SRASec.storeKeys();},
+    validate:function(key){key=String(key||'').replace(/\D/g,'');if(!/^\d{6}$/.test(key))return null;var m=SRASec.keys();var hit=null;Object.keys(m).forEach(function(em){if(!hit&&m[em].security===key&&!m[em].disabled)hit=m[em];});return hit;},
+    /* live sessions · email → {name,site,ts,github,via} */
+    live:function(){return lsJ(SEC_LIVE,{});},
+    markLive:function(acct,extra){var l=SRASec.live();l[acct.email]=Object.assign({name:acct.name,first:acct.first||'',last:acct.last||'',email:acct.email,site:acct.site,siteId:acct.siteId,who:acct.who,kind:acct.kind,ts:Date.now(),github:'',via:'keypad'},extra||{});lsW(SEC_LIVE,l);
+      try{C.audit('CMDR_KEY_AUTH',acct.email,acct.name+' · '+(acct.site||'')+' · github:'+((extra&&extra.github)||'—'));}catch(e){}
+      try{window.dispatchEvent(new CustomEvent('security-authenticated',{detail:l[acct.email]}));}catch(e){}
+      SRASec.repaint(); return l[acct.email];},
+    endLive:function(email){var l=SRASec.live();delete l[email];lsW(SEC_LIVE,l);SRASec.repaint();},
+    isLive:function(email){var e=SRASec.live()[email];return !!(e&&Date.now()-e.ts<LIVE_MS);},
+    liveList:function(){var l=SRASec.live();return Object.keys(l).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
+    repaint:function(){['admPaintUsers','admPaintStrip','admPaintPresence','admPaintCmdr'].forEach(function(f){try{if(typeof window[f]==='function'){if(f==='admPaintUsers'&&!($('overlay-adm-users')&&$('overlay-adm-users').classList.contains('visible')))return;if(f==='admPaintPresence'&&!($('overlay-adm-msg')&&$('overlay-adm-msg').classList.contains('visible')))return;if(f==='admPaintCmdr'&&!($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible')))return;window[f]();}}catch(e){}});}
+  };
+  window.storeSecurityKeys=SRASec.storeKeys;
+  window.admSetSecurityKey=function(siteId,who){
+    var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
+    var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
+    var cur=isCustom?((SRASec.custom()[who]||{}).security||''):(C.acctState(siteId,who).security||'');
+    var key=prompt('6-digit security key for '+label+':\n(leave blank to clear · clearing deactivates the account)',cur);
+    if(key===null)return; key=String(key).replace(/\D/g,'');
+    if(key&&!/^\d{6}$/.test(key)){alert('Security key must be exactly 6 digits');return;}
+    SRASec.setKey(id,key);
+    var em=isCustom?who:C.SITE[siteId][who].email, sn=isCustom?((SRASec.custom()[who]||{}).station||''):C.SITE[siteId].name;
+    C.audit(key?'ACTIVATE_ACCOUNT':'DEACTIVATE_ACCOUNT',em,key?'security key set':'security key cleared');
+    toastOk(label+': '+(key?'key set · account ACTIVE':'key cleared · account PENDING'));
+    admPaintUsers(); admPaintStrip();
+  };
+  window.admCustomToggle=function(em){var o=SRASec.custom();if(!o[em])return;o[em].disabled=!o[em].disabled;SRASec.saveCustom(o);C.audit(o[em].disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',em,o[em].station);toastOk(o[em].name+' '+(o[em].disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
+  window.admCustomDelete=function(em){var o=SRASec.custom();if(!o[em])return;if(!confirm('Delete account '+o[em].name+' <'+em+'>?'))return;delete o[em];SRASec.saveCustom(o);SRASec.endLive(em);C.audit('DELETE_ACCOUNT',em,'');toastOk('Account deleted');admPaintUsers();admPaintStrip();};
+  window.admEndLive=function(em){SRASec.endLive(em);C.audit('CMDR_KEY_LOGOUT',em,'');toastOk('Session ended');};
 
   /* ══ ADM-02 MESSAGE CENTER ══ */
   var MC={ch:'all'};
@@ -13045,7 +13141,10 @@ window.SRABus=(function(){
     if(b)b.textContent=Object.keys(peers).length+' device'+(Object.keys(peers).length===1?'':'s');
     if(d){d.textContent=un+' unacked';d.style.color=un?'#e05555':'';d.style.borderColor=un?'rgba(224,85,85,.5)':'';}}
   var _open=window.openApp;
-  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr')try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}};
+  var _paintCmdr=window.admPaintCmdr;
+  window.admPaintCmdr=function(){_paintCmdr.apply(this,arguments);try{if(!window.SRASec)return;var ll=SRASec.liveList();if(!ll.length)return;var el=$('cx-peers');var extra=ll.map(function(e){return '<div class="cm-peer"><div><b>'+esc(e.name)+'</b><div class="s">'+esc(e.site||'—')+' · '+esc(e.email)+' · key auth · '+(e.online?'<span style="color:#4db88a">LIVE</span>':'seen '+ago(e.ts))+(e.github?' · gh:'+esc(e.github):'')+'</div></div><div class="act">'+(e.siteId&&e.siteId!=='custom'?'<button onclick="admCmdrTest(\''+esc(e.siteId)+'\')">TEST ALERT</button>':'')+'<button onclick="admEndLive(\''+esc(e.email)+'\');admPaintCmdr()">END</button></div></div>';}).join('');
+    if(/adm-empty/.test(el.innerHTML))el.innerHTML=extra;else el.innerHTML+=extra;var n=(window.CMDR_LINK?Object.keys(CMDR_LINK.peers()).length:0)+ll.filter(function(e){return e.online;}).length;$('cx-peer-n').textContent=n?n+' linked':'';}catch(e){console.warn('cmdr key peers',e);}};
+  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr'){try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}try{if(window.SRAKeypad&&!sessionStorage.getItem('ie-srs-cmdr-auth'))SRAKeypad.open();}catch(e){}}};
   bus.onStatus(paintCard);
   bus.subscribe(function(){paintCard();if($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))try{admPaintCmdr();}catch(e){}});
   setTimeout(paintCard,800);setInterval(paintCard,30000);
@@ -13102,9 +13201,10 @@ window.SRABus=(function(){
   var ONLINE_MS=15*60*1000;
   function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function ago(ts){var m=Math.round((Date.now()-ts)/60000);return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' hr ago';}
-  function me(){return window._inedApiEmail||'sysadmin@navy.mil';}
+  function me(){return window._inedApiEmail||'sysadmin@example.mil';}
   function peers(){var p=(window.CMDR_LINK&&CMDR_LINK.peers())||{};return Object.keys(p).map(function(k){var s=C.SITE[k];return {site:k,siteName:s?s.name:k,name:p[k].name||'Base Commander',app:p[k].app||'ie-SRS CMDR',ts:p[k].ts||0,online:(Date.now()-(p[k].ts||0))<ONLINE_MS};}).sort(function(a,b){return b.ts-a.ts;});}
-  window.admLivePresence=function(){var ps=peers();return {admins:1,mobile:ps.filter(function(x){return x.online;}).length,peers:ps,total:1+ps.filter(function(x){return x.online;}).length};};
+  function keyPeers(){if(!window.SRASec)return [];return SRASec.liveList().map(function(e){return {site:'key:'+e.email,siteName:e.site||'—',name:e.name,app:'CMDR hub · key auth'+(e.github?' · gh:'+e.github:''),ts:e.ts,online:e.online,email:e.email,key:true};});}
+  window.admLivePresence=function(){var ps=peers().concat(keyPeers()).sort(function(a,b){return b.ts-a.ts;});return {admins:1,mobile:ps.filter(function(x){return x.online;}).length,peers:ps,total:1+ps.filter(function(x){return x.online;}).length};};
   window.admPaintPresence=function(){
     var q=($('am-uq')&&$('am-uq').value||'').toLowerCase();
     var lp=admLivePresence(); var st=window.SRABus?SRABus.status():{};
@@ -13112,7 +13212,7 @@ window.SRABus=(function(){
     if($('am-online-n'))$('am-online-n').textContent=lp.total;
     if($('am-online-badge'))$('am-online-badge').textContent=lp.total+' ONLINE · LIVE';
     var html='<div class="adm-usr" onclick="admSetChannel(\'admins\')"><span class="adm-dot" style="background:#18d4f8"></span><div style="min-width:0"><div>'+esc(me())+'</div><small>SYSTEM ADMIN · web · you</small></div></div>';
-    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>CMDR MOBILE · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
+    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>'+(x.key?'CMDR HUB · KEY AUTH':'CMDR MOBILE')+' · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
     if(!list.length)html+='<div class="adm-empty" style="padding:12px;text-align:left">No CMDR mobile device linked'+(st.transport==='github'?' via GitHub':'')+'. Phones appear here when they say hello (ADM-10).</div>';
     if($('am-users'))$('am-users').innerHTML=html;
   };
@@ -13258,6 +13358,77 @@ window.SRADropZone=(function(){
     onRender:function(l){badge(l.length);}});
   /* ADM-08 scenarios released on ADMIN are filed to the drop zone too */
   if(typeof handleBuilderScenario==='function'){var _h=handleBuilderScenario;window.handleBuilderScenario=function(pl){try{window.SRADropZone.fromScenario(pl,{source:'admin-builder'});}catch(e){}return _h(pl);};}
+})();
+
+</script>
+
+<!-- ═══════════════════════════════════════
+     SECURITY KEYPAD MODAL FOR CMDR HUB
+     ═══════════════════════════════════════ -->
+<div id="security-keypad-modal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:99999;font-family:var(--mono);">
+  <div style="background:var(--card-bg);border:2px solid var(--cyan);border-radius:12px;padding:32px;max-width:320px;width:100%;box-shadow:0 0 40px rgba(24,212,248,0.3);">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:8px;">🔐 SECURITY KEY</div>
+      <div style="font-size:11px;color:var(--txd);letter-spacing:0.5px;">Enter your 6-digit security key to go LIVE on the CMDR hub</div>
+    </div>
+    
+    <div id="keypad-display" style="background:var(--void);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center;margin-bottom:24px;font-size:28px;letter-spacing:4px;color:var(--cyan);font-weight:700;min-height:48px;display:flex;align-items:center;justify-content:center;">●●●●●●</div>
+    
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
+      <button onclick="SRAKeypad.press(1)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">1</button>
+      <button onclick="SRAKeypad.press(2)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">2</button>
+      <button onclick="SRAKeypad.press(3)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">3</button>
+      <button onclick="SRAKeypad.press(4)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">4</button>
+      <button onclick="SRAKeypad.press(5)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">5</button>
+      <button onclick="SRAKeypad.press(6)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">6</button>
+      <button onclick="SRAKeypad.press(7)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">7</button>
+      <button onclick="SRAKeypad.press(8)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">8</button>
+      <button onclick="SRAKeypad.press(9)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">9</button>
+      <button onclick="SRAKeypad.press(0)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);grid-column:2;">0</button>
+    </div>
+    
+    <div style="display:flex;gap:8px;">
+      <button onclick="SRAKeypad.clear()" style="flex:1;padding:12px;background:var(--amber);border:none;color:#000;font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">CLEAR</button>
+      <button onclick="SRAKeypad.submit()" style="flex:1;padding:12px;background:var(--sage);border:none;color:#000;font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">ENTER</button>
+    </div>
+    
+    <div id="keypad-error" style="margin-top:12px;text-align:center;font-size:11px;color:#ff6b6b;min-height:16px;display:none;"></div>
+    <button onclick="SRAKeypad.cancel()" style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid var(--border);color:var(--txd);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;border-radius:6px;cursor:pointer;">CANCEL · BACK TO ADMIN</button>
+  </div>
+</div>
+
+<script>
+window.GITHUB_TOKEN='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';
+window.SRAKeypad=(function(){
+  var input='', busy=false;
+  var $=function(id){return document.getElementById(id);};
+  function paint(){$('keypad-display').textContent='●'.repeat(input.length)+'○'.repeat(6-input.length);}
+  function msg(t,c){var e=$('keypad-error');e.textContent=t;e.style.color=c||'#ff6b6b';e.style.display=t?'block':'none';}
+  function open(){input='';busy=false;paint();msg('');$('security-keypad-modal').style.display='flex';}
+  function close(){$('security-keypad-modal').style.display='none';input='';paint();}
+  function cancel(){close();try{if(typeof closeApp==='function'&&$('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))closeApp('overlay-adm-cmdr');}catch(e){}}
+  function press(d){if(busy||input.length>=6)return;input+=d;paint();msg('');if(input.length===6)setTimeout(submit,120);}
+  function clear(){if(busy)return;input='';paint();msg('');}
+  async function submit(){
+    if(busy)return; if(!window.SRASec){msg('Security module not loaded');return;}
+    var acct=SRASec.validate(input);
+    if(!acct){msg('Invalid security key');input='';paint();return;}
+    busy=true; msg('✓ '+acct.name+' · connecting to GitHub…','#18d4f8');
+    var gh='';
+    try{var r=await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+window.GITHUB_TOKEN,'Accept':'application/vnd.github+json'}});if(r.ok){gh=(await r.json()).login||'';}else{gh='';}}catch(e){gh='';}
+    try{if(gh&&window.SRABus){var c=SRABus.cfg();if(!c.token){SRABus.configure(Object.assign({},c,{token:window.GITHUB_TOKEN}));}}}catch(e){}
+    var live=SRASec.markLive(acct,{github:gh,via:'keypad'});
+    try{sessionStorage.setItem('ie-srs-cmdr-auth',acct.email);}catch(e){}
+    try{if(window.SRABus)SRABus.publish('HELLO',{node:'admin',app:'ie-SRS CMDR hub',commander:acct.name,email:acct.email,keyAuth:true,github:gh},{site:acct.siteId&&acct.siteId!=='custom'?acct.siteId:'*'});}catch(e){}
+    try{if(typeof hubToast==='function')hubToast('⬡ '+acct.name+' LIVE on CMDR hub'+(gh?' · GitHub '+gh:' · GitHub unreachable'),'ok',3200);}catch(e){}
+    msg('✓ '+acct.name+' · LIVE'+(gh?' · GitHub: '+gh:' · GitHub unreachable (offline?)'),'#4db88a');
+    setTimeout(close,700);
+  }
+  /* external auth paths: CMDR window/iframe postMessage {type:'CMDR_KEY_AUTH',key} · SRABus HELLO {key} */
+  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH'&&d.key&&window.SRASec){var a=SRASec.validate(d.key);if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',name:a.name,email:a.email,site:a.site},'*');}catch(e){}}else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL'},'*');}catch(e){}}}});
+  function hookBus(){try{if(!window.SRABus)return;SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO')return;var p=env.payload||{};if(p.key&&window.SRASec){var a=SRASec.validate(p.key);if(a)SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});}});}catch(e){}}
+  document.addEventListener('DOMContentLoaded',function(){hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
+  return {open:open,close:close,cancel:cancel,press:press,clear:clear,submit:submit};
 })();
 </script>
 </body>
