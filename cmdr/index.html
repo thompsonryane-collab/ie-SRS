@@ -378,6 +378,7 @@ body.onhome .homebtn{display:none}
 #gate .gt-card input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(72,207,255,.15)}
 #gate .gt-repo{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--ink2);line-height:1.6}
 #gate .gt-repo b{color:var(--cyan);font-weight:600}
+#gate .gt-eye{align-self:flex-end;margin:-4px 0 2px;font-size:12px;font-weight:600;color:var(--cyan);padding:6px 10px;border-radius:10px;background:none;border:1px solid rgba(63,214,255,.35)}
 #gate .gt-go{margin-top:2px;height:50px;border-radius:14px;border:0;background:var(--cyan);color:#03121f;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;-webkit-tap-highlight-color:transparent}
 #gate .gt-go:disabled{opacity:.5}
 #gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
@@ -430,6 +431,7 @@ body.onhome .homebtn{display:none}
     <label for="gt-token">GitHub key</label>
     <input id="gt-token" type="text" name="cmdr-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="github_pat_…" enterkeyhint="go" style="-webkit-text-security:disc">
     <div class="gt-repo" id="gt-repo"></div>
+    <button type="button" class="gt-eye" id="gt-eye" onclick="GATE.eye()">Show key</button>
     <button class="gt-go" id="gt-go" onclick="GATE.connect()">Connect</button>
   </div>
   <div class="gt-msg" id="gt-msg"></div>
@@ -2921,7 +2923,7 @@ window.SRADropZone=(function(){
   window.GATE=(function(){
     var unsub=null, tmr=null, busy=false;
     function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
-    function show(){$('gt-token').value='';var c=bus.cfg();$('gt-repo').innerHTML='<b>'+(c.repo||'')+'</b> · '+(c.branch||'main')+' · '+(c.path||'data/bus.json');$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
+    function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gt-repo').innerHTML='<b>'+(c.repo||'')+'</b> · '+(c.branch||'main')+' · '+(c.path||'data/bus.json');$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
     function done(){hide();toast('Linked to ADMIN','GitHub link · '+bus.cfg().repo,'green');LOCK.boot();}
     function hint(e){e=String(e||'').replace(/^GitHub\s+/,'').replace(/read read/,'read');return /network|no route|failed to fetch/i.test(e)?'This phone cannot reach api.github.com (signal, VPN or Wi-Fi portal).':/401/.test(e)?'GitHub says the key is invalid or expired.':/403/.test(e)?'GitHub refused the key — check Resource owner = thompsonryane-collab and Contents = Read and write.':e;}
@@ -2929,8 +2931,10 @@ window.SRADropZone=(function(){
       try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}                      /* never keep a key that GitHub rejected */
       if(silent){show();msg('The saved GitHub key no longer works. Enter a new key from ADMIN.','');}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
-    function connect(recheck){if(busy)return;var tok=recheck?(bus.cfg().token||''):$('gt-token').value.trim();
-      if(!recheck&&!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)){msg('That does not look like a GitHub key (github_pat_… or ghp_…).','bad');return;}
+    function clean(v){v=String(v||'').replace(/[\s\u200B-\u200D\uFEFF]/g,'');var i=Math.max(v.lastIndexOf('github_pat_'),v.lastIndexOf('ghp_'));return i>0?v.slice(i):v;}
+    function connect(recheck){if(busy)return;var raw=$('gt-token').value,tok=recheck?(bus.cfg().token||''):clean(raw);
+      if(!recheck&&tok!==raw.trim()){$('gt-token').value=tok;}
+      if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete GitHub key (github_pat_… 93 chars or ghp_… 40 chars).','bad');return;}
       busy=true;if(!recheck){$('gt-go').disabled=true;$('gt-go').classList.add('busy');$('gt-go').textContent='Connecting…';msg('Checking the link…','wait');}
       bus.configure({transport:'github',token:tok,node:'cmdr'});cfg=bus.cfg();
       /* poll the bus status until this attempt produces a fresh read result (stale results from a previous attempt are ignored) */
@@ -2946,9 +2950,10 @@ window.SRADropZone=(function(){
     function boot(){var c=bus.cfg();if(c.transport!=='github')return true;
       if(!c.token){show();return false;}
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
+    function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
     function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();$('gt-token').placeholder='new github_pat_…';msg('Enter the new GitHub key.','');}
     try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
-    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change};
+    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye};
   })();
   if(GATE.boot())LOCK.boot();
   setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));},400);
