@@ -2692,6 +2692,10 @@ html::after {
   </div>
 
   <!-- ── BOTTOM BAR ── -->
+
+  <button id="demo-btn" onclick="openDemoPlayer()" title="Play the ie-SRS LIVE scenario broadcast" aria-label="Run live demo">
+    <span style="display:inline-flex;align-items:center;gap:9px"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:currentColor"><path d="M6 4l14 8-14 8z"/></svg>RUN LIVE DEMO<span style="font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1.5px;color:rgba(94,232,255,.55);margin-left:6px">5:52</span></span>
+  </button>
   <div id="sp-bottom-bar">
     <div class="bb-dot"></div>
     <span>ie-SRS ADMIN · FOUNDRY ADVANA</span>
@@ -2704,6 +2708,19 @@ html::after {
     <div style="margin-left:auto;">ENTERPRISE CONTROL · 70 INSTALLATIONS · OUTAGE VISIBILITY</div>
   </div>
 
+</div>
+
+
+<!-- LIVE DEMO PLAYER (ie-SRS LIVE scenario broadcast · live/index.html) -->
+<div id="demo-modal" role="dialog" aria-label="ie-SRS LIVE demo">
+  <div id="demo-modal-inner">
+    <div id="demo-modal-chrome">
+      <span id="demo-modal-title">ie-SRS LIVE // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast</span>
+      <a href="live/" target="_blank" rel="noopener" style="font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#18d4f8;text-decoration:none;border:1px solid rgba(24,212,248,.35);border-radius:3px;padding:4px 10px">OPEN FULL SCREEN ↗</a>
+      <button id="demo-modal-close" onclick="closeDemoPlayer()">✕ CLOSE</button>
+    </div>
+    <iframe id="demo-modal-frame" title="ie-SRS LIVE" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
 </div>
 
 <!-- CREATE ACCOUNT MODAL -->
@@ -10416,12 +10433,14 @@ function launchSim() {
 
   // ── DEMO PLAYER MODAL ──
   window.openDemoPlayer = function() {
-    var modal = document.getElementById('demo-modal');
+    var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame');
+    if (fr && !fr.getAttribute('src')) fr.setAttribute('src', 'live/');
     if (modal) modal.classList.add('open');
   };
   window.closeDemoPlayer = function() {
-    var modal = document.getElementById('demo-modal');
+    var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame');
     if (modal) modal.classList.remove('open');
+    if (fr) fr.removeAttribute('src');
   };
   // Close on backdrop click
   var demoModal = document.getElementById('demo-modal');
