@@ -12140,7 +12140,7 @@ document.addEventListener("DOMContentLoaded",function(){
   function userRows(){
     var rows=[], live=window.SRASec?SRASec.live():{}, now=Date.now();
     function liveMin(em){var e=live[em];return e?Math.round((now-e.ts)/60000):null;}
-    function isLive(em){var m=liveMin(em);return m!==null&&m<15;}
+    function isLive(em){var m=liveMin(em);return m!==null&&m<6;}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
       rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
@@ -12193,7 +12193,7 @@ document.addEventListener("DOMContentLoaded",function(){
   window.admExportUsers=function(){var rows=userRows();var csv='installation,region,last_name,first_name,role,email,security_key,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.last,r.first,r.role,r.email,r.security||"UNSET",r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
 
   /* ══ SECURITY KEYS · ACCOUNT ACTIVATION · KEY-AUTH LIVE SESSIONS ══ */
-  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=15*60*1000;
+  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=6*60*1000;
   function lsJ(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
   function lsW(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function shortRegion(r){r=String(r||'');if(/Washington/i.test(r))return 'NDW';var m=r.match(/NAVFAC\s+(\w+)/i);return m?('CNR'+m[1].slice(0,2).toUpperCase()):r.slice(0,8).toUpperCase();}
@@ -13484,18 +13484,19 @@ window.SRADropZone=(function(){
   function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(true);if(!p.key||!window.SRASec)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
-    var real=!p.embedded&&(p.transport||'github')==='github';           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
+    var real=!p.embedded&&(p.transport||'github')==='github';
+    var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
     if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · device closed');}catch(e){}return;}
     if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
-    if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});
+    if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
         SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});
         autoConnect(a,site,p);}
     }else if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',authId:p.authId,reason:'Invalid or disabled security key'},{site:site});
       try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_KEY_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
   });}catch(e){}}
-  document.addEventListener('DOMContentLoaded',function(){hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
+  document.addEventListener('DOMContentLoaded',function(){try{localStorage.removeItem('ie-srs-live');}catch(e){}hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
 })();
 </script>
 </body>
