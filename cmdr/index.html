@@ -364,9 +364,52 @@ body.onhome .homebtn{display:none}
 .sheet p{font-size:13.5px;color:var(--ink2);line-height:1.45}
 @media (prefers-reduced-motion:no-preference){.dot{animation:pulse 2.4s ease-in-out infinite}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,179,64,.25)}50%{box-shadow:0 0 0 7px rgba(255,179,64,.1)}}
+
+/* ══ SECURITY KEY LOCK SCREEN ══ */
+#lock{position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 24px);gap:14px;-webkit-user-select:none;user-select:none}
+#lock.on{display:flex}
+#lock .lk-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+#lock .lk-brand .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,var(--cyan),#1f6fb0);display:flex;align-items:center;justify-content:center}
+#lock .lk-brand .mark svg{width:20px;height:20px;fill:none;stroke:#03121f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#lock .lk-t1{font-size:17px;font-weight:700;letter-spacing:.5px}
+#lock .lk-t2{font-size:12px;color:var(--ink3);letter-spacing:1.5px;text-transform:uppercase}
+#lock .lk-h{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--cyan);text-align:center}
+#lock .lk-s{font-size:12.5px;color:var(--ink2);text-align:center;max-width:300px;line-height:1.5}
+#lock .lk-dots{display:flex;gap:14px;margin:6px 0 4px}
+#lock .lk-dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--cyan);background:transparent;transition:background .12s,transform .12s;display:block}
+#lock .lk-dots i.f{background:var(--cyan);box-shadow:0 0 12px var(--cyan);transform:scale(1.08)}
+#lock .lk-dots.err i{border-color:var(--red);background:transparent;box-shadow:none;animation:lkshake .35s}
+@keyframes lkshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#lock .lk-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3)}
+#lock .lk-msg.ok{color:var(--green)}#lock .lk-msg.bad{color:var(--red)}#lock .lk-msg.wait{color:var(--cyan)}
+#lock .lk-pad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;margin-top:4px}
+#lock .lk-pad button{height:66px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:26px;font-weight:600;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background .1s,transform .08s}
+#lock .lk-pad button:active{background:var(--card2);transform:scale(.96)}
+#lock .lk-pad button.sec{font-size:12px;letter-spacing:1px;color:var(--ink2);text-transform:uppercase;background:transparent}
+#lock .lk-pad button:disabled{opacity:.4}
+#lock .lk-foot{font-size:11px;color:var(--ink3);text-align:center;margin-top:6px;line-height:1.5}
+#lock .lk-foot b{color:var(--ink2);font-weight:600}
+#lock .lk-alt{display:flex;gap:8px;margin-top:4px}
+#lock .lk-alt button{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
 </style>
 </head>
 <body>
+<!-- ══ SECURITY KEY LOCK — first thing a commander sees; auto-login re-uses a valid session ══ -->
+<div id="lock" role="dialog" aria-label="Security key">
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-h">SECURITY KEY</div>
+  <div class="lk-s" id="lk-sub">Enter the 6-digit key issued to you in ADMIN · User Accounts</div>
+  <div class="lk-dots" id="lk-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="lk-msg" id="lk-msg"></div>
+  <div class="lk-pad" id="lk-pad">
+    <button onclick="LOCK.press(1)">1</button><button onclick="LOCK.press(2)">2</button><button onclick="LOCK.press(3)">3</button>
+    <button onclick="LOCK.press(4)">4</button><button onclick="LOCK.press(5)">5</button><button onclick="LOCK.press(6)">6</button>
+    <button onclick="LOCK.press(7)">7</button><button onclick="LOCK.press(8)">8</button><button onclick="LOCK.press(9)">9</button>
+    <button class="sec" onclick="LOCK.clear()">Clear</button><button onclick="LOCK.press(0)">0</button><button class="sec" onclick="LOCK.back()">⌫</button>
+  </div>
+  <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="LOCK.offline()">Continue offline</button></div>
+  <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the CMDR link · keys never leave this device</div>
+</div>
 <div id="app">
   <div class="nav">
     <div class="brand" onclick="go('home')" role="button" aria-label="Dashboard" style="cursor:pointer">
@@ -1887,6 +1930,10 @@ updateAiContext();
       <button class="btn pri" onclick="saveSettings()">Save &amp; reconnect</button>
       <button class="btn" onclick="hello()">Send HELLO</button>
     </div>
+    <div class="note" id="lk-session" style="color:var(--ink3)"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="LOCK.signout()" style="color:var(--amber)">Sign out · use a different key</button>
+    </div>
     <div style="display:flex;gap:8px">
       <button class="btn" onclick="toggleLog()">Bus log</button>
       <button class="btn" onclick="resetLocal()" style="color:var(--red)">Clear local data</button>
@@ -2210,7 +2257,7 @@ window.SRADropZone=(function(){
     $('compose').classList.toggle('on',p==='msgs');
     if(p==='msgs'){S.unreadMsg=0;save();renderMsgs();setTimeout(function(){var t=$('p-msgs');t.scrollTop=t.scrollHeight;},30);}
     if(p==='outages'){S.unreadWO=0;save();renderOutages();}
-    if(p==='link')renderLink();
+    if(p==='link'){renderLink();try{LOCK.boot;var s=LOCK.session();var el=$('lk-session');if(el)el.textContent=s?('Signed in as '+(s.name||s.email)+' · key ends '+s.key.slice(-2)):'Not signed in';}catch(e){}}
     if(p==='health')renderHealth();
     if(p==='drop'){S.unreadDrop=0;save();renderBadges();dzMount();}
     renderBadges();
@@ -2354,7 +2401,7 @@ window.SRADropZone=(function(){
     bus.configure({transport:$('f-transport').value,repo:$('f-repo').value.trim(),branch:$('f-branch').value.trim()||'main',path:$('f-path').value.trim()||'data/bus.json',token:$('f-token').value.trim(),poll:parseInt($('f-poll').value,10)||5,site:$('f-site').value.trim()||'nb-sd',node:'cmdr'});
     cfg=bus.cfg();toast('Settings saved','Reconnecting on '+cfg.transport,'green');hello();renderAll();
   };
-  window.hello=function(){bus.publish('HELLO',{node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'});toast('HELLO sent','Waiting for ADMIN status snapshot');};
+  window.hello=function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));toast('HELLO sent','Waiting for ADMIN status snapshot');};
   window.toggleLog=function(){var b=$('logbox');b.style.display=b.style.display==='none'?'':'none';b.textContent=bus.log().slice(-40).reverse().map(function(e){return hhmm(e.ts)+' '+e.from+' → '+e.type+' '+JSON.stringify(e.payload).slice(0,110);}).join('\n')||'(empty)';};
   window.resetLocal=function(){if(!confirm('Clear all CMDR data on this device?'))return;S.warnords={};S.msgs=[];S.status=null;S.unreadMsg=S.unreadWO=0;save();bus.reset();renderAll();toast('Local data cleared','','amber');};
   function renderAll(){renderHero();renderOutages();renderMsgs();renderHealth();renderBadges();renderStat(bus.status());}
@@ -2731,23 +2778,78 @@ window.SRADropZone=(function(){
       (p.wos||[]).forEach(function(w){var code=w.code;if(code&&!S.warnords[code])S.warnords[code]={id:w.id||env.id+':'+code,code:code,ts:w.ts||env.ts,site:w.site,siteName:w.siteName,msg:w.msg,title:w.test?'Test SONAR alert':'SONAR alert',test:!!w.test,channels:w.channels,kind:w.kind};});
       if(!replay)toast('ADMIN status received',(p.siteName||cfg.site)+' · '+(p.openWO||0)+' open WO','green');
     }else if(env.type==='ACK'){return;}
-    else if(env.type==='HELLO'){if(!replay)toast('ADMIN hub online',p.app||'','green');}
+    else if(env.type==='HELLO'){if(p.auth&&!replay)LOCK.result(p);else if(!replay)toast('ADMIN hub online',p.app||'','green');}
     S.lastEvent=env.ts;save();renderAll();
   }
 
   function fitQa(){}
   window.addEventListener('resize',fitQa);
+  /* ══ SECURITY KEY · LOCK / AUTO-LOGIN ══
+     session: localStorage 'cmdr_auth' = {key,email,name,first,last,site,ts,via}
+     flow: 6 digits → HELLO{key,authId} over SRABus (+ postMessage to opener/parent if embedded)
+           → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
+     auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
+  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=25000;
+  window.LOCK=(function(){
+    var digits='', pending=null, waitT=null, busy=false, sess=ls(AUTH_KEY,null);
+    function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+    function dots(){var el=$('lk-dots');if(!el)return;el.classList.remove('err');var is=el.querySelectorAll('i');for(var i=0;i<6;i++)is[i].classList.toggle('f',i<digits.length);}
+    function msg(t,c){var e=$('lk-msg');if(!e)return;e.textContent=t||'';e.className='lk-msg '+(c||'');}
+    function padOn(on){document.querySelectorAll('#lk-pad button').forEach(function(b){b.disabled=!on;});}
+    function show(){$('lock').classList.add('on');document.body.classList.add('locked');digits='';dots();msg('');padOn(true);$('lk-alt').style.display='none';}
+    function hide(){$('lock').classList.remove('on');document.body.classList.remove('locked');}
+    function valid(s){return !!(s&&s.key&&/^\d{6}$/.test(s.key)&&(Date.now()-(s.ts||0))<AUTH_TTL);}
+    function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'},extra||{})));}catch(e){}}
+    function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}return p;}
+    function submit(){
+      if(busy||digits.length<6)return; busy=true; padOn(false);
+      pending={authId:uid(),key:digits,ts:Date.now()};
+      msg('Verifying with ADMIN…','wait');
+      /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
+      try{bus.publish('HELLO',{node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true});}catch(e){}
+      /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
+      try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site},'*');}catch(e){}
+      clearTimeout(waitT);waitT=setTimeout(function(){if(!pending)return;busy=false;msg('ADMIN did not answer. Is ADMIN open and the CMDR link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
+    }
+    function result(p){
+      if(!pending)return; if(p.authId&&p.authId!==pending.authId)return;
+      clearTimeout(waitT);
+      if(p.auth==='ok'){
+        sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
+        lsSet(AUTH_KEY,sess); if(p.name){S.name=p.name;save();}
+        pending=null;busy=false;msg('✓ '+sess.name+' · LIVE','ok');
+        setTimeout(function(){hide();renderAll();announce();},650);
+      }else{
+        pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(p.reason||'Invalid security key','bad');padOn(true);
+      }
+    }
+    window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH_OK')result(Object.assign({auth:'ok',via:'admin-window'},d));else if(d.type==='CMDR_KEY_AUTH_FAIL')result({auth:'fail',authId:d.authId});});
+    return {
+      hello:hello,
+      press:function(d){if(busy||digits.length>=6)return;digits+=String(d);dots();msg('');if(digits.length===6)setTimeout(submit,110);},
+      back:function(){if(busy)return;digits=digits.slice(0,-1);dots();},
+      clear:function(){if(busy)return;digits='';dots();msg('');},
+      retry:function(){$('lk-alt').style.display='none';digits='';dots();msg('');},
+      offline:function(){$('lk-alt').style.display='none';hide();toast('Offline mode','Not verified — ADMIN will not show you as LIVE','amber');},
+      result:result,
+      session:function(){return valid(sess)?sess:null;},
+      signout:function(){sess=null;localStorage.removeItem(AUTH_KEY);show();toast('Signed out','Enter a security key to go LIVE again','amber');},
+      boot:function(){var el=$('lk-session');if(valid(sess)){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
+    };
+  })();
+
   /* ── boot ── */
   bus.onStatus(renderStat);
   bus.subscribe(handle);
   bus.start();
   bus.replay(function(env){handle(env,true);});
   fitQa();go('home');renderAll();
+  LOCK.boot();
   if(cfg.transport==='github'&&!cfg.token){toast('Enter your GitHub token','Tap Link — repo, branch and file are preset','amber');}
-  setTimeout(function(){bus.publish('HELLO',{node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'});},400);
+  setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));},400);
   setInterval(function(){renderHero();renderStat(bus.status());},30000);
   var HB=10*60*1000,lastHB=Date.now();
-  function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',{node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true});}
+  function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true}));}
   setInterval(heartbeat,HB);
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastHB>HB/2)heartbeat();});
   window.CMDR={state:function(){return S;},handle:handle,bus:bus};
