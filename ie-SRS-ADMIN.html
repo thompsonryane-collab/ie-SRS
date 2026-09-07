@@ -13447,10 +13447,32 @@ window.SRADropZone=(function(){
 (function(){
   window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!d.key||!window.SRASec)return;
     var a=SRASec.validate(d.key);
-    if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}}
+    if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
     else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
   /* ── KEYRING: publish SHA-256 hashes of every enabled security key (never the key itself) so CMDR can reject a
         non-matching key instantly, even before ADMIN answers. Re-published when User Accounts change or a phone says HELLO. */
+  /* ── AUTO-CONNECT: fires once a security key is verified. Only when ADMIN itself is on the GitHub link (so the phone can actually hear us). */
+  var lastAuto={};
+  function linkUp(){try{var c=SRABus.cfg(),st=SRABus.status();return c.transport==='github'&&!!c.token&&st.read==='ok'&&st.write!=='error';}catch(e){return false;}}
+  function autoConnect(acct,site,p){try{
+    var siteId=(acct&&acct.siteId&&acct.siteId!=='custom')?acct.siteId:(site&&site!=='*'?site:'nb-sd');
+    var k=acct.email+':'+siteId; if(lastAuto[k]&&Date.now()-lastAuto[k]<15000)return; lastAuto[k]=Date.now();   /* one burst per sign-in */
+    var via=p&&p.via||(p&&p.authId?'mobile':'window');
+    if(!linkUp()&&via!=='window'){try{hubToast('⬡ '+acct.name+' verified — ADMIN is not on the GitHub link, phone will not receive STATUS','warn',4200);}catch(e){}return;}
+    /* 1 · STATUS snapshot for the commander's installation */
+    try{window.CMDR_LINK&&CMDR_LINK.sendStatus(siteId);}catch(e){}
+    /* 2 · welcome line into the site channel (shows on the phone's Messages tab) */
+    try{var sName=(window.ADMIN_CORE&&ADMIN_CORE.SITE&&ADMIN_CORE.SITE[siteId]&&ADMIN_CORE.SITE[siteId].name)||acct.site||siteId;
+      SRABus.publish('MSG',{text:'Welcome '+acct.name+' — linked to ie-SRS ADMIN · '+sName+' · '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),ch:'site:'+siteId,from:'ADMIN',sys:true},{site:siteId});}catch(e){}
+    /* 3 · fresh keyring + open SONAR alerts for the site */
+    try{publishKeyring(false);}catch(e){}
+    try{if(window.CMDR_LINK&&CMDR_LINK.resend)CMDR_LINK.resend(siteId);}catch(e){}
+    /* 4 · ADMIN UI: audit, ADM-10 repaint, link chip green, toast */
+    try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_AUTOCONNECT',acct.email,acct.name+' · '+siteId+' · STATUS + welcome sent');}catch(e){}
+    try{if(typeof admPaintCmdr==='function')admPaintCmdr();}catch(e){}
+    try{var chip=document.getElementById('cl-chip');if(chip){chip.classList.add('on');chip.classList.remove('warn');}}catch(e){}
+    try{hubToast('⬡ '+acct.name+' connected · STATUS → '+siteId,'ok',3000);}catch(e){}
+  }catch(e){}}
   var ringDigest='', ringLast=0;
   function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
   function publishKeyring(force){try{if(!window.SRABus||!window.SRASec||!window.crypto||!crypto.subtle)return;var m=SRASec.keys();var list=Object.keys(m).filter(function(e){return m[e].security&&!m[e].disabled;}).map(function(e){return m[e];});
@@ -13464,7 +13486,8 @@ window.SRADropZone=(function(){
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
-        SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});}
+        SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});
+        autoConnect(a,site,p);}
     }else if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',authId:p.authId,reason:'Invalid or disabled security key'},{site:site});
       try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_KEY_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
   });}catch(e){}}
