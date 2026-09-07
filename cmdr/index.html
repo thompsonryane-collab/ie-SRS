@@ -2908,6 +2908,8 @@ window.SRADropZone=(function(){
     return {
       hello:hello,
       hideForRelink:function(){pending=null;busy=false;clearTimeout(waitT);$('lock').classList.remove('on');},
+      show:show,
+      wait:function(t){msg(t||'','wait');padOn(false);},
       keyring:function(ring,ts){lsSet(RING_KEY,{ring:ring,ts:ts||Date.now()});},
       ringInfo:function(){var r=ls(RING_KEY,null);return r?{count:r.ring.length,ts:r.ts}:null;},
       press:function(d){if(busy||digits.length>=6)return;digits+=String(d);dots();msg('');if(digits.length===6)setTimeout(submit,110);},
@@ -2973,6 +2975,7 @@ window.SRADropZone=(function(){
     function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github')return true;
       if(!c.token){show();return false;}
+      if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
     function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();$('gt-token').placeholder='new github_pat_…';msg('Enter the new GitHub key.','');}
