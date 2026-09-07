@@ -365,16 +365,40 @@ body.onhome .homebtn{display:none}
 @media (prefers-reduced-motion:no-preference){.dot{animation:pulse 2.4s ease-in-out infinite}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,179,64,.25)}50%{box-shadow:0 0 0 7px rgba(255,179,64,.1)}}
 
+/* ══ TWO-STEP AUTHENTICATION · step 1 · GitHub-key gate ══ */
+#gate{position:fixed;inset:0;z-index:9001;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 24px)}
+#gate.on{display:flex}
+#gate .gt-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+#gate .gt-step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px}
+#gate .gt-step i{width:26px;height:1px;background:var(--line)}
+#gate .gt-step span.dim{opacity:.45}
+#gate .gt-card{width:100%;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}
+#gate .gt-card label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)}
+#gate .gt-card input{width:100%;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;padding:13px 12px;border-radius:12px;border:1px solid var(--line);background:#0a1119;color:var(--ink);outline:none}
+#gate .gt-card input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(72,207,255,.15)}
+#gate .gt-repo{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--ink2);line-height:1.6}
+#gate .gt-repo b{color:var(--cyan);font-weight:600}
+#gate .gt-go{margin-top:2px;height:50px;border-radius:14px;border:0;background:var(--cyan);color:#03121f;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;-webkit-tap-highlight-color:transparent}
+#gate .gt-go:disabled{opacity:.5}
+#gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
+#gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45}
+#gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.bad{color:var(--red)}#gate .gt-msg.wait{color:var(--cyan)}
+#gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
+#lock .tsa,#gate .tsa{color:var(--cyan);letter-spacing:2.5px;margin-top:2px}
+#lock .lk-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+#lock .lk-step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px}
+#lock .lk-step b.done{background:var(--green);border-color:var(--green);color:#03121f}
+#lock .lk-step i{width:26px;height:1px;background:var(--line)}
 /* ══ SECURITY KEY LOCK SCREEN ══ */
 #lock{position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 24px);gap:14px;-webkit-user-select:none;user-select:none}
 #lock.on{display:flex}
-#lock .lk-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
-#lock .lk-brand .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,var(--cyan),#1f6fb0);display:flex;align-items:center;justify-content:center}
-#lock .lk-brand .mark svg{width:20px;height:20px;fill:none;stroke:#03121f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-#lock .lk-t1{font-size:17px;font-weight:700;letter-spacing:.5px}
-#lock .lk-t2{font-size:12px;color:var(--ink3);letter-spacing:1.5px;text-transform:uppercase}
-#lock .lk-h{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--cyan);text-align:center}
-#lock .lk-s{font-size:12.5px;color:var(--ink2);text-align:center;max-width:300px;line-height:1.5}
+#lock .lk-brand,#gate .lk-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+#lock .lk-brand .mark,#gate .lk-brand .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,var(--cyan),#1f6fb0);display:flex;align-items:center;justify-content:center}
+#lock .lk-brand .mark svg,#gate .lk-brand .mark svg{width:20px;height:20px;fill:none;stroke:#03121f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#lock .lk-t1,#gate .lk-t1{font-size:17px;font-weight:700;letter-spacing:.5px}
+#lock .lk-t2,#gate .lk-t2{font-size:12px;color:var(--ink3);letter-spacing:1.5px;text-transform:uppercase}
+#lock .lk-h,#gate .lk-h{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--cyan);text-align:center}
+#lock .lk-s,#gate .lk-s{font-size:12.5px;color:var(--ink2);text-align:center;max-width:300px;line-height:1.5}
 #lock .lk-dots{display:flex;gap:14px;margin:6px 0 4px}
 #lock .lk-dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--cyan);background:transparent;transition:background .12s,transform .12s;display:block}
 #lock .lk-dots i.f{background:var(--cyan);box-shadow:0 0 12px var(--cyan);transform:scale(1.08)}
@@ -388,16 +412,35 @@ body.onhome .homebtn{display:none}
 #lock .lk-pad button.sec{font-size:13px;letter-spacing:1.5px;color:var(--ink2);text-transform:uppercase;background:transparent}
 #lock .lk-pad button.sec.bk{font-size:22px;letter-spacing:0}
 #lock .lk-pad button:disabled{opacity:.4}
-#lock .lk-foot{font-size:11px;color:var(--ink3);text-align:center;margin-top:6px;line-height:1.5}
-#lock .lk-foot b{color:var(--ink2);font-weight:600}
+#lock .lk-foot,#gate .lk-foot{font-size:11px;color:var(--ink3);text-align:center;margin-top:6px;line-height:1.5}
+#lock .lk-foot b,#gate .lk-foot b{color:var(--ink2);font-weight:600}
 #lock .lk-alt{display:flex;gap:8px;margin-top:4px}
 #lock .lk-alt button{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
 </style>
 </head>
 <body>
-<!-- ══ SECURITY KEY LOCK — first thing a commander sees; auto-login re-uses a valid session ══ -->
-<div id="lock" role="dialog" aria-label="Security key">
+<!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the CMDR link; shown once per device ══ -->
+<div id="gate" role="dialog" aria-label="Two-step authentication · step 1 · GitHub key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-t2 tsa">Two-step authentication</div>
+  <div class="gt-step"><b>1</b><span>GitHub key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
+  <div class="lk-h">GITHUB KEY</div>
+  <div class="lk-s">Enter the GitHub key issued for the CMDR link. It connects this phone to ADMIN.</div>
+  <div class="gt-card">
+    <label for="gt-token">GitHub key</label>
+    <input id="gt-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" inputmode="text" placeholder="github_pat_…" enterkeyhint="go">
+    <div class="gt-repo" id="gt-repo"></div>
+    <button class="gt-go" id="gt-go" onclick="GATE.connect()">Connect</button>
+  </div>
+  <div class="gt-msg" id="gt-msg"></div>
+  <button class="gt-alt" id="gt-alt" style="display:none" onclick="GATE.offline()">Continue offline</button>
+  <div class="lk-foot">Stored on this device only · used to read and write the CMDR bus file</div>
+</div>
+<!-- ══ TWO-STEP AUTHENTICATION · STEP 2 · SECURITY KEY LOCK — verified by ADMIN over the link; auto-login re-uses a valid session ══ -->
+<div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-t2 tsa">Two-step authentication</div>
+  <div class="lk-step"><b class="done">✓</b><span>GitHub key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
   <div class="lk-s" id="lk-sub">Enter the 6-digit key issued to you in ADMIN · User Accounts</div>
   <div class="lk-dots" id="lk-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -2035,7 +2078,7 @@ window.SRABus=(function(){
 
   /* ── github contents adapter ── */
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[];
+    var timer=null, sha=null, busy=false, queue=[], alive=true;
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -2056,8 +2099,8 @@ window.SRABus=(function(){
     function describe(e){var m=String(e&&e.message||e);var c=e&&e.status;if(c===401)return m+' — token invalid or expired';if(c===403)return m+' — token cannot write this repo: check Resource owner = thompsonryane-collab and Contents = Read and write';if(c===404)return m+' — repo/branch/file path not found';if(!c&&/fetch/i.test(m))return 'network — no route to api.github.com';return m;}
     function poll(){
       if(busy)return;busy=true;
-      read().then(function(res){sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
-        .catch(function(e){setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
+      read().then(function(res){if(!alive)return;sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
+        .catch(function(e){if(!alive)return;setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
         .then(function(){busy=false;flush();});
     }
     function flush(){
@@ -2077,7 +2120,7 @@ window.SRABus=(function(){
     }
     return {
       start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
-      stop:function(){clearInterval(timer);timer=null;},
+      stop:function(){alive=false;clearInterval(timer);timer=null;},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
@@ -2090,6 +2133,7 @@ window.SRABus=(function(){
     dev:function(){return DEV;},
     configure:function(o){o=Object.assign({},o||{});['repo','branch','path'].forEach(function(k){if(typeof o[k]==='string')o[k]=o[k].replace(/\s+/g,'').replace(/^\/+|\/+$/g,'');});if(o.path)o.path=o.path.toLowerCase();if(o.repo)o.repo=o.repo.replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'');if(typeof o.token==='string')o.token=o.token.trim();Object.assign(cfg,o);lsSet(CFG_KEY,cfg);if(adapter){adapter.stop();adapter=build();setStatus({transport:cfg.transport,connected:false,error:'',pending:0});adapter.start();}return api;},
     start:function(){if(!adapter){adapter=build();setStatus({transport:cfg.transport});adapter.start();}return api;},
+    preset:function(){return {repo:DEF.repo,branch:DEF.branch,path:DEF.path,poll:DEF.poll,token:''};},
     stop:function(){if(adapter){adapter.stop();adapter=null;}setStatus({connected:false});},
     publish:function(type,payload,extra){
       var env=Object.assign({id:uid(),type:type,ts:Date.now(),from:cfg.node,dev:DEV,to:'*',site:cfg.site,payload:payload||{}},extra||{});
@@ -2801,6 +2845,11 @@ window.SRADropZone=(function(){
     function show(){$('lock').classList.add('on');document.body.classList.add('locked');digits='';dots();msg('');padOn(true);$('lk-alt').style.display='none';}
     function hide(){$('lock').classList.remove('on');document.body.classList.remove('locked');}
     function valid(s){return !!(s&&s.key&&/^\d{6}$/.test(s.key)&&(Date.now()-(s.ts||0))<AUTH_TTL);}
+    /* auto-connect: after a verified key, make sure the GitHub link is on with the locked-in preset, then reconnect */
+    function autoLink(){try{var c=bus.cfg(),pr=bus.preset();var need=c.transport!=='github'||!c.token||!c.repo;
+      if(need){bus.configure({transport:'github',repo:pr.repo,branch:pr.branch,path:pr.path,poll:pr.poll,token:c.token||pr.token,node:'cmdr'});cfg=bus.cfg();toast('Linked to ADMIN','GitHub link · '+pr.repo,'green');}
+      else{bus.configure({});}
+      if(typeof renderAll==='function')renderAll();}catch(e){}}
     function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'},extra||{})));}catch(e){}}
     function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}return p;}
     var RING_KEY='cmdr_keyring';
@@ -2838,7 +2887,7 @@ window.SRADropZone=(function(){
         sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
         lsSet(AUTH_KEY,sess); if(p.name){S.name=p.name;save();}
         pending=null;busy=false;msg('✓ '+sess.name+' · LIVE','ok');
-        setTimeout(function(){hide();renderAll();announce();},650);
+        setTimeout(function(){hide();renderAll();autoLink();announce();},650);
       }else{
         reject(p.reason||'Key not recognized · no match in ADMIN · User Accounts');
       }
@@ -2866,8 +2915,31 @@ window.SRADropZone=(function(){
   bus.start();
   bus.replay(function(env){handle(env,true);});
   fitQa();go('home');renderAll();
-  LOCK.boot();
-  if(cfg.transport==='github'&&!cfg.token){toast('Enter your GitHub token','Tap Link — repo, branch and file are preset','amber');}
+  /* ── TWO-STEP AUTHENTICATION: step 1 GitHub key → link up · step 2 security keypad → ADMIN verifies ── */
+  window.GATE=(function(){
+    var unsub=null, tmr=null, busy=false;
+    function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
+    function show(){var c=bus.cfg();$('gt-repo').innerHTML='<b>'+(c.repo||'')+'</b> · '+(c.branch||'main')+' · '+(c.path||'data/bus.json');$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
+    function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
+    function done(){hide();toast('Linked to ADMIN','GitHub link · '+bus.cfg().repo,'green');LOCK.boot();}
+    function connect(){if(busy)return;var tok=$('gt-token').value.trim();if(!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)){msg('That does not look like a GitHub key (github_pat_… or ghp_…).','bad');return;}
+      busy=true;$('gt-go').disabled=true;$('gt-go').classList.add('busy');$('gt-go').textContent='Connecting…';msg('Checking the link…','wait');
+      bus.configure({transport:'github',token:tok,node:'cmdr'});cfg=bus.cfg();
+      /* poll the bus status until this attempt produces a fresh read result (stale results from a previous attempt are ignored) */
+      var t0=Date.now(), armed=false; if(unsub)unsub(); clearTimeout(tmr);
+      (function tick(){if(!busy)return;var st=bus.status();
+        if(st.read===''||st.read===undefined)armed=true;
+        if(armed||Date.now()-t0>1500){
+          if(st.read==='ok'){busy=false;msg('✓ Linked · '+cfg.repo,'ok');setTimeout(done,500);return;}
+          if(st.read==='error'||st.write==='error'){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';msg(((st.error||'GitHub rejected the key').replace(/read read/,'read'))+' — check the key has Contents read/write on '+cfg.repo+'.','bad');$('gt-alt').style.display='';return;}}
+        if(Date.now()-t0>20000){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';msg('No answer from GitHub. Check your signal and try again.','bad');$('gt-alt').style.display='';return;}
+        tmr=setTimeout(tick,300);})();}
+    function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
+    function boot(){var c=bus.cfg();if(c.transport==='github'&&!c.token){show();return false;}return true;}
+    try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
+    return {show:show,connect:connect,offline:offline,boot:boot,relink:function(){LOCK.hideForRelink&&LOCK.hideForRelink();show();}};
+  })();
+  if(GATE.boot())LOCK.boot();
   setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));},400);
   setInterval(function(){renderHero();renderStat(bus.status());},30000);
   var HB=10*60*1000,lastHB=Date.now();
