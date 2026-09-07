@@ -765,48 +765,83 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 #ai-send-btn:disabled{opacity:.4;cursor:default}
 #ai-sidecar.collapsed #ai-collapse-btn{left:50%;transform:translate(-50%,-50%)}
 
-/* ── CMDR mobile ── */
+/* ── CMDR mobile: landscape-first ── */
 #canvas{border-right:none}
-@media(max-width:700px){
+.step-i{display:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.c-step{display:none}
+#rot{display:none;position:fixed;inset:0;z-index:900;background:rgba(7,9,15,.97);align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;padding:24px;color:var(--txd);font-size:13px;line-height:1.5}
+#rot svg{width:44px;height:44px;stroke:var(--sage);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;animation:rot 2.4s ease-in-out infinite}
+#rot b{color:var(--txh);font-size:15px}
+#rot button{font-family:var(--dsp);font-size:10px;letter-spacing:2px;background:var(--card);color:var(--txh);border:1px solid var(--border);border-radius:var(--r);padding:9px 18px}
+@keyframes rot{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
+@media(max-width:700px) and (orientation:portrait){#rot.arm{display:flex}}
+@media(max-width:1000px) and (pointer:coarse){
   :root{--pad:10px;--gap:8px}
-  #chrome{height:44px;padding-top:env(safe-area-inset-top)}
-  #chrome .c-sub{display:none}
-  #ribbon{height:40px}
-  .step-l{font-size:11px}
-  .field-row,.inst-grid,.dist-result,.summary-grid{grid-template-columns:1fr 1fr}
+  #chrome{height:44px;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);gap:6px}
+  #chrome .c-lbl,.step-l{display:none}
+  .c-back,.c-clear-btn,.c-run-btn{min-width:40px;height:32px;padding:0 10px;font-size:15px;display:inline-flex;align-items:center;justify-content:center}
+  .c-title{font-size:12px}
+  .c-sub{display:flex;align-items:center;justify-content:flex-end}
+  .c-step{display:inline;font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--sage)}
+  #ribbon{height:40px;justify-content:space-between;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+  .step{padding:0 8px;gap:5px;flex:1;justify-content:center}
+  .step-i{display:block}
+  .step-dv{display:none}
+  .step-n{width:18px;height:18px;font-size:9px}
   input,select,textarea,button{font-size:14px!important}
-  input,select{min-height:38px}
-  #canvas{padding-bottom:calc(env(safe-area-inset-bottom) + 24px)}
+  .field input,.field select{min-height:38px}
+  .field textarea{min-height:64px}
+  .hint{display:none}
+  .btn-back .c-lbl{display:none}
+  #canvas{padding-bottom:calc(env(safe-area-inset-bottom) + 20px)}
 }
+/* landscape phone: two-column pane so a whole step fits with little scrolling */
+@media(max-width:1000px) and (max-height:520px) and (orientation:landscape) and (pointer:coarse){
+  #chrome{height:38px}
+  #ribbon{height:34px}
+  .pane.active{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:var(--gap)}
+  .pane.active&gt;.section{min-width:0}
+  .pane.active&gt;.section:only-child,.pane.active&gt;.section:first-child:nth-last-child(2){grid-column:1/-1}
+  #pane-1&gt;.section&gt;.sec-body{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:var(--gap)}
+  #pane-1&gt;.section&gt;.sec-body&gt;.hint{grid-column:1/-1}
+  #pane-1 .wo-composer{grid-column:1;grid-row:span 3}
+  #pane-1&gt;.section&gt;.sec-body&gt;.wo-list,#pane-1&gt;.section&gt;.sec-body&gt;.section{grid-column:2}
+  .pane.active&gt;.btn-row,.pane.active&gt;div:not(.section){grid-column:1/-1}
+  .wo-composer{padding:10px;gap:6px}
+  .field textarea{min-height:52px}
+  .sec-body{gap:8px}
+  #canvas{padding:8px calc(env(safe-area-inset-right) + 8px) 8px calc(env(safe-area-inset-left) + 8px)}
+}
+
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
 
 &lt;!-- CHROME --&gt;
 &lt;div id=&quot;chrome&quot;&gt;
-  &lt;button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:&#x27;CLOSE_BUILDER&#x27;},&#x27;*&#x27;)&quot;&gt;← CMDR&lt;/button&gt;
+  &lt;button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:&#x27;CLOSE_BUILDER&#x27;},&#x27;*&#x27;)&quot; title=&quot;Back to CMDR&quot; aria-label=&quot;Back to CMDR&quot;&gt;← &lt;span class=&quot;c-lbl&quot;&gt;CMDR&lt;/span&gt;&lt;/button&gt;
   &lt;span class=&quot;c-title&quot;&gt;⬡ SONAR&lt;/span&gt;
-  &lt;span class=&quot;c-sub&quot;&gt;CMDR · Scenario Builder · Shore Outage Notification, Analysis &amp;amp; Response&lt;/span&gt;
-  &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;confirmClear()&quot;&gt;✕ CLEAR&lt;/button&gt;
-  &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;sendToDropZone()&quot; title=&quot;Send scenario package to the Data Drop Zone&quot;&gt;⤓ DROP&lt;/button&gt;
-  &lt;button class=&quot;c-run-btn&quot; id=&quot;run-btn&quot; onclick=&quot;launchScenario()&quot; disabled&gt;▶ RUN&lt;/button&gt;
+  &lt;span class=&quot;c-sub&quot; id=&quot;c-sub&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;CMDR · Scenario Builder · Shore Outage Notification, Analysis &amp;amp; Response&lt;/span&gt;&lt;span class=&quot;c-step&quot; id=&quot;c-step&quot;&gt;1 · ORDERS&lt;/span&gt;&lt;/span&gt;
+  &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;confirmClear()&quot; title=&quot;Clear scenario&quot; aria-label=&quot;Clear scenario&quot;&gt;✕ &lt;span class=&quot;c-lbl&quot;&gt;CLEAR&lt;/span&gt;&lt;/button&gt;
+  &lt;button class=&quot;c-clear-btn c-drop&quot; onclick=&quot;sendToDropZone()&quot; title=&quot;Send to Data Drop Zone&quot; aria-label=&quot;Send to Data Drop Zone&quot;&gt;⤓ &lt;span class=&quot;c-lbl&quot;&gt;DROP&lt;/span&gt;&lt;/button&gt;
+  &lt;button class=&quot;c-run-btn&quot; id=&quot;run-btn&quot; onclick=&quot;launchScenario()&quot; disabled title=&quot;Run scenario&quot; aria-label=&quot;Run scenario&quot;&gt;▶ &lt;span class=&quot;c-lbl&quot;&gt;RUN&lt;/span&gt;&lt;/button&gt;
 &lt;/div&gt;
 
 &lt;!-- STEP RIBBON — Step 1 is SONAR Alerts, steps 2–7 shifted --&gt;
 &lt;div id=&quot;ribbon&quot;&gt;
-  &lt;div class=&quot;step active&quot; id=&quot;step-1&quot; onclick=&quot;goStep(1)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Orders&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step active&quot; id=&quot;step-1&quot; onclick=&quot;goStep(1)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;1&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M3 6h18v12H3z&quot;/&gt;&lt;path d=&quot;M3 7l9 6 9-6&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Orders&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-2&quot; onclick=&quot;goStep(2)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Install&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-2&quot; onclick=&quot;goStep(2)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;2&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M12 3v18M5 21h14M5 10l7-4 7 4&quot;/&gt;&lt;path d=&quot;M7 10v11M17 10v11&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Install&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-3&quot; onclick=&quot;goStep(3)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Trigger&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-3&quot; onclick=&quot;goStep(3)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;3&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M13 2 4 14h7l-1 8 9-12h-7z&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Trigger&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-4&quot; onclick=&quot;goStep(4)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Assets&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-4&quot; onclick=&quot;goStep(4)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;4&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;rect x=&quot;3&quot; y=&quot;7&quot; width=&quot;15&quot; height=&quot;10&quot; rx=&quot;2&quot;/&gt;&lt;path d=&quot;M18 10h2v4h-2M7 11v2M11 11v2&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Assets&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-5&quot; onclick=&quot;goStep(5)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Manpower&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-5&quot; onclick=&quot;goStep(5)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;5&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;8&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M2.5 20a6.5 6.5 0 0 1 13 0&quot;/&gt;&lt;circle cx=&quot;17&quot; cy=&quot;9&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 15.5a5 5 0 0 1 6.5 4.5&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Manpower&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-6&quot; onclick=&quot;goStep(6)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Reporting&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-6&quot; onclick=&quot;goStep(6)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;6&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M4 20V10M10 20V4M16 20v-8M22 20H2&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Reporting&lt;/span&gt;&lt;/div&gt;
   &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
-  &lt;div class=&quot;step&quot; id=&quot;step-7&quot; onclick=&quot;goStep(7)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Review&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-7&quot; onclick=&quot;goStep(7)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;7&lt;/span&gt;&lt;svg class=&quot;step-i&quot; viewBox=&quot;0 0 24 24&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M20 6 9 17l-5-5&quot;/&gt;&lt;/svg&gt;&lt;span class=&quot;step-l&quot;&gt;Review&lt;/span&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;!-- CANVAS --&gt;
@@ -854,7 +889,7 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
         &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Recipients&lt;/label&gt;
           &lt;input type=&quot;text&quot; id=&quot;wo-recip&quot; value=&quot;Installation CO · NAVFAC · DLA Energy&quot; placeholder=&quot;Chain-of-command recipients&quot;&gt;
         &lt;/div&gt;
-        &lt;button class=&quot;wo-add-btn&quot; onclick=&quot;addWarningOrder()&quot;&gt;+ ADD ORDER TO QUEUE&lt;/button&gt;
+        &lt;button class=&quot;wo-add-btn&quot; onclick=&quot;addWarningOrder()&quot;&gt;＋ &lt;span class=&quot;c-lbl&quot;&gt;ADD ORDER TO &lt;/span&gt;QUEUE&lt;/button&gt;
       &lt;/div&gt;
 
       &lt;!-- Queue display --&gt;
@@ -880,7 +915,7 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-  &lt;div class=&quot;btn-row&quot;&gt;&lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(2)&quot;&gt;NEXT: INSTALLATION →&lt;/button&gt;&lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;&lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(2)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;INSTALLATION →&lt;/button&gt;&lt;/div&gt;
 &lt;/div&gt;
 
 &lt;!-- ═══ STEP 2: INSTALLATION ═══ --&gt;
@@ -905,8 +940,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(1)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(3)&quot;&gt;NEXT: TRIGGER →&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(1)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(3)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;TRIGGER →&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -955,8 +990,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(2)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(4)&quot;&gt;NEXT: ASSETS →&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(2)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(4)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;ASSETS →&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1022,8 +1057,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
   &lt;/div&gt;
 
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(3)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(5)&quot;&gt;NEXT: MANPOWER →&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(3)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(5)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;MANPOWER →&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1045,8 +1080,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(4)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(6)&quot;&gt;NEXT: REPORTING →&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(4)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(6)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;REPORTING →&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1081,8 +1116,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(5)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(7)&quot;&gt;NEXT: REVIEW →&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(5)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(7)&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;NEXT: &lt;/span&gt;REVIEW →&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1127,8 +1162,8 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div class=&quot;btn-row&quot;&gt;
-    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(6)&quot;&gt;← BACK&lt;/button&gt;
-    &lt;button class=&quot;btn primary&quot; id=&quot;launch-final-btn&quot; onclick=&quot;launchScenario()&quot;&gt;▶ RUN SCENARIO IN SIMULATOR&lt;/button&gt;
+    &lt;button class=&quot;btn btn-back&quot; onclick=&quot;goStep(6)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; id=&quot;launch-final-btn&quot; onclick=&quot;launchScenario()&quot;&gt;▶ RUN&lt;span class=&quot;c-lbl&quot;&gt; SCENARIO IN SIMULATOR&lt;/span&gt;&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
@@ -1136,6 +1171,7 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 
 &lt;/div&gt;&lt;!-- body-shell --&gt;
 
+&lt;div id=&quot;rot&quot; class=&quot;arm&quot;&gt;&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;&lt;rect x=&quot;5&quot; y=&quot;2&quot; width=&quot;14&quot; height=&quot;20&quot; rx=&quot;2.5&quot;/&gt;&lt;path d=&quot;M11 18h2&quot;/&gt;&lt;/svg&gt;&lt;div&gt;&lt;b&gt;Rotate to landscape&lt;/b&gt;&lt;br&gt;Scenario Builder is designed for landscape iPhone.&lt;/div&gt;&lt;button onclick=&quot;document.getElementById(&#x27;rot&#x27;).classList.remove(&#x27;arm&#x27;)&quot;&gt;View anyway&lt;/button&gt;&lt;/div&gt;
 &lt;!-- LAUNCH BANNER --&gt;
 &lt;div id=&quot;launch-banner&quot;&gt;
   &lt;div class=&quot;banner-ring&quot;&gt;&lt;/div&gt;
@@ -1586,7 +1622,9 @@ window.addEventListener(&#x27;message&#x27;,function(e){
   if(e.data.type===&#x27;SET_THEME&#x27;) document.documentElement.setAttribute(&#x27;data-theme&#x27;,e.data.theme);
 });
 
-function updateAiContext(){}
+function updateAiContext(){try{var n=[&#x27;&#x27;,&#x27;ORDERS&#x27;,&#x27;INSTALL&#x27;,&#x27;TRIGGER&#x27;,&#x27;ASSETS&#x27;,&#x27;MANPOWER&#x27;,&#x27;REPORTING&#x27;,&#x27;REVIEW&#x27;];document.getElementById(&#x27;c-step&#x27;).textContent=currentStep+&#x27; · &#x27;+n[currentStep];}catch(e){}}
+(function(){var _g=goStep;goStep=function(n){_g(n);updateAiContext();};})();
+updateAiContext();
 &lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
