@@ -2792,7 +2792,7 @@ html::after {
     </div>
 
     <div class="ca-field">
-      <div class="ca-label">Security Key <span style="color:#6e90b0;letter-spacing:.5px">&mdash; 6 digits &middot; assigning a key activates the account for CMDR hub entry</span></div>
+      <div class="ca-label">Security Key <span style="color:#6e90b0;letter-spacing:.5px">&mdash; 6 digits &middot; assigning a key activates the account for CMDR mobile sign-in</span></div>
       <div style="display:flex;gap:8px;align-items:center">
         <input class="ca-input" id="ca-security" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocorrect="off" placeholder="e.g. 482910" style="flex:1;letter-spacing:4px;font-family:'Share Tech Mono',monospace" oninput="clearErr(this);this.value=this.value.replace(/\D/g,'').slice(0,6)">
         <button type="button" onclick="document.getElementById('ca-security').value=String(Math.floor(100000+Math.random()*900000));clearErr(document.getElementById('ca-security'))" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap">GENERATE</button>
@@ -13111,7 +13111,7 @@ window.SRABus=(function(){
   function hhmm(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
   function ago(ts){var m=Math.round((Date.now()-ts)/60000);return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' hr ago';}
   function mini(l,v,c,s){return '<div class="adm-mini"><div class="l">'+l+'</div><div class="v" style="color:'+(c||'#cce0f2')+'">'+v+'</div>'+(s?'<div class="l" style="margin-top:2px;text-transform:none;letter-spacing:0">'+s+'</div>':'')+'</div>';}
-  function cmdrUrl(){return new URL('cmdr/',location.href).href;}
+  function cmdrUrl(){try{return new URL('cmdr/',location.href).href;}catch(e){return 'https://thompsonryane-collab.github.io/cmdr/';}}
   window.admCmdrGh=function(){var gh=$('cx-transport').value==='github';document.querySelectorAll('#overlay-adm-cmdr .cx-gh').forEach(function(e){e.style.display=gh?'':'none';});
     $('cx-note').textContent=gh?'Both ADMIN and the phone need the same token.':$('cx-transport').value==='off'?'Bus disabled.':'Works between tabs of this browser (e.g. Open in new window).';};
   function unacked(){return C.listWO().filter(function(w){return !w.ack&&w.origin!=='cmdr'&&(w.site&&C.SITE[w.site]);}).slice(0,12);}
@@ -13144,7 +13144,7 @@ window.SRABus=(function(){
   var _paintCmdr=window.admPaintCmdr;
   window.admPaintCmdr=function(){_paintCmdr.apply(this,arguments);try{if(!window.SRASec)return;var ll=SRASec.liveList();if(!ll.length)return;var el=$('cx-peers');var extra=ll.map(function(e){return '<div class="cm-peer"><div><b>'+esc(e.name)+'</b><div class="s">'+esc(e.site||'—')+' · '+esc(e.email)+' · key auth · '+(e.online?'<span style="color:#4db88a">LIVE</span>':'seen '+ago(e.ts))+(e.github?' · gh:'+esc(e.github):'')+'</div></div><div class="act">'+(e.siteId&&e.siteId!=='custom'?'<button onclick="admCmdrTest(\''+esc(e.siteId)+'\')">TEST ALERT</button>':'')+'<button onclick="admEndLive(\''+esc(e.email)+'\');admPaintCmdr()">END</button></div></div>';}).join('');
     if(/adm-empty/.test(el.innerHTML))el.innerHTML=extra;else el.innerHTML+=extra;var n=(window.CMDR_LINK?Object.keys(CMDR_LINK.peers()).length:0)+ll.filter(function(e){return e.online;}).length;$('cx-peer-n').textContent=n?n+' linked':'';}catch(e){console.warn('cmdr key peers',e);}};
-  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr'){try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}try{if(window.SRAKeypad&&!sessionStorage.getItem('ie-srs-cmdr-auth'))SRAKeypad.open();}catch(e){}}};
+  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr'){try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}}};
   bus.onStatus(paintCard);
   bus.subscribe(function(){paintCard();if($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))try{admPaintCmdr();}catch(e){}});
   setTimeout(paintCard,800);setInterval(paintCard,30000);
@@ -13212,7 +13212,7 @@ window.SRABus=(function(){
     if($('am-online-n'))$('am-online-n').textContent=lp.total;
     if($('am-online-badge'))$('am-online-badge').textContent=lp.total+' ONLINE · LIVE';
     var html='<div class="adm-usr" onclick="admSetChannel(\'admins\')"><span class="adm-dot" style="background:#18d4f8"></span><div style="min-width:0"><div>'+esc(me())+'</div><small>SYSTEM ADMIN · web · you</small></div></div>';
-    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>'+(x.key?'CMDR HUB · KEY AUTH':'CMDR MOBILE')+' · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
+    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>'+(x.key?'CMDR MOBILE · KEY AUTH':'CMDR MOBILE')+' · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
     if(!list.length)html+='<div class="adm-empty" style="padding:12px;text-align:left">No CMDR mobile device linked'+(st.transport==='github'?' via GitHub':'')+'. Phones appear here when they say hello (ADM-10).</div>';
     if($('am-users'))$('am-users').innerHTML=html;
   };
@@ -13362,73 +13362,27 @@ window.SRADropZone=(function(){
 
 </script>
 
-<!-- ═══════════════════════════════════════
-     SECURITY KEYPAD MODAL FOR CMDR HUB
-     ═══════════════════════════════════════ -->
-<div id="security-keypad-modal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;z-index:99999;font-family:var(--mono);">
-  <div style="background:var(--card-bg);border:2px solid var(--cyan);border-radius:12px;padding:32px;max-width:320px;width:100%;box-shadow:0 0 40px rgba(24,212,248,0.3);">
-    <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:18px;font-weight:700;color:var(--cyan);letter-spacing:1px;margin-bottom:8px;">🔐 SECURITY KEY</div>
-      <div style="font-size:11px;color:var(--txd);letter-spacing:0.5px;">Enter your 6-digit security key to go LIVE on the CMDR hub</div>
-    </div>
-    
-    <div id="keypad-display" style="background:var(--void);border:1px solid var(--border);border-radius:6px;padding:16px;text-align:center;margin-bottom:24px;font-size:28px;letter-spacing:4px;color:var(--cyan);font-weight:700;min-height:48px;display:flex;align-items:center;justify-content:center;">●●●●●●</div>
-    
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
-      <button onclick="SRAKeypad.press(1)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">1</button>
-      <button onclick="SRAKeypad.press(2)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">2</button>
-      <button onclick="SRAKeypad.press(3)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">3</button>
-      <button onclick="SRAKeypad.press(4)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">4</button>
-      <button onclick="SRAKeypad.press(5)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">5</button>
-      <button onclick="SRAKeypad.press(6)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">6</button>
-      <button onclick="SRAKeypad.press(7)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">7</button>
-      <button onclick="SRAKeypad.press(8)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">8</button>
-      <button onclick="SRAKeypad.press(9)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">9</button>
-      <button onclick="SRAKeypad.press(0)" style="padding:12px;background:var(--border);border:1px solid var(--border);color:var(--tx);font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);grid-column:2;">0</button>
-    </div>
-    
-    <div style="display:flex;gap:8px;">
-      <button onclick="SRAKeypad.clear()" style="flex:1;padding:12px;background:var(--amber);border:none;color:#000;font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">CLEAR</button>
-      <button onclick="SRAKeypad.submit()" style="flex:1;padding:12px;background:var(--sage);border:none;color:#000;font-weight:700;border-radius:6px;cursor:pointer;font-family:var(--mono);">ENTER</button>
-    </div>
-    
-    <div id="keypad-error" style="margin-top:12px;text-align:center;font-size:11px;color:#ff6b6b;min-height:16px;display:none;"></div>
-    <button onclick="SRAKeypad.cancel()" style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid var(--border);color:var(--txd);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;border-radius:6px;cursor:pointer;">CANCEL · BACK TO ADMIN</button>
-  </div>
-</div>
 
 <script>
-window.GITHUB_TOKEN='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';
-window.SRAKeypad=(function(){
-  var input='', busy=false;
-  var $=function(id){return document.getElementById(id);};
-  function paint(){$('keypad-display').textContent='●'.repeat(input.length)+'○'.repeat(6-input.length);}
-  function msg(t,c){var e=$('keypad-error');e.textContent=t;e.style.color=c||'#ff6b6b';e.style.display=t?'block':'none';}
-  function open(){input='';busy=false;paint();msg('');$('security-keypad-modal').style.display='flex';}
-  function close(){$('security-keypad-modal').style.display='none';input='';paint();}
-  function cancel(){close();try{if(typeof closeApp==='function'&&$('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))closeApp('overlay-adm-cmdr');}catch(e){}}
-  function press(d){if(busy||input.length>=6)return;input+=d;paint();msg('');if(input.length===6)setTimeout(submit,120);}
-  function clear(){if(busy)return;input='';paint();msg('');}
-  async function submit(){
-    if(busy)return; if(!window.SRASec){msg('Security module not loaded');return;}
-    var acct=SRASec.validate(input);
-    if(!acct){msg('Invalid security key');input='';paint();return;}
-    busy=true; msg('✓ '+acct.name+' · connecting to GitHub…','#18d4f8');
-    var gh='';
-    try{var r=await fetch('https://api.github.com/user',{headers:{'Authorization':'token '+window.GITHUB_TOKEN,'Accept':'application/vnd.github+json'}});if(r.ok){gh=(await r.json()).login||'';}else{gh='';}}catch(e){gh='';}
-    try{if(gh&&window.SRABus){var c=SRABus.cfg();if(!c.token){SRABus.configure(Object.assign({},c,{token:window.GITHUB_TOKEN}));}}}catch(e){}
-    var live=SRASec.markLive(acct,{github:gh,via:'keypad'});
-    try{sessionStorage.setItem('ie-srs-cmdr-auth',acct.email);}catch(e){}
-    try{if(window.SRABus)SRABus.publish('HELLO',{node:'admin',app:'ie-SRS CMDR hub',commander:acct.name,email:acct.email,keyAuth:true,github:gh},{site:acct.siteId&&acct.siteId!=='custom'?acct.siteId:'*'});}catch(e){}
-    try{if(typeof hubToast==='function')hubToast('⬡ '+acct.name+' LIVE on CMDR hub'+(gh?' · GitHub '+gh:' · GitHub unreachable'),'ok',3200);}catch(e){}
-    msg('✓ '+acct.name+' · LIVE'+(gh?' · GitHub: '+gh:' · GitHub unreachable (offline?)'),'#4db88a');
-    setTimeout(close,700);
-  }
-  /* external auth paths: CMDR window/iframe postMessage {type:'CMDR_KEY_AUTH',key} · SRABus HELLO {key} */
-  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH'&&d.key&&window.SRASec){var a=SRASec.validate(d.key);if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',name:a.name,email:a.email,site:a.site},'*');}catch(e){}}else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL'},'*');}catch(e){}}}});
-  function hookBus(){try{if(!window.SRABus)return;SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO')return;var p=env.payload||{};if(p.key&&window.SRASec){var a=SRASec.validate(p.key);if(a)SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});}});}catch(e){}}
+/* ══ CMDR KEY-AUTH RECEIVER (ADMIN side · no keypad UI here — the keypad lives on CMDR mobile) ══
+   Mobile authenticates with its 6-digit key and reports in via:
+     • window.postMessage({type:'CMDR_KEY_AUTH', key, github?})   (embedded preview / popup)
+     • SRABus HELLO envelope with payload.key                       (cross-device via GitHub transport)
+   ADMIN validates against SRASec.keys() and marks the account LIVE. */
+(function(){
+  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!d.key||!window.SRASec)return;
+    var a=SRASec.validate(d.key);
+    if(a){SRASec.markLive(a,{github:d.github||'',via:'cmdr-window'});try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR','ok',2600);}catch(e){}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}}
+    else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
+  function hookBus(){try{if(!window.SRABus)return;SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.key||!window.SRASec)return;
+    var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
+    if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile'});
+      if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
+        SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});}
+    }else if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',authId:p.authId,reason:'Invalid or disabled security key'},{site:site});
+      try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_KEY_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
+  });}catch(e){}}
   document.addEventListener('DOMContentLoaded',function(){hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
-  return {open:open,close:close,cancel:cancel,press:press,clear:clear,submit:submit};
 })();
 </script>
 </body>
