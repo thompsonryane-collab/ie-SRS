@@ -10477,6 +10477,7 @@ function launchSim() {
   };
 
   // ── DEMO PICKER + PLAYER MODAL ──
+  var DEMO_BUILD = '202609071234'; // cache-buster appended to demo URLs; bump on every live/ redeploy
   window.openDemoPicker = function() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (!pk) return;
@@ -10489,6 +10490,7 @@ function launchSim() {
   };
   window.openDemoPlayer = function(src, title) {
     src = src || 'live/';
+    src += (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
     window.closeDemoPicker();
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame'),
         t = document.getElementById('demo-modal-title'), full = document.getElementById('demo-modal-full');
