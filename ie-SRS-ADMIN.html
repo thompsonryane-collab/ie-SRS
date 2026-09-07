@@ -3255,6 +3255,39 @@ html::after {
           <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-adm-cmdr')">&#x2B21; &nbsp;ENTER</button>
         </div>
 
+        <!-- ── CARD: ie-SRS Core Hub ── -->
+        <div class="app-card card-hub" id="card-ie-srs-hub" onclick="window.location.href='ie-srs.html';" style="cursor:pointer;">
+          <div class="card-head">
+            <div style="position:relative;width:52px;height:52px;border:2px solid #18d4f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(24,212,248,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #18d4f8,0 0 18px rgba(24,212,248,.35);">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="14" cy="14" r="9" stroke="#18d4f8" stroke-width="1.4" fill="rgba(24,212,248,0.10)"/>
+                <path d="M14 6v16M6 14h16" stroke="#18d4f8" stroke-width="1.4" stroke-linecap="round"/>
+                <circle cx="14" cy="14" r="3" fill="#18d4f8" opacity=".9">
+                  <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="14" cy="14" r="9" stroke="#18d4f8" stroke-width=".6" fill="none" opacity="0">
+                  <animate attributeName="opacity" values="0.4;0" dur="2.4s" repeatCount="indefinite"/>
+                  <animate attributeName="r" values="9;15" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+            </div>
+            <div class="card-head-text">
+              <div class="card-badge" style="color:#18d4f8;">HUB</div>
+              <div class="card-title"><span style="color:#18d4f8;">ie-SRS</span> <span style="color:#ffffff;">Core Hub</span></div>
+            </div>
+          </div>
+          <div class="card-desc">
+            <em>Primary control center</em> &mdash; the core ie-SRS hub for monitoring shore facility status, energy resilience metrics, and SONAR alert coordination across all installations. Access real-time dashboards, alert summaries, and cross-installation analytics.
+          </div>
+          <div class="card-meta">
+            <span class="meta-pill">Shore Resilience</span>
+            <span class="meta-pill">Energy Metrics</span>
+            <span class="meta-pill">Cross-Site</span>
+            <span class="meta-pill">Live Data</span>
+          </div>
+          <button class="launch-btn" onclick="event.stopPropagation();window.location.href='ie-srs.html';">&#x2B21; &nbsp;ENTER</button>
+        </div>
+
 </div><!-- #card-grid -->
     </div><!-- #stage -->
 
