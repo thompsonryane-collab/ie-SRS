@@ -12,7 +12,7 @@
 html,body{height:100%;background:#070b12;color:var(--tx);font-family:var(--ui);overflow:hidden}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#0f1a28 0%,#070b12 70%)}
-#stage{position:relative;width:1600px;height:900px;transform-origin:center center;background:#0b1320;overflow:hidden;border:1px solid #1a2d42;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+#stage{position:relative;flex:none;width:1600px;height:900px;min-width:1600px;min-height:900px;transform-origin:center center;background:#0b1320;overflow:hidden;border:1px solid #1a2d42;box-shadow:0 30px 90px rgba(0,0,0,.6)}
 #stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(24,212,248,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(24,212,248,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
 #stage::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px);pointer-events:none;z-index:40}
 
@@ -164,7 +164,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .abtn.rose.hit{background:var(--rose);color:#fff}
 .form2{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;align-items:center;font-family:var(--mono);font-size:13px}
 .form2 .k{color:var(--txd);letter-spacing:2px;font-size:10px}
-.form2 .v{border:1px solid var(--border);background:#0a1119;border-radius:4px;padding:7px 10px;color:var(--txh);min-height:30px;white-space:nowrap;overflow:hidden}
+.form2 .v{border:1px solid var(--border);background:#0a1119;border-radius:4px;padding:7px 10px;color:var(--txh);min-height:30px;overflow:hidden;line-height:1.35}
 .form2 .v.cur::after{content:"▍";color:var(--cyan);animation:blink 1s infinite}
 .chips2{display:flex;gap:6px;flex-wrap:wrap}
 .chips2 span{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;padding:4px 9px;border:1px solid var(--border);border-radius:12px;color:var(--txd);opacity:.5;transition:all .3s}
