@@ -2953,7 +2953,7 @@ window.SRADropZone=(function(){
   if(GATE.boot())LOCK.boot();
   setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));},400);
   setInterval(function(){renderHero();renderStat(bus.status());},30000);
-  var HB=10*60*1000,lastHB=Date.now();
+  var HB=4*60*1000,lastHB=Date.now();
   function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true}));}
   setInterval(heartbeat,HB);
   /* BYE when the page is closed / backgrounded for good, so ADMIN drops the LIVE marker instead of waiting for the TTL */
