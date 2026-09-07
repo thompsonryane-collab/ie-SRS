@@ -271,6 +271,9 @@ body.onhome .homebtn{display:none}
 .mlayers{position:absolute;right:10px;top:10px;z-index:500;display:flex;flex-direction:column;gap:6px}
 .mlayers button{font-size:11px;font-weight:600;color:var(--ink2);background:rgba(7,17,31,.9);border:1px solid var(--line);border-radius:10px;padding:6px 10px;backdrop-filter:blur(8px)}
 .mlayers button.on{color:#fff;border-color:var(--cyan)}
+#p-builder{position:absolute;inset:0;z-index:27;background:#07111f;display:none}
+#p-builder.on{display:block}
+#p-builder iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#07111f}
 /* ── ISO MAP (NB San Diego isometric) ── */
 .isobtn{position:absolute;left:10px;bottom:calc(var(--sab) + 112px);z-index:600;width:56px;height:56px;border-radius:16px;padding:0;border:1.5px solid rgba(95,217,138,.55);background:#0a1626;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .isobtn svg{width:110%;height:110%;pointer-events:none}
@@ -389,6 +392,8 @@ body.onhome .homebtn{display:none}
         <button onclick="go('msgs')"><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
         <button onclick="go('outages')"><span class="nl" id="hl-out"></span><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/><path d="M3 3l18 18"/></svg></div><div class="l">Outages</div></button>
         <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
+        <button onclick="openBuilder()" id="tile-builder"><div class="ic" style="background:linear-gradient(160deg,#e8a33d,#8a5a12)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3.5"/><path d="M18 12.5v1M18 18.5v1M14.5 16h1M20.5 16h1"/></svg></div><div class="l">Scenario</div></button>
+        <button onclick="go('drop')" id="tile-drop"><span class="nl" id="hl-drop"></span><div class="ic" style="background:linear-gradient(160deg,#b0b8c4,#4f5a68)"><svg viewBox="0 0 24 24"><path d="M12 3v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="l">Drop Zone</div></button>
         <button onclick="go('link')"><span class="nl amber" id="hl-link"></span><div class="ic c-amber"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><div class="l">Link</div></button>
       </div>
       <button onclick="go('dash')"><span class="nl" id="hl-status"></span><div class="ic c-slate"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg></div><div class="l">Status</div></button>
@@ -409,6 +414,9 @@ body.onhome .homebtn{display:none}
     <div class="sec fold" data-sec="mine"><h2 onclick="secToggle(event,this)"><span class="secttl"><button class="caret" type="button" aria-label="Collapse section"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>Released by you</span><button onclick="openSonar()">+ New SONAR</button></h2><div class="secbody" id="so-mine" style="display:flex;flex-direction:column;gap:8px"></div></div>
     <div class="sec fold" data-sec="out"><h2 onclick="secToggle(event,this)"><span class="secttl"><button class="caret" type="button" aria-label="Collapse section"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>Outages</span></h2><div class="secbody list" id="outage-list-full"></div></div>
   </div>
+
+  <!-- DATA DROP ZONE (SYS-04 sync) -->
+  <div class="page" id="p-drop"><div id="dz-cmdr"></div></div>
 
   <!-- HEALTH (ADM-04 sync) -->
   <div class="page" id="p-health">
@@ -435,6 +443,1155 @@ body.onhome .homebtn{display:none}
     <textarea id="mtext" rows="1" placeholder="Message NAVFAC / EOC" oninput="autosize(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
     <button class="send" onclick="sendMsg()" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
   </div>
+
+  <!-- SONAR SCENARIO BUILDER (ADM-08 port · no ARIA) -->
+  <div id="p-builder"><iframe id="frame-builder" title="SONAR Scenario Builder" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+&lt;title&gt;ie-SRS CMDR // SONAR Scenario Builder&lt;/title&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Orbitron:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;style&gt;
+:root{
+  --bg:#07090f; --surface:#0b1120; --panel:#0f1926; --card:#131f30;
+  --border:#1e2d45; --blt:#2a3c55;
+  --sage:#4d9e7a; --sage-d:rgba(77,158,122,.12); --sage-l:rgba(77,158,122,.35);
+  --cyan:#00c8f0; --cyan-d:rgba(0,200,240,.10); --cyan-l:rgba(0,200,240,.35);
+  --amber:#c8924a; --amber-d:rgba(200,146,74,.12); --amber-l:rgba(200,146,74,.35);
+  --rose:#9e4d4d; --rose-d:rgba(158,77,77,.12); --rose-l:rgba(158,77,77,.35);
+  --slate:#4a6fa5; --slate-d:rgba(74,111,165,.12);
+  --tx:#a8c8e0; --txh:#d6eaf4; --txd:#5a7ea0;
+  --mono:&#x27;Share Tech Mono&#x27;,monospace; --dsp:&#x27;Orbitron&#x27;,monospace;
+  --r:4px; --pad:14px; --gap:10px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{position:relative;height:100%;background:var(--bg);color:var(--tx);font-family:var(--mono);font-size:12px;overflow:hidden;display:flex;flex-direction:column}
+body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
+
+/* CHROME */
+#chrome{height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 12px;flex-shrink:0;overflow:hidden}
+.c-back{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--txd);background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:5px 11px;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;flex-shrink:0}
+.c-back:hover{color:var(--txh);border-color:var(--sage)}
+.c-title{font-family:var(--dsp);font-size:11px;letter-spacing:2px;color:var(--sage);white-space:nowrap}
+.c-sub{font-size:10px;letter-spacing:1.5px;color:var(--txd);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-clear-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:transparent;color:var(--rose);border:1px solid var(--rose-l);border-radius:var(--r);padding:5px 12px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.c-clear-btn:hover{background:var(--rose-d);border-color:var(--rose)}
+.c-run-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:var(--sage);color:#071a10;border:none;border-radius:var(--r);padding:5px 14px;cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0}
+.c-run-btn:hover{background:#5ab88a}
+.c-run-btn:disabled{opacity:.4;cursor:default}
+
+/* STEP RIBBON */
+#ribbon{height:32px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;overflow-x:auto;overflow-y:hidden}
+#ribbon::-webkit-scrollbar{height:0}
+.step{display:flex;align-items:center;gap:4px;padding:0 7px;height:100%;cursor:pointer;border-bottom:2px solid transparent;transition:border-color .2s,color .2s;white-space:nowrap;flex-shrink:0}
+.step.active{border-bottom-color:var(--sage);color:var(--txh)}
+.step:not(.active){opacity:.6}
+.step:hover:not(.active){opacity:.85}
+.step-n{font-family:var(--dsp);font-size:9px;width:17px;height:17px;border-radius:50%;border:1px solid var(--blt);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step.active .step-n{border-color:var(--sage);color:var(--sage);background:var(--sage-d)}
+.step.done .step-n{border-color:transparent;background:var(--sage);color:#071a10}
+.step-l{font-family:var(--dsp);font-size:9px;letter-spacing:.8px;text-transform:uppercase}
+.step-dv{width:14px;height:1px;background:var(--border);flex-shrink:0}
+
+/* CANVAS */
+#canvas{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:var(--pad);display:flex;flex-direction:column;gap:var(--gap);min-width:0}
+#canvas::-webkit-scrollbar{width:4px}
+#canvas::-webkit-scrollbar-thumb{background:var(--blt);border-radius:2px}
+
+.pane{display:none;flex-direction:column;gap:var(--gap)}
+.pane.active{display:flex}
+
+/* SECTION */
+.section{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sec-head{padding:8px var(--pad);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.sec-icon{font-size:14px;flex-shrink:0}
+.sec-title{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--txd);text-transform:uppercase;flex:1}
+.sec-badge{font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--txd);white-space:nowrap}
+
+.sec-body{padding:var(--pad);display:flex;flex-direction:column;gap:10px}
+
+/* FORM */
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:10px;letter-spacing:1.5px;color:var(--txd);text-transform:uppercase}
+.field input,.field select,.field textarea{background:var(--card);border:1px solid var(--border);border-radius:var(--r);color:var(--txh);font-family:var(--mono);font-size:11px;padding:7px 10px;outline:none;width:100%;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sage)}
+.field select{appearance:none;cursor:pointer;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; width=&#x27;10&#x27; height=&#x27;6&#x27;%3E%3Cpath d=&#x27;M0 0l5 6 5-6z&#x27; fill=&#x27;%233a5470&#x27;/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 10px center}
+.field textarea{resize:vertical;min-height:58px;line-height:1.55}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap)}
+.hint{font-size:10px;color:var(--txd);line-height:1.55}
+
+/* CHIPS */
+.chip-group{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-family:var(--mono);font-size:9px;padding:4px 10px;border:1px solid var(--border);border-radius:2px;cursor:pointer;transition:all .15s;color:var(--tx);background:var(--card);user-select:none;-webkit-tap-highlight-color:transparent}
+.chip:hover{border-color:var(--blt);color:var(--tx)}
+.chip.selected{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+.chip.amber.selected{border-color:var(--amber-l);color:var(--amber);background:var(--amber-d)}
+.chip.rose.selected{border-color:var(--rose-l);color:var(--rose);background:var(--rose-d)}
+.chip.slate.selected{border-color:rgba(74,111,165,.35);color:var(--slate);background:var(--slate-d)}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 0}
+.toggle-lbl{font-size:10px;color:var(--tx)}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--blt);border-radius:10px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-track{background:var(--sage)}
+.toggle-track::after{content:&#x27;&#x27;;position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
+.toggle input:checked+.toggle-track::after{transform:translateX(16px)}
+
+/* ── SONAR ALERT CARDS ── */
+.wo-list{display:flex;flex-direction:column;gap:8px}
+.wo-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;animation:wofade .25s ease}
+@keyframes wofade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.wo-card-head{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--border)}
+.wo-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.wo-dot.warn{background:var(--amber)}
+.wo-dot.crit{background:var(--rose);box-shadow:0 0 6px rgba(158,77,77,.5)}
+.wo-dot.info{background:var(--slate)}
+.wo-dot.res{background:var(--sage)}
+.wo-type-lbl{font-family:var(--dsp);font-size:9px;letter-spacing:2px;flex:1}
+.wo-type-lbl.warn{color:var(--amber)}
+.wo-type-lbl.crit{color:var(--rose)}
+.wo-type-lbl.info{color:var(--slate)}
+.wo-type-lbl.res{color:var(--sage)}
+.wo-seq{font-size:9px;color:var(--txd);flex-shrink:0}
+.wo-del-btn{font-size:11px;color:var(--txd);cursor:pointer;padding:0 4px;transition:color .15s;flex-shrink:0;background:none;border:none;line-height:1}
+.wo-del-btn:hover{color:var(--rose)}
+.wo-card-body{padding:8px 10px 6px}
+.wo-tag-text{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:4px;letter-spacing:.5px}
+.wo-body-text{font-size:11px;line-height:1.6;color:var(--tx)}
+.wo-foot{display:flex;align-items:center;justify-content:space-between;padding:4px 10px 7px}
+.wo-ts{font-size:9px;color:var(--txd)}
+.wo-recip{font-size:9px;color:var(--txd);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+
+/* WO COMPOSER */
+.wo-composer{background:var(--bg);border:1px solid var(--blt);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
+.wo-composer-head{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--txd);text-transform:uppercase;margin-bottom:2px}
+.wo-add-btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-l);border-radius:var(--r);padding:7px 0;cursor:pointer;transition:all .15s;width:100%}
+.wo-add-btn:hover{background:rgba(200,146,74,.22);box-shadow:0 0 10px rgba(200,146,74,.15)}
+.wo-empty{display:flex;align-items:center;justify-content:center;padding:20px;font-size:10px;color:var(--txd);letter-spacing:1.5px;border:1px dashed var(--border);border-radius:var(--r)}
+
+/* ASSET DRAG */
+.asset-palette{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:var(--bg);border-radius:var(--r);border:1px solid var(--border)}
+.asset-chip{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);cursor:grab;transition:border-color .15s,box-shadow .15s;user-select:none}
+.asset-chip:hover{border-color:var(--blt);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.asset-chip .aicon{font-size:16px;line-height:1}
+.asset-chip .aname{font-size:10px;color:var(--txh)}
+.asset-chip .aquant{font-size:9px;color:var(--txd)}
+.drop-zone{min-height:72px;background:var(--bg);border:1.5px dashed var(--blt);border-radius:var(--r);padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;transition:border-color .2s,background .2s;position:relative}
+.drop-zone.over{border-color:var(--sage);background:var(--sage-d)}
+.drop-zone-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txd);letter-spacing:1.5px;pointer-events:none}
+.placed-asset{display:flex;align-items:center;gap:5px;padding:4px 8px;background:var(--card);border:1px solid var(--sage-l);border-radius:var(--r);cursor:pointer;font-size:9px;color:var(--sage)}
+.placed-asset:hover{border-color:var(--rose);color:var(--rose)}
+
+/* INSTALLATION */
+.inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(min-width:700px){.inst-grid{grid-template-columns:1fr 1fr 1fr}}
+.inst-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.inst-card.selected{border-color:var(--sage-l);background:var(--sage-d)}
+.inst-card-name{font-family:var(--dsp);font-size:10px;color:var(--txh);margin-bottom:3px}
+.inst-card-loc{font-size:9px;color:var(--txd);margin-bottom:5px}
+.inst-card-branch{font-size:9px;padding:1px 6px;border-radius:2px;border:1px solid;display:inline-block;margin-bottom:5px}
+.inst-card-branch.army{border-color:rgba(144,216,64,.3);color:#90d840;background:rgba(144,216,64,.06)}
+.inst-card-branch.navy{border-color:rgba(64,184,255,.3);color:#40b8ff;background:rgba(64,184,255,.06)}
+.inst-card-branch.af{border-color:rgba(0,200,240,.3);color:var(--cyan);background:var(--cyan-d)}
+.inst-card-branch.usmc{border-color:rgba(255,96,48,.3);color:#ff6030;background:rgba(255,96,48,.06)}
+.inst-card-branch.joint{border-color:rgba(255,200,32,.3);color:#ffc820;background:rgba(255,200,32,.06)}
+.inst-card-mw{font-size:10px;color:var(--txd)}
+
+/* VEHICLE ROLODEX */
+.vehicle-table{width:100%;border-collapse:collapse}
+.vehicle-table th{font-family:var(--dsp);font-size:9px;letter-spacing:1.5px;color:var(--txd);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border)}
+.vehicle-table td{font-size:10px;color:var(--tx);padding:6px 8px;border-bottom:1px solid rgba(30,45,69,.5)}
+.vehicle-table tr:hover td{background:var(--card)}
+.veh-qty{width:70px}
+.veh-qty input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;color:var(--txh);font-family:var(--mono);font-size:10px;padding:3px 6px;text-align:center}
+
+/* DIST RESULT */
+.dist-result{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dist-item{display:flex;flex-direction:column;gap:2px}
+.dist-label{font-size:9px;letter-spacing:1px;color:var(--txd);text-transform:uppercase}
+.dist-val{font-family:var(--dsp);font-size:14px;color:var(--txh)}
+.dist-unit{font-size:10px;color:var(--txd)}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sum-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px}
+.sum-key{font-size:9px;letter-spacing:1px;color:var(--txd);text-transform:uppercase;margin-bottom:4px}
+.sum-val{font-family:var(--dsp);font-size:10px;color:var(--txh);line-height:1.4;word-break:break-word}
+
+/* TAGS */
+.tag{font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:2px;border:1px solid;text-transform:uppercase;white-space:nowrap;display:inline-block}
+.tag.op{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+.tag.maint{border-color:var(--amber-l);color:var(--amber);background:var(--amber-d)}
+.tag.offline{border-color:var(--rose-l);color:var(--rose);background:var(--rose-d)}
+
+/* BTN ROW */
+.btn-row{display:flex;justify-content:flex-end;gap:8px;padding-top:4px}
+.btn{font-family:var(--dsp);font-size:10px;letter-spacing:1.5px;border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;cursor:pointer;background:var(--card);color:var(--txd);transition:all .15s;white-space:nowrap}
+.btn:hover{color:var(--txh);border-color:var(--blt)}
+.btn.primary{background:var(--sage-d);border-color:var(--sage-l);color:var(--sage)}
+.btn.primary:hover{background:rgba(77,158,122,.22);box-shadow:0 0 10px rgba(77,158,122,.12)}
+
+/* PROGRESS */
+.prog-wrap{height:3px;background:var(--blt);border-radius:2px;overflow:hidden;margin-top:2px}
+.prog-fill{height:100%;background:var(--sage);border-radius:2px;transition:width .4s}
+
+/* LAUNCH BANNER */
+#launch-banner{display:none;position:absolute;inset:0;z-index:500;background:rgba(7,9,15,.97);flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#launch-banner.show{display:flex}
+.banner-title{font-family:var(--dsp);font-size:clamp(13px,3vw,20px);color:var(--sage);letter-spacing:3px;text-align:center}
+.banner-sub{font-size:11px;color:var(--txd);letter-spacing:2px;text-align:center;min-height:14px}
+.banner-ring{width:72px;height:72px;border:2px solid var(--sage-l);border-top-color:var(--sage);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.banner-btn{font-family:var(--dsp);font-size:9px;letter-spacing:2px;background:var(--sage);color:#071a10;border:none;border-radius:var(--r);padding:10px 24px;cursor:pointer}
+.banner-btn:hover{background:#5ab88a}
+
+/* CLEAR CONFIRM MODAL */
+#clear-modal{display:none;position:absolute;inset:0;z-index:600;background:rgba(7,9,15,.88);align-items:center;justify-content:center}
+#clear-modal.show{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--rose-l);border-radius:var(--r);padding:22px 24px;max-width:320px;width:90%;display:flex;flex-direction:column;gap:14px}
+.modal-title{font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--rose)}
+.modal-body{font-size:10px;color:var(--tx);line-height:1.6}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.modal-cancel{font-family:var(--dsp);font-size:10px;letter-spacing:1px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);color:var(--txd);padding:7px 14px;cursor:pointer}
+.modal-cancel:hover{color:var(--txh);border-color:var(--blt)}
+.modal-confirm{font-family:var(--dsp);font-size:10px;letter-spacing:1px;background:var(--rose-d);border:1px solid var(--rose-l);border-radius:var(--r);color:var(--rose);padding:7px 14px;cursor:pointer}
+.modal-confirm:hover{background:rgba(158,77,77,.25)}
+
+/* ══ AI AGENT SIDECAR ══ */
+#body-shell{display:flex;flex:1;min-height:0;overflow:hidden}
+#canvas{border-right:1px solid var(--border)}
+#ai-sidecar{
+  width:300px;min-width:260px;max-width:340px;
+  background:var(--surface);
+  display:flex;flex-direction:column;
+  border-left:1px solid var(--border);
+  flex-shrink:0;
+  position:relative;
+  transition:width .25s ease;
+}
+#ai-sidecar.collapsed{width:36px;min-width:36px}
+#ai-sidecar.collapsed #ai-body{display:none}
+#ai-sidecar.collapsed #ai-header{border-bottom:none;padding:0}
+#ai-collapse-btn{
+  position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+  width:24px;height:24px;border-radius:50%;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--txd);font-size:11px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .15s,color .15s;z-index:10;
+  flex-shrink:0;
+}
+#ai-collapse-btn:hover{border-color:var(--sage);color:var(--sage)}
+#ai-header{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 10px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);box-shadow:0 0 6px rgba(77,158,122,.6);flex-shrink:0;animation:ai-pulse 2s ease-in-out infinite}
+@keyframes ai-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
+.ai-title{font-family:var(--dsp);font-size:9px;letter-spacing:2px;color:var(--sage);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-model-badge{font-family:var(--mono);font-size:8px;letter-spacing:.5px;color:var(--txd);white-space:nowrap;flex-shrink:0}
+#ai-body{flex:1;display:flex;flex-direction:column;min-height:0}
+#ai-context-bar{
+  padding:7px 10px;border-bottom:1px solid var(--border);
+  font-size:9px;color:var(--txd);line-height:1.5;
+  background:var(--panel);flex-shrink:0;
+}
+.ai-ctx-label{font-family:var(--dsp);font-size:8px;letter-spacing:1.5px;color:var(--txd);margin-bottom:4px;text-transform:uppercase}
+.ai-ctx-pills{display:flex;flex-wrap:wrap;gap:4px}
+.ai-ctx-pill{font-size:8px;padding:2px 6px;background:var(--card);border:1px solid var(--border);border-radius:2px;color:var(--txd);white-space:nowrap}
+.ai-ctx-pill.active{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+#ai-messages{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:10px;display:flex;flex-direction:column;gap:8px;
+  min-height:0;
+}
+#ai-messages::-webkit-scrollbar{width:3px}
+#ai-messages::-webkit-scrollbar-thumb{background:var(--blt);border-radius:2px}
+.ai-msg{display:flex;flex-direction:column;gap:3px;animation:msgfade .25s ease}
+@keyframes msgfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.ai-msg-role{font-family:var(--dsp);font-size:8px;letter-spacing:1px;color:var(--txd);text-transform:uppercase}
+.ai-msg-role.user{color:var(--amber)}
+.ai-msg-role.agent{color:var(--sage)}
+.ai-msg-bubble{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:8px 10px;
+  font-size:10.5px;line-height:1.6;color:var(--tx);
+  white-space:pre-wrap;word-break:break-word;
+}
+.ai-msg-bubble.user{background:var(--bg);border-color:var(--amber-l);color:var(--txh)}
+.ai-msg-bubble.agent{background:var(--panel);border-color:var(--sage-l)}
+.ai-msg-bubble.sys{background:transparent;border:none;font-size:9.5px;color:var(--txd);font-style:italic;text-align:center;padding:2px 0}
+.ai-msg-bubble.thinking{color:var(--txd);font-style:italic}
+.ai-typing-dots{display:inline-flex;gap:3px;align-items:center}
+.ai-typing-dots span{width:4px;height:4px;border-radius:50%;background:var(--sage);animation:tdot .9s ease-in-out infinite}
+.ai-typing-dots span:nth-child(2){animation-delay:.2s}
+.ai-typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+#ai-quick-row{
+  display:flex;flex-wrap:wrap;gap:4px;
+  padding:7px 10px;border-top:1px solid var(--border);
+  background:var(--panel);flex-shrink:0;
+}
+.ai-quick-btn{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.5px;
+  padding:3px 8px;border:1px solid var(--border);border-radius:2px;
+  background:var(--card);color:var(--txd);cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.ai-quick-btn:hover{border-color:var(--sage-l);color:var(--sage);background:var(--sage-d)}
+#ai-input-row{
+  display:flex;gap:6px;align-items:flex-end;
+  padding:8px 10px;border-top:1px solid var(--border);
+  background:var(--surface);flex-shrink:0;
+}
+#ai-input{
+  flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  color:var(--txh);font-family:var(--mono);font-size:10.5px;
+  padding:7px 9px;outline:none;resize:none;min-height:32px;max-height:90px;
+  line-height:1.5;transition:border-color .15s;
+}
+#ai-input:focus{border-color:var(--sage)}
+#ai-send-btn{
+  font-family:var(--dsp);font-size:9px;letter-spacing:1px;
+  background:var(--sage);color:#071a10;border:none;border-radius:var(--r);
+  padding:7px 10px;cursor:pointer;transition:background .15s;
+  flex-shrink:0;align-self:flex-end;
+}
+#ai-send-btn:hover{background:#5ab88a}
+#ai-send-btn:disabled{opacity:.4;cursor:default}
+#ai-sidecar.collapsed #ai-collapse-btn{left:50%;transform:translate(-50%,-50%)}
+
+/* ── CMDR mobile ── */
+#canvas{border-right:none}
+@media(max-width:700px){
+  :root{--pad:10px;--gap:8px}
+  #chrome{height:44px;padding-top:env(safe-area-inset-top)}
+  #chrome .c-sub{display:none}
+  #ribbon{height:40px}
+  .step-l{font-size:11px}
+  .field-row,.inst-grid,.dist-result,.summary-grid{grid-template-columns:1fr 1fr}
+  input,select,textarea,button{font-size:14px!important}
+  input,select{min-height:38px}
+  #canvas{padding-bottom:calc(env(safe-area-inset-bottom) + 24px)}
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;!-- CHROME --&gt;
+&lt;div id=&quot;chrome&quot;&gt;
+  &lt;button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:&#x27;CLOSE_BUILDER&#x27;},&#x27;*&#x27;)&quot;&gt;← CMDR&lt;/button&gt;
+  &lt;span class=&quot;c-title&quot;&gt;⬡ SONAR&lt;/span&gt;
+  &lt;span class=&quot;c-sub&quot;&gt;CMDR · Scenario Builder · Shore Outage Notification, Analysis &amp;amp; Response&lt;/span&gt;
+  &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;confirmClear()&quot;&gt;✕ CLEAR&lt;/button&gt;
+  &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;sendToDropZone()&quot; title=&quot;Send scenario package to the Data Drop Zone&quot;&gt;⤓ DROP&lt;/button&gt;
+  &lt;button class=&quot;c-run-btn&quot; id=&quot;run-btn&quot; onclick=&quot;launchScenario()&quot; disabled&gt;▶ RUN&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- STEP RIBBON — Step 1 is SONAR Alerts, steps 2–7 shifted --&gt;
+&lt;div id=&quot;ribbon&quot;&gt;
+  &lt;div class=&quot;step active&quot; id=&quot;step-1&quot; onclick=&quot;goStep(1)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Orders&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-2&quot; onclick=&quot;goStep(2)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Install&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-3&quot; onclick=&quot;goStep(3)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Trigger&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-4&quot; onclick=&quot;goStep(4)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Assets&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-5&quot; onclick=&quot;goStep(5)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Manpower&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-6&quot; onclick=&quot;goStep(6)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Reporting&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;step-dv&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;step&quot; id=&quot;step-7&quot; onclick=&quot;goStep(7)&quot;&gt;&lt;span class=&quot;step-n&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;step-l&quot;&gt;Review&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- CANVAS --&gt;
+&lt;div id=&quot;body-shell&quot; style=&quot;flex:1;display:flex;min-height:0;overflow:hidden&quot;&gt;
+&lt;div id=&quot;canvas&quot;&gt;
+
+&lt;!-- ═══ STEP 1: SONAR ALERTS ═══ --&gt;
+&lt;div class=&quot;pane active&quot; id=&quot;pane-1&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;
+      &lt;span class=&quot;sec-icon&quot;&gt;📨&lt;/span&gt;
+      &lt;span class=&quot;sec-title&quot;&gt;SONAR Alerts&lt;/span&gt;
+      &lt;span class=&quot;sec-badge&quot; id=&quot;wo-count-badge&quot;&gt;0 orders&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;p class=&quot;hint&quot;&gt;Compose and queue SONAR alerts for this scenario. On RUN, the queue is handed to the Admin Platform and logged to the ADM-03 dispatch log for routing review. Add as many as needed — drag to reorder.&lt;/p&gt;
+
+      &lt;!-- Composer --&gt;
+      &lt;div class=&quot;wo-composer&quot;&gt;
+        &lt;div class=&quot;wo-composer-head&quot;&gt;⊕ COMPOSE NEW ORDER&lt;/div&gt;
+        &lt;div class=&quot;field-row&quot;&gt;
+          &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Order Type&lt;/label&gt;
+            &lt;select id=&quot;wo-type&quot;&gt;
+              &lt;option value=&quot;warn&quot;&gt;SONAR ALERT&lt;/option&gt;
+              &lt;option value=&quot;crit&quot;&gt;CRITICAL ALERT&lt;/option&gt;
+              &lt;option value=&quot;info&quot;&gt;INFORMATION&lt;/option&gt;
+              &lt;option value=&quot;res&quot;&gt;RESOLVED&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Priority&lt;/label&gt;
+            &lt;select id=&quot;wo-priority&quot;&gt;
+              &lt;option&gt;IMMEDIATE&lt;/option&gt;
+              &lt;option selected&gt;URGENT&lt;/option&gt;
+              &lt;option&gt;ROUTINE&lt;/option&gt;
+              &lt;option&gt;FLASH&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Order Tag / Subject&lt;/label&gt;
+          &lt;input type=&quot;text&quot; id=&quot;wo-tag&quot; placeholder=&quot;e.g. WARN-001 · FUEL RESUPPLY&quot; maxlength=&quot;80&quot;&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Order Body&lt;/label&gt;
+          &lt;textarea id=&quot;wo-body&quot; rows=&quot;3&quot; placeholder=&quot;Full text of the SONAR alert…&quot;&gt;&lt;/textarea&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Recipients&lt;/label&gt;
+          &lt;input type=&quot;text&quot; id=&quot;wo-recip&quot; value=&quot;Installation CO · NAVFAC · DLA Energy&quot; placeholder=&quot;Chain-of-command recipients&quot;&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;wo-add-btn&quot; onclick=&quot;addWarningOrder()&quot;&gt;+ ADD ORDER TO QUEUE&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;!-- Queue display --&gt;
+      &lt;div id=&quot;wo-empty&quot; class=&quot;wo-empty&quot;&gt;NO SONAR ALERTS QUEUED — ADD ONE ABOVE&lt;/div&gt;
+      &lt;div class=&quot;wo-list&quot; id=&quot;wo-list&quot;&gt;&lt;/div&gt;
+
+      &lt;!-- Mock template library --&gt;
+      &lt;div class=&quot;section&quot; style=&quot;border-color:var(--blt)&quot;&gt;
+        &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📚&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Template Library&lt;/span&gt;&lt;span class=&quot;sec-badge&quot;&gt;Quick-insert&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;sec-body&quot;&gt;
+          &lt;p class=&quot;hint&quot;&gt;Click a template to pre-fill the composer.&lt;/p&gt;
+          &lt;div class=&quot;chip-group&quot;&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;fuel&#x27;)&quot;&gt;⛽ Fuel Resupply&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;burnrate&#x27;)&quot;&gt;🔥 Burn Rate Critical&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;interdep&#x27;)&quot;&gt;🔗 Inter-Service Dependency&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;barge&#x27;)&quot;&gt;⛵ Barge Coordination&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;nmcp&#x27;)&quot;&gt;🏥 Medical Priority&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;smr&#x27;)&quot;&gt;⚛️ SMR Feasibility&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;bess&#x27;)&quot;&gt;🔋 BESS Deployment&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; onclick=&quot;loadTemplate(&#x27;weather&#x27;)&quot;&gt;🌀 Weather Hold&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;&lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(2)&quot;&gt;NEXT: INSTALLATION →&lt;/button&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 2: INSTALLATION ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-2&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;🗺&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Select Installation&lt;/span&gt;&lt;span class=&quot;sec-badge&quot;&gt;16 catalogued&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;p class=&quot;hint&quot;&gt;Select the primary installation for this scenario.&lt;/p&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Filter by Branch&lt;/label&gt;
+        &lt;div class=&quot;chip-group&quot; id=&quot;branch-chips&quot;&gt;
+          &lt;div class=&quot;chip selected&quot; onclick=&quot;filterBranch(&#x27;ALL&#x27;,this)&quot;&gt;ALL&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;filterBranch(&#x27;NAVY&#x27;,this)&quot;&gt;NAVY&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;filterBranch(&#x27;USMC&#x27;,this)&quot;&gt;MARINES&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;filterBranch(&#x27;JOINT&#x27;,this)&quot;&gt;JOINT&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;inst-grid&quot; id=&quot;inst-grid&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Peak Demand (MW)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;peak-mw&quot; min=&quot;1&quot; max=&quot;500&quot; value=&quot;58&quot; oninput=&quot;updateSummary()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Utility Provider&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;utility&quot; value=&quot;Dominion Energy Virginia&quot; oninput=&quot;updateSummary()&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(1)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(3)&quot;&gt;NEXT: TRIGGER →&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 3: TRIGGER ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-3&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;⚡&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Scenario Type &amp;amp; Trigger&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Scenario Category&lt;/label&gt;
+        &lt;div class=&quot;chip-group&quot; id=&quot;sc-type-chips&quot;&gt;
+          &lt;div class=&quot;chip selected&quot; onclick=&quot;selectScenarioCat(&#x27;Weather Event&#x27;,this)&quot;&gt;Weather Event&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Cyber Attack&#x27;,this)&quot;&gt;Cyber Attack&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Grid Failure&#x27;,this)&quot;&gt;Grid Failure&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Utility Disruption&#x27;,this)&quot;&gt;Utility Disruption&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Service Outage&#x27;,this)&quot;&gt;Service Outage&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Operational Surge&#x27;,this)&quot;&gt;Operational Surge&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectScenarioCat(&#x27;Fast-Track Deployment&#x27;,this)&quot;&gt;Fast-Track Deployment&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Trigger Event Name&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;trigger-name&quot; value=&quot;Hurricane Florence&quot; oninput=&quot;updateSummary()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Severity Level&lt;/label&gt;
+          &lt;select id=&quot;severity&quot; onchange=&quot;updateSummary()&quot;&gt;
+            &lt;option&gt;CAT 1 — Minor&lt;/option&gt;&lt;option&gt;CAT 2 — Moderate&lt;/option&gt;
+            &lt;option selected&gt;CAT 3 — Significant&lt;/option&gt;&lt;option&gt;CAT 4 — Severe&lt;/option&gt;&lt;option&gt;CAT 5 — Catastrophic&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Trigger Description&lt;/label&gt;
+        &lt;textarea id=&quot;trigger-desc&quot;&gt;Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.&lt;/textarea&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Est. Outage Duration&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;outage-dur&quot; value=&quot;72+ hours&quot; oninput=&quot;updateSummary()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Resupply Delay (hrs)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;resupply-delay&quot; value=&quot;48&quot; min=&quot;0&quot; max=&quot;720&quot; oninput=&quot;calcDistance()&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Historical Weather Data&lt;/label&gt;
+        &lt;div class=&quot;chip-group&quot; id=&quot;weather-chips&quot;&gt;
+          &lt;div class=&quot;chip selected amber&quot; onclick=&quot;selectChip(&#x27;weather-chips&#x27;,this)&quot;&gt;2-Year Data&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;weather-chips&#x27;,this)&quot;&gt;5-Year Data&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;weather-chips&#x27;,this)&quot;&gt;10-Year Data&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;weather-chips&#x27;,this)&quot;&gt;NOAA Archive&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;weather-chips&#x27;,this)&quot;&gt;None&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p class=&quot;hint&quot; style=&quot;margin-top:5px&quot;&gt;Historical data feeds triage analytics. Scenario archived for model learning.&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(2)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(4)&quot;&gt;NEXT: ASSETS →&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 4: ASSETS ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-4&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;🔋&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Energy Resource Inventory &amp;amp; Placement&lt;/span&gt;&lt;span class=&quot;sec-badge&quot;&gt;Drag to Deploy&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;p class=&quot;hint&quot;&gt;Drag assets from the palette into the deployment zone.&lt;/p&gt;
+      &lt;div class=&quot;asset-palette&quot; id=&quot;asset-palette&quot;&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;MICROGRID&quot; data-mw=&quot;8.4&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;⚡&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;Microgrid&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;8.4 MW · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;DIESEL_GEN&quot; data-mw=&quot;6.0&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;🛢️&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;Diesel Gen&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;6.0 MW · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;BESS&quot; data-mw=&quot;40&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;🔋&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;BESS&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;40 MWh · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;SMR&quot; data-mw=&quot;10&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;⚛️&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;SMR&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;10 MW · &lt;span class=&quot;tag maint&quot;&gt;MAINT&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;SOLAR&quot; data-mw=&quot;1.2&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;☀️&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;Solar&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;1.2 MW · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;BESS_BARGE&quot; data-mw=&quot;60&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;⛵&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;BESS Barge&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;60 MWh · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;SHIP_GEN&quot; data-mw=&quot;14.4&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;🚢&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;Ship Gen&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;14.4 MW · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;asset-chip&quot; draggable=&quot;true&quot; data-asset=&quot;FUEL_CELL&quot; data-mw=&quot;2.0&quot; ondragstart=&quot;onDragStart(event)&quot;&gt;&lt;span class=&quot;aicon&quot;&gt;🔬&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;aname&quot;&gt;Fuel Cell&lt;/div&gt;&lt;div class=&quot;aquant&quot;&gt;2.0 MW · &lt;span class=&quot;tag op&quot;&gt;OP&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;drop-zone&quot; id=&quot;drop-zone&quot; ondragover=&quot;onDragOver(event)&quot; ondragleave=&quot;onDragLeave(event)&quot; ondrop=&quot;onDrop(event)&quot;&gt;
+        &lt;div class=&quot;drop-zone-lbl&quot; id=&quot;dz-lbl&quot;&gt;DROP ASSETS HERE TO DEPLOY&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;dist-result&quot; id=&quot;power-calc&quot;&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Deployed&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dep-cap&quot;&gt;0&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;MW / MWh&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Peak Demand&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dep-demand&quot;&gt;58&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;MW&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Coverage&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dep-cover&quot;&gt;0%&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;of peak&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Est. Resilience&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dep-resilience&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;hours&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- VEHICLE ROLODEX — moved here from Manpower step --&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;🚛&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Vehicle Rolodex&lt;/span&gt;&lt;span class=&quot;sec-badge&quot;&gt;NAVY · Service-Specific&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;p class=&quot;hint&quot;&gt;Set quantities for Navy fuel and logistics vehicles available to this installation. JLTV and commercial fuel tankers are the primary fuel distribution assets for shore-based operations.&lt;/p&gt;
+      &lt;table class=&quot;vehicle-table&quot;&gt;
+        &lt;thead&gt;&lt;tr&gt;&lt;th style=&quot;width:32px&quot;&gt;&lt;/th&gt;&lt;th&gt;Vehicle&lt;/th&gt;&lt;th&gt;Capacity&lt;/th&gt;&lt;th&gt;Role&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th class=&quot;veh-qty&quot;&gt;Qty&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+        &lt;tbody id=&quot;vehicle-table-body&quot;&gt;&lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ROUND-TRIP DISTANCE --&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📍&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Round-Trip Distance Estimation&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Nearest Fuel Depot&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;depot-name&quot; value=&quot;Portsmouth Naval Shipyard&quot; oninput=&quot;calcDistance()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Distance (miles)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;depot-miles&quot; value=&quot;2.1&quot; step=&quot;0.1&quot; min=&quot;0.1&quot; oninput=&quot;calcDistance()&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Avg Speed (mph)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;veh-speed&quot; value=&quot;25&quot; min=&quot;5&quot; max=&quot;80&quot; oninput=&quot;calcDistance()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Load/Unload (min)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;load-time&quot; value=&quot;45&quot; min=&quot;5&quot; oninput=&quot;calcDistance()&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;dist-result&quot;&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;One-Way&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dc-oneway&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;minutes&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Round-Trip&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dc-roundtrip&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;minutes&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Runs / Day&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dc-runs&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;trips&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Fuel / Day&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;dc-gal&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;gallons&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(3)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(5)&quot;&gt;NEXT: MANPOWER →&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 5: MANPOWER + VEHICLES ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-5&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;👤&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Manpower Requirements&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Total Personnel&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;personnel&quot; value=&quot;120&quot; min=&quot;1&quot; oninput=&quot;updateSummary()&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Qualified Operators&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;operators&quot; value=&quot;18&quot; min=&quot;0&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field-row&quot;&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Shift Duration (hrs)&lt;/label&gt;&lt;input type=&quot;number&quot; id=&quot;shift-hrs&quot; value=&quot;12&quot; min=&quot;4&quot; max=&quot;24&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Relief Cycle&lt;/label&gt;
+          &lt;select id=&quot;relief-cycle&quot;&gt;&lt;option&gt;6h on / 6h off&lt;/option&gt;&lt;option selected&gt;12h on / 12h off&lt;/option&gt;&lt;option&gt;8h on / 16h off&lt;/option&gt;&lt;/select&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(4)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(6)&quot;&gt;NEXT: REPORTING →&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 6: REPORTING ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-6&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📡&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Outage Reporting Mode&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Primary Reporting Method&lt;/label&gt;
+        &lt;div class=&quot;chip-group&quot; id=&quot;report-chips&quot;&gt;
+          &lt;div class=&quot;chip selected&quot; onclick=&quot;selectChip(&#x27;report-chips&#x27;,this)&quot;&gt;Manual Chain-of-Command&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;report-chips&#x27;,this)&quot;&gt;Auto-Trigger + Notifications&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;report-chips&#x27;,this)&quot;&gt;Hybrid&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Notification Recipients&lt;/label&gt;
+        &lt;textarea id=&quot;notif-recipients&quot; style=&quot;min-height:44px&quot;&gt;NAVFAC Atlantic · CINCLANTFLT · Installation CO · DLA Energy&lt;/textarea&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;toggle-row&quot;&gt;&lt;span class=&quot;toggle-lbl&quot;&gt;Auto-trigger on utility outage detection&lt;/span&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;&lt;div class=&quot;toggle-track&quot;&gt;&lt;/div&gt;&lt;/label&gt;&lt;/div&gt;
+      &lt;div class=&quot;toggle-row&quot;&gt;&lt;span class=&quot;toggle-lbl&quot;&gt;SMS/email notifications to chain-of-command&lt;/span&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;&lt;div class=&quot;toggle-track&quot;&gt;&lt;/div&gt;&lt;/label&gt;&lt;/div&gt;
+      &lt;div class=&quot;toggle-row&quot;&gt;&lt;span class=&quot;toggle-lbl&quot;&gt;Archive scenario for model learning&lt;/span&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;&lt;div class=&quot;toggle-track&quot;&gt;&lt;/div&gt;&lt;/label&gt;&lt;/div&gt;
+      &lt;div class=&quot;toggle-row&quot;&gt;&lt;span class=&quot;toggle-lbl&quot;&gt;Generate post-mortem report on completion&lt;/span&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;&lt;div class=&quot;toggle-track&quot;&gt;&lt;/div&gt;&lt;/label&gt;&lt;/div&gt;
+      &lt;div class=&quot;toggle-row&quot;&gt;&lt;span class=&quot;toggle-lbl&quot;&gt;Triage analytics — weather + historical outages&lt;/span&gt;&lt;label class=&quot;toggle&quot;&gt;&lt;input type=&quot;checkbox&quot;&gt;&lt;div class=&quot;toggle-track&quot;&gt;&lt;/div&gt;&lt;/label&gt;&lt;/div&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Post-Mortem Output Priority&lt;/label&gt;
+        &lt;div class=&quot;chip-group&quot; id=&quot;output-chips&quot;&gt;
+          &lt;div class=&quot;chip selected&quot; onclick=&quot;selectChip(&#x27;output-chips&#x27;,this)&quot;&gt;Spending Priorities&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;output-chips&#x27;,this)&quot;&gt;Resource Allocation&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;output-chips&#x27;,this)&quot;&gt;Investment Trade-offs&lt;/div&gt;
+          &lt;div class=&quot;chip&quot; onclick=&quot;selectChip(&#x27;output-chips&#x27;,this)&quot;&gt;All Outputs&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(5)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; onclick=&quot;goStep(7)&quot;&gt;NEXT: REVIEW →&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ═══ STEP 7: REVIEW ═══ --&gt;
+&lt;div class=&quot;pane&quot; id=&quot;pane-7&quot;&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📋&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Scenario Summary&lt;/span&gt;&lt;span class=&quot;sec-badge&quot; id=&quot;sum-badge&quot;&gt;DRAFT&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;summary-grid&quot; id=&quot;summary-grid&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📊&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Power Requirements&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;dist-result&quot;&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Peak Demand&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;sr-demand&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;MW&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Deployed&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;sr-cap&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;MW&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Resilience&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;sr-window&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;hours&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;dist-item&quot;&gt;&lt;div class=&quot;dist-label&quot;&gt;Est. Capital&lt;/div&gt;&lt;div class=&quot;dist-val&quot; id=&quot;sr-capital&quot;&gt;—&lt;/div&gt;&lt;div class=&quot;dist-unit&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;margin-top:8px&quot;&gt;
+        &lt;div style=&quot;display:flex;justify-content:space-between;margin-bottom:3px&quot;&gt;
+          &lt;span style=&quot;font-size:8px;color:var(--txd);letter-spacing:1px;text-transform:uppercase&quot;&gt;Coverage vs. Demand&lt;/span&gt;
+          &lt;span style=&quot;font-size:9px;color:var(--sage)&quot; id=&quot;sr-pct&quot;&gt;0%&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;prog-wrap&quot;&gt;&lt;div class=&quot;prog-fill&quot; id=&quot;sr-prog&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;📨&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;SONAR Alerts Queued&lt;/span&gt;&lt;span class=&quot;sec-badge&quot; id=&quot;wo-review-count&quot;&gt;0&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;wo-list&quot; id=&quot;wo-review-list&quot;&gt;&lt;/div&gt;
+      &lt;p class=&quot;hint&quot; style=&quot;margin-top:4px&quot;&gt;These orders will stream into the simulator&#x27;s Ops Feed during scenario playback.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;section&quot;&gt;
+    &lt;div class=&quot;sec-head&quot;&gt;&lt;span class=&quot;sec-icon&quot;&gt;🗃&lt;/span&gt;&lt;span class=&quot;sec-title&quot;&gt;Archive&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;sec-body&quot;&gt;
+      &lt;div class=&quot;field&quot;&gt;&lt;label&gt;Scenario ID&lt;/label&gt;&lt;input type=&quot;text&quot; id=&quot;sc-id&quot; readonly&gt;&lt;/div&gt;
+      &lt;p class=&quot;hint&quot;&gt;Archived after completion. Feeds triage analytics engine for critical-region identification.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;btn-row&quot;&gt;
+    &lt;button class=&quot;btn&quot; onclick=&quot;goStep(6)&quot;&gt;← BACK&lt;/button&gt;
+    &lt;button class=&quot;btn primary&quot; id=&quot;launch-final-btn&quot; onclick=&quot;launchScenario()&quot;&gt;▶ RUN SCENARIO IN SIMULATOR&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;&lt;!-- canvas --&gt;
+
+&lt;/div&gt;&lt;!-- body-shell --&gt;
+
+&lt;!-- LAUNCH BANNER --&gt;
+&lt;div id=&quot;launch-banner&quot;&gt;
+  &lt;div class=&quot;banner-ring&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;banner-title&quot; id=&quot;banner-title&quot;&gt;INITIALIZING SCENARIO&lt;/div&gt;
+  &lt;div class=&quot;banner-sub&quot; id=&quot;banner-sub&quot;&gt;Building digital twin…&lt;/div&gt;
+  &lt;div id=&quot;banner-btns&quot; style=&quot;display:none;gap:10px;flex-wrap:wrap;justify-content:center&quot;&gt;&lt;button class=&quot;banner-btn&quot; id=&quot;banner-btn&quot; onclick=&quot;sendToSimulator()&quot;&gt;RELEASE TO BUS →&lt;/button&gt;&lt;button class=&quot;banner-btn&quot; onclick=&quot;sendToDropZone()&quot; style=&quot;background:#e8a33d;color:#1a0f00&quot;&gt;SEND TO DROP ZONE ⤓&lt;/button&gt;&lt;button class=&quot;banner-btn&quot; onclick=&quot;document.getElementById(&#x27;launch-banner&#x27;).classList.remove(&#x27;show&#x27;)&quot; style=&quot;background:transparent;color:#b0b8c4;border:1px solid rgba(176,184,196,.4)&quot;&gt;BACK&lt;/button&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- CLEAR CONFIRM MODAL --&gt;
+&lt;div id=&quot;clear-modal&quot;&gt;
+  &lt;div class=&quot;modal-box&quot;&gt;
+    &lt;div class=&quot;modal-title&quot;&gt;✕ CLEAR SCENARIO&lt;/div&gt;
+    &lt;div class=&quot;modal-body&quot;&gt;This will reset all steps — SONAR alerts, installation selection, assets, manpower, and reporting settings. This cannot be undone.&lt;/div&gt;
+    &lt;div class=&quot;modal-btns&quot;&gt;
+      &lt;button class=&quot;modal-cancel&quot; onclick=&quot;closeClear()&quot;&gt;CANCEL&lt;/button&gt;
+      &lt;button class=&quot;modal-confirm&quot; onclick=&quot;clearAll()&quot;&gt;CLEAR ALL&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+// ═══ INSTALLATIONS ═══
+const INSTALLATIONS = [
+  {id:&#x27;NSN&#x27;,   name:&#x27;Naval Station Norfolk&#x27;,       loc:&#x27;Norfolk VA&#x27;,       branch:&#x27;NAVY&#x27;,  mw:58,  utility:&#x27;Dominion Energy VA&#x27;},
+  {id:&#x27;NB_SD&#x27;, name:&#x27;Naval Base San Diego&#x27;,        loc:&#x27;San Diego CA&#x27;,     branch:&#x27;NAVY&#x27;,  mw:62,  utility:&#x27;SDG&amp;E&#x27;},
+  {id:&#x27;KNBK&#x27;,  name:&#x27;NB Kitsap&#x27;,                  loc:&#x27;Bremerton WA&#x27;,     branch:&#x27;NAVY&#x27;,  mw:48,  utility:&#x27;Puget Sound Energy&#x27;},
+  {id:&#x27;NSB&#x27;,   name:&#x27;NSB New London&#x27;,              loc:&#x27;Groton CT&#x27;,        branch:&#x27;NAVY&#x27;,  mw:20,  utility:&#x27;Eversource&#x27;},
+  {id:&#x27;NASK&#x27;,  name:&#x27;NAS Key West&#x27;,               loc:&#x27;Key West FL&#x27;,      branch:&#x27;NAVY&#x27;,  mw:12,  utility:&#x27;Keys Energy&#x27;},
+  {id:&#x27;NASJ&#x27;,  name:&#x27;NAS Jacksonville&#x27;,           loc:&#x27;Jacksonville FL&#x27;,  branch:&#x27;NAVY&#x27;,  mw:38,  utility:&#x27;JEA Electric&#x27;},
+  {id:&#x27;NASP&#x27;,  name:&#x27;NAS Patuxent River&#x27;,         loc:&#x27;Patuxent River MD&#x27;,branch:&#x27;NAVY&#x27;,  mw:32,  utility:&#x27;SMECO&#x27;},
+  {id:&#x27;NASM&#x27;,  name:&#x27;NAS Meridian&#x27;,               loc:&#x27;Meridian MS&#x27;,      branch:&#x27;NAVY&#x27;,  mw:18,  utility:&#x27;Entergy MS&#x27;},
+  {id:&#x27;NSA_NO&#x27;,name:&#x27;NS Everett&#x27;,                 loc:&#x27;Everett WA&#x27;,       branch:&#x27;NAVY&#x27;,  mw:24,  utility:&#x27;Snohomish PUD&#x27;},
+  {id:&#x27;NSA_PC&#x27;,name:&#x27;NS Pensacola&#x27;,               loc:&#x27;Pensacola FL&#x27;,     branch:&#x27;NAVY&#x27;,  mw:28,  utility:&#x27;Gulf Power&#x27;},
+  {id:&#x27;JBM&#x27;,   name:&#x27;Pentagon / JBM-HH&#x27;,          loc:&#x27;Arlington VA&#x27;,     branch:&#x27;JOINT&#x27;, mw:45,  utility:&#x27;Dominion Energy VA&#x27;},
+  {id:&#x27;CAMP_P&#x27;,name:&#x27;Camp Pendleton&#x27;,             loc:&#x27;Oceanside CA&#x27;,     branch:&#x27;USMC&#x27;,  mw:30,  utility:&#x27;SDG&amp;E&#x27;},
+  {id:&#x27;LEMR&#x27;,  name:&#x27;Camp Lejeune&#x27;,               loc:&#x27;Jacksonville NC&#x27;,  branch:&#x27;USMC&#x27;,  mw:35,  utility:&#x27;Duke Energy&#x27;},
+  {id:&#x27;MCB_HA&#x27;,name:&#x27;MCB Hawaii&#x27;,                 loc:&#x27;Kaneohe Bay HI&#x27;,   branch:&#x27;USMC&#x27;,  mw:22,  utility:&#x27;HECO&#x27;},
+  {id:&#x27;NBVC&#x27;,  name:&#x27;NB Ventura County&#x27;,          loc:&#x27;Point Mugu CA&#x27;,    branch:&#x27;NAVY&#x27;,  mw:34,  utility:&#x27;Southern California Edison&#x27;},
+  {id:&#x27;NSA_HR&#x27;,name:&#x27;NSA Hampton Roads&#x27;,          loc:&#x27;Norfolk VA&#x27;,       branch:&#x27;NAVY&#x27;,  mw:16,  utility:&#x27;Dominion Energy VA&#x27;},
+];
+const BRANCH_CSS = {NAVY:&#x27;navy&#x27;,USMC:&#x27;usmc&#x27;,JOINT:&#x27;joint&#x27;};
+let selectedInst = INSTALLATIONS[0];
+let currentBranch = &#x27;ALL&#x27;;
+
+function filterBranch(b, el) {
+  currentBranch = b;
+  document.querySelectorAll(&#x27;#branch-chips .chip&#x27;).forEach(c=&gt;c.classList.remove(&#x27;selected&#x27;));
+  if(el) el.classList.add(&#x27;selected&#x27;);
+  renderInst();
+}
+function renderInst() {
+  const list = currentBranch===&#x27;ALL&#x27; ? INSTALLATIONS : INSTALLATIONS.filter(i=&gt;i.branch===currentBranch);
+  document.getElementById(&#x27;inst-grid&#x27;).innerHTML = list.map(i=&gt;`
+    &lt;div class=&quot;inst-card${i.id===selectedInst.id?&#x27; selected&#x27;:&#x27;&#x27;}&quot; onclick=&quot;pickInst(&#x27;${i.id}&#x27;)&quot;&gt;
+      &lt;div class=&quot;inst-card-name&quot;&gt;${i.name}&lt;/div&gt;
+      &lt;div class=&quot;inst-card-loc&quot;&gt;${i.loc}&lt;/div&gt;
+      &lt;span class=&quot;inst-card-branch ${BRANCH_CSS[i.branch]||&#x27;&#x27;}&quot;&gt;${i.branch}&lt;/span&gt;
+      &lt;div class=&quot;inst-card-mw&quot;&gt;⚡ ${i.mw} MW · ${i.utility}&lt;/div&gt;
+    &lt;/div&gt;`).join(&#x27;&#x27;);
+}
+function pickInst(id) {
+  selectedInst = INSTALLATIONS.find(i=&gt;i.id===id)||INSTALLATIONS[0];
+  document.getElementById(&#x27;peak-mw&#x27;).value = selectedInst.mw;
+  document.getElementById(&#x27;utility&#x27;).value = selectedInst.utility;
+  renderInst(); updateSummary();
+}
+
+// ═══ STEPS ═══
+let currentStep = 1;
+const TOTAL = 7;
+function goStep(n) {
+  document.getElementById(&#x27;pane-&#x27;+currentStep).classList.remove(&#x27;active&#x27;);
+  document.getElementById(&#x27;step-&#x27;+currentStep).classList.remove(&#x27;active&#x27;);
+  if(currentStep &lt; n) document.getElementById(&#x27;step-&#x27;+currentStep).classList.add(&#x27;done&#x27;);
+  currentStep = n;
+  document.getElementById(&#x27;pane-&#x27;+n).classList.add(&#x27;active&#x27;);
+  document.getElementById(&#x27;step-&#x27;+n).classList.add(&#x27;active&#x27;);
+  document.getElementById(&#x27;canvas&#x27;).scrollTop = 0;
+  if(n===TOTAL){ buildSummary(); document.getElementById(&#x27;run-btn&#x27;).disabled=false; }
+}
+
+// ═══ CHIPS ═══
+function selectChip(groupId, el) {
+  document.querySelectorAll(&#x27;#&#x27;+groupId+&#x27; .chip&#x27;).forEach(c=&gt;c.classList.remove(&#x27;selected&#x27;));
+  el.classList.add(&#x27;selected&#x27;);
+  updateSummary();
+}
+
+// ═══ SCENARIO CATEGORY PRESETS ═══
+const SC_CAT_PRESETS = {
+  &#x27;Weather Event&#x27;: {
+    name: &#x27;Hurricane Florence&#x27;,
+    severity: &#x27;CAT 3 — Significant&#x27;,
+    duration: &#x27;72+ hours&#x27;,
+    resupply: &#x27;48&#x27;,
+    desc: &#x27;Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.&#x27;
+  },
+  &#x27;Cyber Attack&#x27;: {
+    name: &#x27;Operation BLACKOUT — ICS Intrusion&#x27;,
+    severity: &#x27;CAT 4 — Severe&#x27;,
+    duration: &#x27;36–96 hours&#x27;,
+    resupply: &#x27;0&#x27;,
+    desc: &#x27;Adversarial intrusion detected in installation industrial control systems (ICS/SCADA). Automated grid switching compromised — commercial utility tie-line physically isolated as precaution. NAVFAC Cyber Task Force activated. All remote SCADA access suspended pending forensic sweep.&#x27;
+  },
+  &#x27;Grid Failure&#x27;: {
+    name: &#x27;Dominion Energy Cascading Fault&#x27;,
+    severity: &#x27;CAT 3 — Significant&#x27;,
+    duration: &#x27;24–48 hours&#x27;,
+    resupply: &#x27;12&#x27;,
+    desc: &#x27;Cascading fault originating at Chesapeake substation propagates through 500 kV transmission backbone. Multiple distribution feeders serving NSN and surrounding Hampton Roads installations lost. Estimated utility restoration 18–36 hours. DLA Energy emergency fuel contracts activated.&#x27;
+  },
+  &#x27;Utility Disruption&#x27;: {
+    name: &#x27;CPS Energy Rate Moratorium — JBSA&#x27;,
+    severity: &#x27;CAT 2 — Moderate&#x27;,
+    duration: &#x27;7–14 days&#x27;,
+    resupply: &#x27;24&#x27;,
+    desc: &#x27;CPS Energy declares force majeure following Winter Storm Uri–type event. Rolling load curtailments imposed on all commercial and military accounts exceeding 1 MW. JBSA-Randolph, Lackland, and Ft. Sam Houston directed to reduce grid draw by 40%. On-site generation and BESS assets to bridge critical mission load.&#x27;
+  },
+  &#x27;Service Outage&#x27;: {
+    name: &#x27;Dominion Energy Scheduled Outage — NSN / NSA Hampton Roads&#x27;,
+    severity: &#x27;CAT 3 — Significant&#x27;,
+    duration: &#x27;18–36 hours&#x27;,
+    resupply: &#x27;6&#x27;,
+    desc: &#x27;Dominion Energy notifies NAVFAC Atlantic of a planned 36-hour transmission maintenance window affecting the Hampton Roads military corridor. Naval Station Norfolk and NSA Hampton Roads face a coordinated commercial grid interruption. NAVFAC N4 issues WARNO to all tenant commands. Shipboard generators to be brought online for critical pier services. DLA Energy pre-positions emergency fuel contracts. Goal: maintain 100% mission-essential load continuity through on-site generation, BESS, and ship-to-shore power agreements.&#x27;
+  },
+  &#x27;Operational Surge&#x27;: {
+    name: &#x27;INDO-PACOM Surge — NB San Diego&#x27;,
+    severity: &#x27;CAT 3 — Significant&#x27;,
+    duration: &#x27;30–90 days&#x27;,
+    resupply: &#x27;72&#x27;,
+    desc: &#x27;Fleet concentration surge at NB San Diego driven by INDO-PACOM deployment cycle. Installation peak demand projected to exceed contracted utility capacity by 22 MW during surge window. Emergency microgrid expansion and temporary generator assets required. SDG&amp;E demand-response agreement invoked.&#x27;
+  },
+  &#x27;Fast-Track Deployment&#x27;: {
+    name: &#x27;Expeditionary BESS Airlift — Camp Pendleton&#x27;,
+    severity: &#x27;CAT 2 — Moderate&#x27;,
+    duration: &#x27;14–21 days&#x27;,
+    resupply: &#x27;96&#x27;,
+    desc: &#x27;USMC expeditionary energy kit pre-deployment validation required within 72-hour window. Containerized BESS and solar microgrid assets staged at Camp Pendleton for C-17 airlift to FARP. Installation grid draw reduced to simulate deployed islanded configuration. NAVFAC Atlantic forward energy team activated.&#x27;
+  }
+};
+
+function selectScenarioCat(cat, el) {
+  // Update chip selection
+  document.querySelectorAll(&#x27;#sc-type-chips .chip&#x27;).forEach(c =&gt; c.classList.remove(&#x27;selected&#x27;));
+  el.classList.add(&#x27;selected&#x27;);
+
+  // Populate trigger fields from preset
+  const p = SC_CAT_PRESETS[cat];
+  if (!p) { updateSummary(); return; }
+
+  const nameEl     = document.getElementById(&#x27;trigger-name&#x27;);
+  const sevEl      = document.getElementById(&#x27;severity&#x27;);
+  const durEl      = document.getElementById(&#x27;outage-dur&#x27;);
+  const resupEl    = document.getElementById(&#x27;resupply-delay&#x27;);
+  const descEl     = document.getElementById(&#x27;trigger-desc&#x27;);
+
+  if (nameEl)  { nameEl.value  = p.name; }
+  if (sevEl)   { for (var i=0;i&lt;sevEl.options.length;i++) { if(sevEl.options[i].text===p.severity){sevEl.selectedIndex=i;break;} } }
+  if (durEl)   { durEl.value   = p.duration; }
+  if (resupEl) { resupEl.value = p.resupply; }
+  if (descEl)  { descEl.value  = p.desc; }
+
+  // Flash the fields to signal auto-fill
+  [nameEl, durEl, descEl].forEach(function(el) {
+    if (!el) return;
+    el.style.transition = &#x27;border-color .15s&#x27;;
+    el.style.borderColor = &#x27;var(--sage)&#x27;;
+    setTimeout(function(){ el.style.borderColor = &#x27;&#x27;; }, 800);
+  });
+
+  updateSummary();
+}
+
+// ═══ SONAR ALERTS ═══
+let warningOrders = [];
+const WO_TYPE_META = {
+  warn:{ lbl:&#x27;SONAR ALERT&#x27;, cls:&#x27;warn&#x27; },
+  crit:{ lbl:&#x27;CRITICAL ALERT&#x27;, cls:&#x27;crit&#x27; },
+  info:{ lbl:&#x27;INFORMATION&#x27;, cls:&#x27;info&#x27; },
+  res: { lbl:&#x27;RESOLVED&#x27;, cls:&#x27;res&#x27; },
+};
+
+const TEMPLATES = {
+  fuel:     { type:&#x27;warn&#x27;, priority:&#x27;URGENT&#x27;,    tag:&#x27;WARN-XXX · FUEL RESUPPLY&#x27;, body:&#x27;3 of 4 resupply trucks available. Nearest depot: [DEPOT] miles away. ETA: [X] hours. Coordinate with logistics officer to prioritize routing via primary route.&#x27; },
+  burnrate: { type:&#x27;crit&#x27;, priority:&#x27;IMMEDIATE&#x27;, tag:&#x27;WARN-XXX · BURN RATE — CRITICAL&#x27;, body:&#x27;On-hand diesel: [X] gal. Burn rate at current load: ~[X] gal/hr. Estimated exhaustion: [X] hours from trigger event. Resupply essential to sustain operations.&#x27; },
+  interdep: { type:&#x27;info&#x27;, priority:&#x27;ROUTINE&#x27;,   tag:&#x27;WARN-XXX · INTER-SERVICE DEPENDENCY&#x27;, body:&#x27;Adjacent installations confirmed within the dependency ring. Cross-service coordination required for fuel-sharing and resupply sequencing.&#x27; },
+  barge:    { type:&#x27;info&#x27;, priority:&#x27;ROUTINE&#x27;,   tag:&#x27;WARN-XXX · BARGE COORDINATION&#x27;, body:&#x27;USCG Fuel Barge pre-positioned at [SHIPYARD]. Barge carries [X] gal diesel. Transit window: post-storm clearance H+[X]. Coordinate with NAVFAC for barge-to-pier fuel transfer.&#x27; },
+  nmcp:     { type:&#x27;crit&#x27;, priority:&#x27;FLASH&#x27;,     tag:&#x27;WARN-XXX · MEDICAL FACILITY POWER PRIORITY&#x27;, body:&#x27;Medical facility has declared emergency status. [X] inpatients, active OR cases. Requires uninterrupted power for all life-safety systems. Priority: [X]% of all available diesel.&#x27; },
+  smr:      { type:&#x27;res&#x27;,  priority:&#x27;ROUTINE&#x27;,   tag:&#x27;SMR FEASIBILITY — SITE APPROVED&#x27;, body:&#x27;SMR site survey complete at [LOCATION]. [X]-acre footprint available. [X]-ft safety radius within base perimeter. No residential encroachment. Projected: [X] MW continuous.&#x27; },
+  bess:     { type:&#x27;res&#x27;,  priority:&#x27;URGENT&#x27;,    tag:&#x27;RESOLVED · BESS ONLINE&#x27;, body:&#x27;BESS ([X] MWh) online. Bridging power gap during resupply. Critical systems at 100% coverage. Bridge duration: ~[X] hours. Convoy confirmed en route.&#x27; },
+  weather:  { type:&#x27;crit&#x27;, priority:&#x27;IMMEDIATE&#x27;, tag:&#x27;WARN-XXX · WEATHER HOLD&#x27;, body:&#x27;All road and air resupply routes suspended — minimum [X] hours. Adverse weather conditions exceed safe operating thresholds. No convoy movement authorized.&#x27; },
+};
+
+function loadTemplate(key) {
+  const t = TEMPLATES[key]; if(!t) return;
+  document.getElementById(&#x27;wo-type&#x27;).value     = t.type;
+  document.getElementById(&#x27;wo-priority&#x27;).value = t.priority;
+  document.getElementById(&#x27;wo-tag&#x27;).value       = t.tag;
+  document.getElementById(&#x27;wo-body&#x27;).value      = t.body;
+}
+
+function addWarningOrder() {
+  const type  = document.getElementById(&#x27;wo-type&#x27;).value;
+  const prio  = document.getElementById(&#x27;wo-priority&#x27;).value;
+  const tag   = document.getElementById(&#x27;wo-tag&#x27;).value.trim()  || &#x27;WARN-&#x27; + String(warningOrders.length+1).padStart(3,&#x27;0&#x27;);
+  const body  = document.getElementById(&#x27;wo-body&#x27;).value.trim() || &#x27;(no details provided)&#x27;;
+  const recip = document.getElementById(&#x27;wo-recip&#x27;).value.trim();
+  const ts    = new Date().toISOString().substring(0,16).replace(&#x27;T&#x27;,&#x27; &#x27;)+&#x27; UTC&#x27;;
+  warningOrders.push({ type, prio, tag, body, recip, ts });
+  // Clear composer
+  document.getElementById(&#x27;wo-tag&#x27;).value  = &#x27;&#x27;;
+  document.getElementById(&#x27;wo-body&#x27;).value = &#x27;&#x27;;
+  renderWOs();
+}
+
+function removeWO(i) {
+  warningOrders.splice(i,1);
+  renderWOs();
+}
+
+function renderWOs() {
+  const list = document.getElementById(&#x27;wo-list&#x27;);
+  const empty= document.getElementById(&#x27;wo-empty&#x27;);
+  const badge= document.getElementById(&#x27;wo-count-badge&#x27;);
+  badge.textContent = warningOrders.length + (warningOrders.length===1?&#x27; order&#x27;:&#x27; orders&#x27;);
+  if(!warningOrders.length){ empty.style.display=&#x27;&#x27;; list.innerHTML=&#x27;&#x27;; return; }
+  empty.style.display = &#x27;none&#x27;;
+  list.innerHTML = warningOrders.map((w,i)=&gt;{
+    const m = WO_TYPE_META[w.type]||WO_TYPE_META.warn;
+    return `&lt;div class=&quot;wo-card&quot;&gt;
+      &lt;div class=&quot;wo-card-head&quot;&gt;
+        &lt;div class=&quot;wo-dot ${m.cls}&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;wo-type-lbl ${m.cls}&quot;&gt;${m.lbl}&lt;/div&gt;
+        &lt;div class=&quot;wo-seq&quot;&gt;ORDER ${i+1} OF ${warningOrders.length}&lt;/div&gt;
+        &lt;button class=&quot;wo-del-btn&quot; onclick=&quot;removeWO(${i})&quot;&gt;✕&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;wo-card-body&quot;&gt;
+        &lt;div class=&quot;wo-tag-text&quot;&gt;${w.tag}&lt;/div&gt;
+        &lt;div class=&quot;wo-body-text&quot;&gt;${w.body}&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;wo-foot&quot;&gt;
+        &lt;div class=&quot;wo-ts&quot;&gt;${w.ts} · ${w.prio}&lt;/div&gt;
+        &lt;div class=&quot;wo-recip&quot;&gt;${w.recip}&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;`;
+  }).join(&#x27;&#x27;);
+}
+
+// ═══ ASSET DRAG ═══
+let dragData=null, deployedAssets=[];
+function onDragStart(e){
+  dragData={asset:e.currentTarget.dataset.asset,mw:parseFloat(e.currentTarget.dataset.mw)||0,label:e.currentTarget.querySelector(&#x27;.aname&#x27;).textContent};
+  e.currentTarget.classList.add(&#x27;dragging&#x27;);
+  setTimeout(()=&gt;e.currentTarget.classList.remove(&#x27;dragging&#x27;),0);
+}
+function onDragOver(e){e.preventDefault();document.getElementById(&#x27;drop-zone&#x27;).classList.add(&#x27;over&#x27;);}
+function onDragLeave(){document.getElementById(&#x27;drop-zone&#x27;).classList.remove(&#x27;over&#x27;);}
+function onDrop(e){
+  e.preventDefault();document.getElementById(&#x27;drop-zone&#x27;).classList.remove(&#x27;over&#x27;);
+  if(!dragData)return;
+  deployedAssets.push({...dragData});renderDropZone();calcPower();dragData=null;
+}
+function removeAsset(i){deployedAssets.splice(i,1);renderDropZone();calcPower();}
+function renderDropZone(){
+  const dz=document.getElementById(&#x27;drop-zone&#x27;);
+  document.getElementById(&#x27;dz-lbl&#x27;).style.display=deployedAssets.length?&#x27;none&#x27;:&#x27;&#x27;;
+  dz.querySelectorAll(&#x27;.placed-asset&#x27;).forEach(el=&gt;el.remove());
+  deployedAssets.forEach((a,i)=&gt;{
+    const el=document.createElement(&#x27;div&#x27;);el.className=&#x27;placed-asset&#x27;;
+    el.innerHTML=`${a.label} &lt;span style=&quot;color:var(--txd)&quot;&gt;(${a.mw})&lt;/span&gt; ✕`;
+    el.onclick=()=&gt;removeAsset(i);dz.appendChild(el);
+  });
+}
+function calcPower(){
+  const demand=parseFloat(document.getElementById(&#x27;peak-mw&#x27;).value)||58;
+  const total=deployedAssets.reduce((s,a)=&gt;s+a.mw,0);
+  const cover=Math.min(100,total/demand*100);
+  const res=total&gt;0?Math.round(total/demand*72):0;
+  document.getElementById(&#x27;dep-cap&#x27;).textContent=total.toFixed(1);
+  document.getElementById(&#x27;dep-demand&#x27;).textContent=demand;
+  document.getElementById(&#x27;dep-cover&#x27;).textContent=cover.toFixed(0)+&#x27;%&#x27;;
+  document.getElementById(&#x27;dep-resilience&#x27;).textContent=res?res+&#x27;h&#x27;:&#x27;—&#x27;;
+}
+
+// ═══ VEHICLES ═══
+const VEHICLES=[
+  {icon:&#x27;🚛&#x27;,name:&#x27;Commercial Fuel Tanker — 6,000 gal&#x27;,    cap:&#x27;6,000 gal&#x27;,  status:&#x27;op&#x27;,   branch:&#x27;NAVY&#x27;, desc:&#x27;Primary shore-based diesel/JP-5 delivery to installation storage&#x27;},
+  {icon:&#x27;🚛&#x27;,name:&#x27;Commercial Fuel Tanker — 2,500 gal&#x27;,    cap:&#x27;2,500 gal&#x27;,  status:&#x27;op&#x27;,   branch:&#x27;NAVY&#x27;, desc:&#x27;Secondary tanker for forward distribution to remote generator pads&#x27;},
+  {icon:&#x27;🚗&#x27;,name:&#x27;JLTV — Joint Light Tactical Vehicle&#x27;,   cap:&#x27;—&#x27;,          status:&#x27;op&#x27;,   branch:&#x27;NAVY&#x27;, desc:&#x27;NAVFAC personnel and light logistics transport&#x27;},
+  {icon:&#x27;🚐&#x27;,name:&#x27;Personnel Transport Van&#x27;,               cap:&#x27;12 persons&#x27;, status:&#x27;op&#x27;,   branch:&#x27;ALL&#x27;,  desc:&#x27;Crew rotation and operator transport across installation&#x27;},
+  {icon:&#x27;🔧&#x27;,name:&#x27;MEP-831A — 60 kW Generator Trailer&#x27;,   cap:&#x27;60 kW&#x27;,      status:&#x27;op&#x27;,   branch:&#x27;ALL&#x27;,  desc:&#x27;Towed tactical generator for remote load centers&#x27;},
+  {icon:&#x27;⛽&#x27;,name:&#x27;JP-5 Fuel Bowser — Shore&#x27;,             cap:&#x27;3,000 gal&#x27;,  status:&#x27;op&#x27;,   branch:&#x27;NAVY&#x27;, desc:&#x27;Aviation fuel bowser — NAS and carrier pier support&#x27;},
+];
+let vehicleQty=VEHICLES.map(()=&gt;0);
+function renderVehicles(){
+  document.getElementById(&#x27;vehicle-table-body&#x27;).innerHTML=VEHICLES.map((v,i)=&gt;`
+    &lt;tr&gt;&lt;td&gt;${v.icon}&lt;/td&gt;&lt;td style=&quot;color:var(--txh)&quot;&gt;${v.name}&lt;/td&gt;&lt;td style=&quot;color:var(--txd)&quot;&gt;${v.cap}&lt;/td&gt;
+    &lt;td style=&quot;font-size:9px;color:var(--txd);max-width:140px&quot;&gt;${v.desc}&lt;/td&gt;
+    &lt;td&gt;&lt;span class=&quot;tag ${v.status}&quot;&gt;${v.status===&#x27;op&#x27;?&#x27;OP&#x27;:&#x27;MAINT&#x27;}&lt;/span&gt;&lt;/td&gt;
+    &lt;td class=&quot;veh-qty&quot;&gt;&lt;input type=&quot;number&quot; min=&quot;0&quot; max=&quot;99&quot; value=&quot;${vehicleQty[i]}&quot;
+      oninput=&quot;vehicleQty[${i}]=parseInt(this.value)||0;calcDistance()&quot;&gt;&lt;/td&gt;&lt;/tr&gt;`).join(&#x27;&#x27;);
+}
+
+// ═══ DISTANCE ═══
+function calcDistance(){
+  const miles=parseFloat(document.getElementById(&#x27;depot-miles&#x27;).value)||2.1;
+  const speed=parseFloat(document.getElementById(&#x27;veh-speed&#x27;).value)||25;
+  const load =parseFloat(document.getElementById(&#x27;load-time&#x27;).value)||45;
+  const oneWay=(miles/speed)*60;
+  const rt=oneWay*2+load;
+  const runs=Math.floor(24*60/rt);
+  const trucks=vehicleQty[0]||1; // Commercial 6,000 gal tanker as primary
+  const gal=runs*trucks*6000;    // 6,000 gal capacity
+  document.getElementById(&#x27;dc-oneway&#x27;).textContent=oneWay.toFixed(0);
+  document.getElementById(&#x27;dc-roundtrip&#x27;).textContent=rt.toFixed(0);
+  document.getElementById(&#x27;dc-runs&#x27;).textContent=runs;
+  document.getElementById(&#x27;dc-gal&#x27;).textContent=gal.toLocaleString();
+}
+
+// ═══ SUMMARY ═══
+function updateSummary(){ calcPower(); }
+function buildSummary(){
+  const demand=parseFloat(document.getElementById(&#x27;peak-mw&#x27;).value)||selectedInst.mw;
+  const total=deployedAssets.reduce((s,a)=&gt;s+a.mw,0);
+  const cover=total&gt;0?Math.min(100,total/demand*100).toFixed(0):0;
+  const win=total&gt;0?Math.round(total/demand*72):0;
+  const cap=(deployedAssets.length*8.5+total*0.9).toFixed(1);
+  document.getElementById(&#x27;sr-demand&#x27;).textContent=demand;
+  document.getElementById(&#x27;sr-cap&#x27;).textContent=total.toFixed(1);
+  document.getElementById(&#x27;sr-window&#x27;).textContent=win||&#x27;—&#x27;;
+  document.getElementById(&#x27;sr-capital&#x27;).textContent=&#x27;$&#x27;+cap+&#x27;M&#x27;;
+  document.getElementById(&#x27;sr-pct&#x27;).textContent=cover+&#x27;%&#x27;;
+  document.getElementById(&#x27;sr-prog&#x27;).style.width=cover+&#x27;%&#x27;;
+  const scId=&#x27;SC-&#x27;+selectedInst.id+&#x27;-&#x27;+Date.now().toString(36).toUpperCase().slice(-6);
+  document.getElementById(&#x27;sc-id&#x27;).value=scId;
+  document.getElementById(&#x27;sum-badge&#x27;).textContent=total&gt;0?&#x27;READY&#x27;:&#x27;INCOMPLETE&#x27;;
+  document.getElementById(&#x27;sum-badge&#x27;).style.color=total&gt;0?&#x27;var(--sage)&#x27;:&#x27;var(--amber)&#x27;;
+  document.getElementById(&#x27;summary-grid&#x27;).innerHTML=[
+    [&#x27;Installation&#x27;, selectedInst.name],
+    [&#x27;Location&#x27;,     selectedInst.loc],
+    [&#x27;Branch&#x27;,       selectedInst.branch],
+    [&#x27;Trigger&#x27;,      document.getElementById(&#x27;trigger-name&#x27;).value||&#x27;—&#x27;],
+    [&#x27;Severity&#x27;,     document.getElementById(&#x27;severity&#x27;).value],
+    [&#x27;Duration&#x27;,     document.getElementById(&#x27;outage-dur&#x27;).value||&#x27;—&#x27;],
+    [&#x27;Resupply Delay&#x27;,document.getElementById(&#x27;resupply-delay&#x27;).value+&#x27;h&#x27;],
+    [&#x27;Personnel&#x27;,    document.getElementById(&#x27;personnel&#x27;).value||&#x27;—&#x27;],
+    [&#x27;Assets&#x27;,       deployedAssets.map(a=&gt;a.label).join(&#x27;, &#x27;)||&#x27;None&#x27;],
+    [&#x27;Orders&#x27;,       warningOrders.length+&#x27; queued&#x27;],
+  ].map(([k,v])=&gt;`&lt;div class=&quot;sum-item&quot;&gt;&lt;div class=&quot;sum-key&quot;&gt;${k}&lt;/div&gt;&lt;div class=&quot;sum-val&quot;&gt;${v}&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;);
+  // SONAR alerts review
+  const wrc=document.getElementById(&#x27;wo-review-count&#x27;);
+  const wrl=document.getElementById(&#x27;wo-review-list&#x27;);
+  wrc.textContent=warningOrders.length;
+  if(!warningOrders.length){ wrl.innerHTML=&#x27;&lt;div class=&quot;wo-empty&quot; style=&quot;margin:0&quot;&gt;NO ORDERS QUEUED&lt;/div&gt;&#x27;; return; }
+  wrl.innerHTML=warningOrders.map((w,i)=&gt;{
+    const m=WO_TYPE_META[w.type]||WO_TYPE_META.warn;
+    return `&lt;div class=&quot;wo-card&quot;&gt;
+      &lt;div class=&quot;wo-card-head&quot;&gt;
+        &lt;div class=&quot;wo-dot ${m.cls}&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;wo-type-lbl ${m.cls}&quot;&gt;${m.lbl}&lt;/div&gt;
+        &lt;div class=&quot;wo-seq&quot;&gt;ORDER ${i+1}&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;wo-card-body&quot;&gt;&lt;div class=&quot;wo-tag-text&quot;&gt;${w.tag}&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;`;
+  }).join(&#x27;&#x27;);
+}
+
+// ═══ LAUNCH ═══
+function launchScenario(){
+  document.getElementById(&#x27;launch-banner&#x27;).classList.add(&#x27;show&#x27;);
+  const msgs=[&#x27;Building digital twin…&#x27;,&#x27;Loading installation data…&#x27;,&#x27;Configuring assets…&#x27;,&#x27;Calculating power requirements…&#x27;,&#x27;Packaging SONAR alerts…&#x27;,&#x27;Scenario ready — release queues each alert on the CMDR bus as an exercise.&#x27;];
+  let i=0;
+  const sub=document.getElementById(&#x27;banner-sub&#x27;),title=document.getElementById(&#x27;banner-title&#x27;);
+  const iv=setInterval(()=&gt;{
+    if(i&lt;msgs.length){sub.textContent=msgs[i++];}
+    else{
+      clearInterval(iv);
+      title.textContent=&#x27;SCENARIO READY&#x27;;title.style.color=&#x27;var(--sage)&#x27;;
+      document.getElementById(&#x27;banner-btns&#x27;).style.display=&#x27;flex&#x27;;
+    }
+  },550);
+}
+function sendToSimulator(){
+  const demand = parseFloat(document.getElementById(&#x27;peak-mw&#x27;).value)||selectedInst.mw;
+  const totalMw = deployedAssets.reduce((s,a)=&gt;s+a.mw,0);
+  const g = id =&gt; { const el=document.getElementById(id); return el ? el.value : &#x27;&#x27;; };
+  const payload = {
+    installation: selectedInst.name, installationId: selectedInst.id, branch: selectedInst.branch, loc: selectedInst.loc,
+    peakMw: demand, utility: g(&#x27;utility&#x27;)||selectedInst.utility||&#x27;&#x27;,
+    trigger: g(&#x27;trigger-name&#x27;), severity: g(&#x27;severity&#x27;), outageDur: g(&#x27;outage-dur&#x27;), personnel: g(&#x27;personnel&#x27;),
+    assets: deployedAssets.map(a=&gt;({label:a.label, mw:a.mw, zone:a.zone||&#x27;&#x27;})),
+    totalMw: +totalMw.toFixed(1), coverPct: totalMw&gt;0?Math.min(100,Math.round(totalMw/demand*100)):0,
+    resilienceHrs: totalMw&gt;0?Math.round(totalMw/demand*72):0,
+    warningOrders: warningOrders.map(w=&gt;({type:({warn:&#x27;SONAR ALERT&#x27;,crit:&#x27;CRITICAL ALERT&#x27;,info:&#x27;INFORMATION&#x27;,res:&#x27;RESOLVED&#x27;})[w.type]||String(w.type||&#x27;SONAR ALERT&#x27;).toUpperCase(), priority:w.prio||&#x27;&#x27;, tag:w.tag||&#x27;&#x27;, body:w.body||&#x27;&#x27;, recipients:w.recip||&#x27;&#x27;, ts:w.ts||&#x27;&#x27;}))
+  };
+  window.parent.postMessage({type:&#x27;BUILDER_SCENARIO&#x27;, payload: payload},&#x27;*&#x27;);
+  document.getElementById(&#x27;launch-banner&#x27;).classList.remove(&#x27;show&#x27;);
+}
+function buildPayload(){
+  const demand = parseFloat(document.getElementById(&#x27;peak-mw&#x27;).value)||selectedInst.mw;
+  const totalMw = deployedAssets.reduce((s,a)=&gt;s+a.mw,0);
+  const g = id =&gt; { const el=document.getElementById(id); return el ? el.value : &#x27;&#x27;; };
+  return {
+    installation: selectedInst.name, installationId: selectedInst.id, branch: selectedInst.branch, loc: selectedInst.loc,
+    peakMw: demand, utility: g(&#x27;utility&#x27;)||selectedInst.utility||&#x27;&#x27;,
+    trigger: g(&#x27;trigger-name&#x27;), severity: g(&#x27;severity&#x27;), outageDur: g(&#x27;outage-dur&#x27;), personnel: g(&#x27;personnel&#x27;),
+    assets: deployedAssets.map(a=&gt;({label:a.label, mw:a.mw, zone:a.zone||&#x27;&#x27;})),
+    totalMw: +totalMw.toFixed(1), coverPct: totalMw&gt;0?Math.min(100,Math.round(totalMw/demand*100)):0,
+    resilienceHrs: totalMw&gt;0?Math.round(totalMw/demand*72):0,
+    warningOrders: warningOrders.map(w=&gt;({type:({warn:&#x27;SONAR ALERT&#x27;,crit:&#x27;CRITICAL ALERT&#x27;,info:&#x27;INFORMATION&#x27;,res:&#x27;RESOLVED&#x27;})[w.type]||String(w.type||&#x27;SONAR ALERT&#x27;).toUpperCase(), priority:w.prio||&#x27;&#x27;, tag:w.tag||&#x27;&#x27;, body:w.body||&#x27;&#x27;, recipients:w.recip||&#x27;&#x27;, ts:w.ts||&#x27;&#x27;}))
+  };
+}
+function sendToDropZone(){
+  window.parent.postMessage({type:&#x27;BUILDER_DROP&#x27;, payload: buildPayload()},&#x27;*&#x27;);
+  document.getElementById(&#x27;launch-banner&#x27;).classList.remove(&#x27;show&#x27;);
+}
+
+// ═══ CLEAR ═══
+function confirmClear(){ document.getElementById(&#x27;clear-modal&#x27;).classList.add(&#x27;show&#x27;); }
+function closeClear(){ document.getElementById(&#x27;clear-modal&#x27;).classList.remove(&#x27;show&#x27;); }
+function clearAll(){
+  closeClear();
+  warningOrders=[];deployedAssets=[];vehicleQty=VEHICLES.map(()=&gt;0);
+  selectedInst=INSTALLATIONS[0];currentBranch=&#x27;ALL&#x27;;
+  // Reset form fields
+  document.getElementById(&#x27;peak-mw&#x27;).value=&#x27;58&#x27;;
+  document.getElementById(&#x27;utility&#x27;).value=&#x27;Dominion Energy Virginia&#x27;;
+  document.getElementById(&#x27;trigger-name&#x27;).value=&#x27;Hurricane Florence&#x27;;
+  document.getElementById(&#x27;outage-dur&#x27;).value=&#x27;72+ hours&#x27;;
+  document.getElementById(&#x27;resupply-delay&#x27;).value=&#x27;48&#x27;;
+  document.getElementById(&#x27;trigger-desc&#x27;).value=&#x27;Storm surge disables Dominion Energy Chesapeake transmission corridor. NSN loses commercial grid power. All non-berthed vessels ordered to sea for ride-out.&#x27;;
+  document.getElementById(&#x27;personnel&#x27;).value=&#x27;120&#x27;;
+  document.getElementById(&#x27;wo-tag&#x27;).value=&#x27;&#x27;;
+  document.getElementById(&#x27;wo-body&#x27;).value=&#x27;&#x27;;
+  renderWOs();renderInst();renderDropZone();renderVehicles();calcDistance();
+  document.querySelectorAll(&#x27;.step&#x27;).forEach(s=&gt;s.classList.remove(&#x27;done&#x27;,&#x27;active&#x27;));
+  document.getElementById(&#x27;run-btn&#x27;).disabled=true;
+  goStep(1);
+}
+
+// ═══ INIT ═══
+renderInst();renderVehicles();calcDistance();
+document.getElementById(&#x27;sc-id&#x27;).value=&#x27;SC-PENDING-&#x27;+Math.random().toString(36).slice(2,8).toUpperCase();
+
+// Theme sync + API key injection from hub
+window.addEventListener(&#x27;message&#x27;,function(e){
+  if(!e.data) return;
+  if(e.data.type===&#x27;SET_THEME&#x27;) document.documentElement.setAttribute(&#x27;data-theme&#x27;,e.data.theme);
+});
+
+function updateAiContext(){}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"
+  ></iframe></div>
 
   <!-- LIVE MAP -->
   <div id="p-map">
@@ -872,6 +2029,120 @@ window.SRABus=(function(){
   return api;
 })();
 
+
+/* SYS-04 DATA DROP ZONE (shared) */
+/* ie-SRS SYS-04 · DATA DROP ZONE — shared module (ADMIN · ie-SRS hub · CMDR mobile)
+   Store: localStorage 'sra_dropzone' (shared on-origin) · Sync: SRABus envelopes DROP / DROP_DEL (GitHub transport = cross-device)
+   Drop: {id, ts, kind:'scenario'|'xlsx'|'csv'|'json'|'file', name, size, site, siteName, from, by, role, meta:{}, data:(scenario object | text ≤ 200 KB) } */
+window.SRADropZone=(function(){
+  var KEY='sra_dropzone', MAX_TEXT=64*1024, mounts=[], subbed=false, notified={}, DEFAULTS={};
+  function ls(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return [];}}
+  function save(l){try{localStorage.setItem(KEY,JSON.stringify(l));}catch(e){}}
+  function uid(){return 'DZ-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();}
+  function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function fmtSize(n){n=n||0;return n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(2)+' MB';}
+  function when(ts){var d=new Date(ts);return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});}
+  function kindOf(name){var e=(name||'').split('.').pop().toLowerCase();return e==='xlsx'||e==='xls'?'xlsx':e==='csv'?'csv':e==='json'?'json':'file';}
+  var ICON={scenario:'⬡',xlsx:'▦',csv:'≡',json:'{}',file:'▤'};
+  var COL={scenario:'#e8a33d',xlsx:'#4db88a',csv:'#18d4f8',json:'#c3aaf8',file:'#b0b8c4'};
+  var CSS='.dz{--dzc:#18d4f8;--dzl:rgba(255,255,255,.1);--dzt:#dbe6f2;--dzm:#8fb0d0;--dzbg:#0e1727;--dzcard:#111c2c;font-family:-apple-system,"SF Pro Text",Helvetica,Arial,sans-serif;color:var(--dzt);display:flex;flex-direction:column;gap:12px;min-height:0}'+
+  '.dz .dz-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}'+
+  '.dz .dz-title{font-family:"Share Tech Mono",Menlo,monospace;font-size:12px;letter-spacing:2.5px;color:#b0b8c4}'+
+  '.dz .dz-title b{color:#fff;font-weight:600}'+
+  '.dz .dz-st{font-family:Menlo,monospace;font-size:10.5px;letter-spacing:1px;color:var(--dzm);display:flex;align-items:center;gap:6px}'+
+  '.dz .dz-st i{width:7px;height:7px;border-radius:50%;background:#d4a05a;box-shadow:0 0 6px #d4a05a}.dz .dz-st.ok i{background:#4db88a;box-shadow:0 0 6px #4db88a}'+
+  '.dz .dz-drop{border:1.5px dashed rgba(176,184,196,.45);border-radius:14px;padding:18px 14px;text-align:center;background:rgba(176,184,196,.04);transition:all .15s;position:relative}'+
+  '.dz .dz-drop.over{border-color:var(--dzc);background:rgba(24,212,248,.08)}'+
+  '.dz .dz-drop .dz-ico{font-size:26px;color:#b0b8c4;line-height:1}'+
+  '.dz .dz-drop .dz-h{font-family:"Share Tech Mono",Menlo,monospace;font-size:12px;letter-spacing:2px;color:#d0f5e8;margin-top:6px}'+
+  '.dz .dz-drop .dz-s{font-family:Menlo,monospace;font-size:10.5px;color:rgba(176,184,196,.7);letter-spacing:1px;margin-top:4px;line-height:1.6}'+
+  '.dz .dz-drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}'+
+  '.dz .dz-acts{display:flex;gap:8px;flex-wrap:wrap}'+
+  '.dz button.dz-b{flex:1;min-width:120px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;font-size:13px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}'+
+  '.dz button.dz-b.pri{background:#e8a33d;border-color:#e8a33d;color:#1a0f00}'+
+  '.dz button.dz-b.sm{flex:none;min-width:0;height:28px;padding:0 10px;font-size:11px;font-weight:600}'+
+  '.dz button.dz-b.danger{color:#ff8a80}'+
+  '.dz .dz-list{border-radius:14px;background:var(--dzcard);border:1px solid var(--dzl);overflow:hidden}'+
+  '.dz .dz-row{display:grid;grid-template-columns:38px 1fr auto;gap:2px 12px;padding:11px 12px;align-items:center;border-bottom:1px solid var(--dzl)}'+
+  '.dz .dz-row:last-child{border-bottom:none}'+
+  '.dz .dz-k{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:Menlo,monospace;font-size:15px;font-weight:700;color:#0b1220}'+
+  '.dz .dz-n{font-size:13.5px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '.dz .dz-m{font-size:11px;color:var(--dzm);font-family:Menlo,monospace;letter-spacing:.3px}'+
+  '.dz .dz-m b{color:#e8a33d;font-weight:600}'+
+  '.dz .dz-tag{display:inline-block;font-size:9.5px;letter-spacing:1px;padding:1px 6px;border-radius:5px;border:1px solid rgba(255,255,255,.15);color:#b0b8c4;margin-left:4px;vertical-align:middle}'+
+  '.dz .dz-tag.new{border-color:#e8a33d;color:#e8a33d}'+
+  '.dz .dz-row .dz-btns{display:flex;flex-direction:column;gap:4px}'+
+  '.dz .dz-empty{border-radius:14px;border:1px dashed rgba(255,255,255,.14);padding:18px;color:var(--dzm);font-size:12.5px;text-align:center;font-family:Menlo,monospace;letter-spacing:1px}'+
+  '.dz .dz-view{position:fixed;inset:0;z-index:9000;background:rgba(5,8,14,.9);display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 12px)}'+
+  '.dz .dz-view.on{display:flex}'+
+  '.dz .dz-view .dz-vh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}'+
+  '.dz .dz-view .dz-vh .dz-n{font-size:15px}'+
+  '.dz .dz-view pre{flex:1;overflow:auto;margin:0;background:#0b1220;border:1px solid var(--dzl);border-radius:12px;padding:12px;font-family:Menlo,monospace;font-size:11px;line-height:1.5;color:#c9d7e6;white-space:pre-wrap;word-break:break-word}'+
+  '.dz .dz-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:10px}'+
+  '.dz .dz-sum div{background:var(--dzcard);border:1px solid var(--dzl);border-radius:10px;padding:8px 10px}'+
+  '.dz .dz-sum small{display:block;font-family:Menlo,monospace;font-size:9px;letter-spacing:1.5px;color:var(--dzm)}'+
+  '.dz .dz-sum b{font-size:15px;color:#fff}';
+  function injectCss(doc){doc=doc||document;if(doc.getElementById('dz-css'))return;var s=doc.createElement('style');s.id='dz-css';s.textContent=CSS;doc.head.appendChild(s);}
+  function list(){return ls().sort(function(a,b){return b.ts-a.ts;});}
+  function has(id){return ls().some(function(d){return d.id===id;});}
+  function put(drop){var l=ls();if(l.some(function(d){return d.id===drop.id;}))return false;l.push(drop);if(l.length>200)l.sort(function(a,b){return a.ts-b.ts;}).splice(0,l.length-200);save(l);return true;}
+  function del(id){var l=ls(),n=l.length;l=l.filter(function(d){return d.id!==id;});save(l);return l.length!==n;}
+  function bus(){return window.SRABus||null;}
+  function ensureSub(){if(subbed||!bus())return;subbed=true;
+    bus().subscribe(function(env){if(!env||!env.payload)return;
+      if(env.type==='DROP'){var d=env.payload;if(!d||!d.id)return;var fresh=put(d);if(fresh||!notified[d.id]){notified[d.id]=1;renderAll();mounts.forEach(function(m){if(m.opts.onIncoming&&d.from!==m.opts.node)try{m.opts.onIncoming(d,env);}catch(e){}});}}
+      else if(env.type==='DROP_DEL'){if(del(env.payload.id))renderAll();}});
+    window.addEventListener('storage',function(e){if(e.key!==KEY)return;renderAll();
+      /* same-origin peers write the store directly (no bus hop) — surface their new drops as incoming */
+      ls().forEach(function(d){if(notified[d.id])return;notified[d.id]=1;mounts.forEach(function(m){if(m.opts.onIncoming&&d.from&&d.from!==m.opts.node)try{m.opts.onIncoming(d,{from:d.from,type:'DROP',payload:d});}catch(x){}});});});}
+  /* add a drop locally + publish (returns the drop) */
+  function add(spec,opts){opts=opts||{};var m=Object.assign({},DEFAULTS,mounts[0]?mounts[0].opts:{});
+    var drop={id:spec.id||uid(),ts:spec.ts||Date.now(),kind:spec.kind||'file',name:spec.name||'untitled',size:spec.size||(spec.data?JSON.stringify(spec.data).length:0),
+      site:spec.site||m.site||'',siteName:spec.siteName||m.siteName||'',from:spec.from||m.node||'',by:spec.by||m.by||'',role:spec.role||m.role||'',meta:spec.meta||{},data:spec.data==null?null:spec.data};
+    notified[drop.id]=1;put(drop);renderAll();
+    if(opts.publish!==false&&bus()){try{bus().publish('DROP',drop,{site:drop.site||'*'});}catch(e){}}
+    return drop;}
+  function remove(id){del(id);renderAll();if(bus()){try{bus().publish('DROP_DEL',{id:id});}catch(e){}}}
+  function fromScenario(pl,opts){opts=opts||{};var name=(pl.installation||'Scenario')+' · '+(pl.trigger||'no trigger')+(pl.severity?' · '+pl.severity:'');
+    return add({kind:'scenario',name:name,data:pl,meta:{installation:pl.installation,severity:pl.severity,totalMw:pl.totalMw,coverPct:pl.coverPct,resilienceHrs:pl.resilienceHrs,orders:(pl.warningOrders||[]).length,assets:(pl.assets||[]).length,source:opts.source||'builder'}},opts);}
+  function fromFile(file,cb){var kind=kindOf(file.name);var r=new FileReader();
+    if(kind==='xlsx'||file.size>MAX_TEXT){var d=add({kind:kind,name:file.name,size:file.size,data:null,meta:{mime:file.type,note:kind==='xlsx'?'binary · metadata only on bus':'over 64 KB · metadata only on bus'}});if(cb)cb(d);return;}
+    r.onload=function(){var d=add({kind:kind,name:file.name,size:file.size,data:String(r.result||''),meta:{mime:file.type}});if(cb)cb(d);};r.readAsText(file);}
+  /* ── UI ── */
+  function render(m){var el=m.el,o=m.opts,l=list();injectCss(el.ownerDocument);var st=bus()?bus().status():null;
+    var h='<div class="dz-head"><div class="dz-title">SYS-04 · <b>DATA DROP ZONE</b> · '+l.length+' item'+(l.length===1?'':'s')+'</div><div class="dz-st'+(st&&st.connected?' ok':'')+'"><i></i>'+(st?(st.transport||'bus').toUpperCase()+(st.connected?' · SYNCED':st.error?' · '+esc(st.error).slice(0,28):' · LOCAL'):'NO BUS')+' · NODE '+esc((o.node||'').toUpperCase())+'</div></div>';
+    h+='<div class="dz-drop" id="'+m.id+'-drop"><div class="dz-ico">⤓</div><div class="dz-h">DROP FILES OR TAP TO UPLOAD</div><div class="dz-s">XLSX · CSV · JSON · scenario packages<br>synced to '+esc(o.peers||'ADMIN · ie-SRS · CMDR')+' over the ie-SRS bus</div><input type="file" multiple accept=".xlsx,.xls,.csv,.json,application/json,text/csv" id="'+m.id+'-file"></div>';
+    if(o.onOpenBuilder)h+='<div class="dz-acts"><button class="dz-b pri" id="'+m.id+'-bld">⬡ Build &amp; send scenario</button></div>';
+    if(!l.length)h+='<div class="dz-empty">NO DROPS YET — SEND A SCENARIO FROM THE BUILDER OR UPLOAD A FILE</div>';
+    else{h+='<div class="dz-list">'+l.map(function(d){var isNew=Date.now()-d.ts<6*3600e3&&d.from&&d.from!==o.node;
+      return '<div class="dz-row" data-id="'+esc(d.id)+'"><div class="dz-k" style="background:'+(COL[d.kind]||COL.file)+'">'+(ICON[d.kind]||ICON.file)+'</div>'+
+        '<div><div class="dz-n">'+esc(d.name)+(d.kind==='scenario'?'<span class="dz-tag">SCENARIO</span>':'')+(isNew?'<span class="dz-tag new">NEW</span>':'')+'</div>'+
+        '<div class="dz-m">'+(d.kind==='scenario'&&d.meta?('<b>'+esc(d.meta.orders||0)+' alerts</b> · '+esc(d.meta.assets||0)+' assets · '+esc(d.meta.totalMw||0)+' MW · '+esc(d.meta.coverPct||0)+'% cover<br>'):'')+
+        esc(d.kind.toUpperCase())+' · '+fmtSize(d.size)+' · from <b>'+esc((d.from||'?').toUpperCase())+'</b>'+(d.by?' · '+esc(d.by):'')+' · '+when(d.ts)+'</div></div>'+
+        '<div class="dz-btns"><button class="dz-b sm" data-act="view">View</button><button class="dz-b sm danger" data-act="del">Delete</button></div></div>';}).join('')+'</div>';}
+    el.innerHTML='<div class="dz">'+h+'</div>';
+    if(!m.view){m.view=el.ownerDocument.createElement('div');m.view.className='dz';m.view.innerHTML='<div class="dz-view" id="'+m.id+'-view"><div class="dz-vh"><div class="dz-n" id="'+m.id+'-vt"></div><button class="dz-b sm" id="'+m.id+'-vc">Close</button></div><div class="dz-sum" id="'+m.id+'-vs"></div><pre id="'+m.id+'-vp"></pre></div>';el.ownerDocument.body.appendChild(m.view);m.view.querySelector('#'+m.id+'-vc').onclick=function(){m.view.querySelector('#'+m.id+'-view').classList.remove('on');};}
+    var dz=el.querySelector('#'+m.id+'-drop'),fi=el.querySelector('#'+m.id+'-file');
+    ['dragenter','dragover'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('over');});});
+    ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('over');});});
+    dz.addEventListener('drop',function(e){[].forEach.call(e.dataTransfer.files||[],function(f){fromFile(f,function(d){if(o.onAdded)o.onAdded(d);});});});
+    fi.addEventListener('change',function(){[].forEach.call(fi.files||[],function(f){fromFile(f,function(d){if(o.onAdded)o.onAdded(d);});});fi.value='';});
+    var bb=el.querySelector('#'+m.id+'-bld');if(bb)bb.onclick=function(){o.onOpenBuilder();};
+    el.querySelectorAll('.dz-row button').forEach(function(b){b.onclick=function(){var id=b.closest('.dz-row').dataset.id,d=ls().filter(function(x){return x.id===id;})[0];if(!d)return;
+      if(b.dataset.act==='del'){if(confirm('Delete "'+d.name+'" from every drop zone?'))remove(id);}
+      else view(m,d);};});
+    if(o.onRender)try{o.onRender(l);}catch(e){}}
+  function view(m,d){var el=m.view;el.querySelector('#'+m.id+'-vt').textContent=d.name;var s=el.querySelector('#'+m.id+'-vs');
+    if(d.kind==='scenario'&&d.data){var p=d.data;s.innerHTML=[['INSTALLATION',p.installation],['TRIGGER',p.trigger],['SEVERITY',p.severity],['PEAK',(p.peakMw||0)+' MW'],['DEPLOYED',(p.totalMw||0)+' MW'],['COVER',(p.coverPct||0)+'%'],['RESILIENCE',(p.resilienceHrs||0)+' h'],['ALERTS',(p.warningOrders||[]).length]].map(function(r){return '<div><small>'+r[0]+'</small><b>'+esc(r[1]==null?'—':r[1])+'</b></div>';}).join('');}
+    else s.innerHTML='<div><small>KIND</small><b>'+esc(d.kind.toUpperCase())+'</b></div><div><small>SIZE</small><b>'+fmtSize(d.size)+'</b></div><div><small>FROM</small><b>'+esc((d.from||'?').toUpperCase())+'</b></div>';
+    var pre=el.querySelector('#'+m.id+'-vp');pre.textContent=d.data==null?'(binary or oversized — metadata only; original file stays on the sending device)':typeof d.data==='string'?d.data.slice(0,60000):JSON.stringify(d.data,null,2);
+    el.querySelector('#'+m.id+'-view').classList.add('on');}
+  function renderAll(){mounts.forEach(function(m){try{if(m.el.isConnected)render(m);}catch(e){console.warn('dz render',e);}});}
+  function mount(el,opts){var m={el:el,opts:opts||{},id:'dz'+(mounts.length+1)};if(!mounts.length)ls().forEach(function(d){notified[d.id]=1;});mounts.push(m);ensureSub();render(m);if(bus())bus().onStatus(function(st){var k=[st.transport,st.connected,st.error].join('|');if(m.stKey!==undefined&&m.stKey!==k&&m.el.isConnected)render(m);m.stKey=k;});return {refresh:function(){render(m);},add:add,remove:remove,fromScenario:fromScenario,list:list};}
+  function configure(o){Object.assign(DEFAULTS,o||{});}
+  return {configure:configure,mount:mount,add:add,remove:remove,fromScenario:fromScenario,fromFile:fromFile,list:list,has:has,KEY:KEY};
+})();
+
 </script>
 <script>
 (function(){
@@ -903,6 +2174,7 @@ window.SRABus=(function(){
     if(p==='outages'){S.unreadWO=0;save();renderOutages();}
     if(p==='link')renderLink();
     if(p==='health')renderHealth();
+    if(p==='drop'){S.unreadDrop=0;save();renderBadges();dzMount();}
     renderBadges();
   };
   window.stub=function(n){sheet(n,'This module opens the '+n+' view. In this build it is a placeholder; the live data path is the ADMIN hub → CMDR bus.');};
@@ -1013,7 +2285,7 @@ window.SRABus=(function(){
     var h=$('hstat');if(!h)return;h.className='hstat '+cls;
     h.innerHTML='<i></i><div><b>'+head+'</b><div style="color:var(--ink2);font-size:12px">'+out+' active outage'+(out===1?'':'s')+' · '+pend+' pending · '+(st.health?'ADM-04 '+st.health.toLowerCase():'no ADMIN snapshot')+'</div></div><span class="r">›</span>';
   }
-  function renderBadges(){
+  function renderBadges(){var _hd=$('hl-drop');if(_hd){_hd.textContent=S.unreadDrop||'';_hd.classList.toggle('on',!!S.unreadDrop);}
     renderHome();
     ['nl-msg','hl-msg'].forEach(function(id){var nl=$(id);if(nl){nl.textContent=S.unreadMsg;nl.classList.toggle('on',S.unreadMsg>0);}});
     var pw=pendingWO().length;['nl-map','nl-out','hl-map','hl-out'].forEach(function(id){var e=$(id);if(e){e.textContent=pw;e.classList.toggle('on',pw>0);}});
@@ -1271,6 +2543,27 @@ window.SRABus=(function(){
   function setIso(on){var v=$('iso-view'),b=$('iso-btn');if(!v||!b)return;v.classList.toggle('on',on);b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');
     if(on){$('iso-title').textContent='MAP · '+(S.siteName||'NB San Diego').replace(/naval base/i,'NB').toUpperCase();}else if(MAP.map){MAP.map.invalidateSize();}}
   window.toggleIso=function(){setIso(!$('iso-view').classList.contains('on'));};
+  /* ── SONAR Scenario Builder (ADM-08 port, no ARIA) ── */
+  /* ── SYS-04 Data Drop Zone (synced with ADMIN + ie-SRS hub) ── */
+  window.SRADropZone.configure({node:'cmdr',site:cfg.site,siteName:S.siteName,by:S.name,role:'Base Commander'});
+  var DZM=null;function dzMount(){var el=$('dz-cmdr');if(!el)return;if(DZM){DZM.refresh();return;}
+    DZM=window.SRADropZone.mount(el,{node:'cmdr',site:cfg.site,siteName:S.siteName,by:S.name,role:'Base Commander',peers:'ADMIN · ie-SRS hub',onOpenBuilder:function(){openBuilder();},
+      onAdded:function(d){toast('Dropped '+d.name,'copy pushed to ADMIN + ie-SRS drop zones','amber');},
+      onIncoming:function(d,env){if(!$('p-drop').classList.contains('on')){S.unreadDrop=(S.unreadDrop||0)+1;save();renderBadges();}toast('Drop zone · '+d.name,'from '+(d.from||env.from||'peer').toUpperCase(),'amber');buzz();}});}
+  window.SRABus.subscribe(function(env){if(env.type==='DROP'&&!$('p-drop').classList.contains('on')&&!DZM){S.unreadDrop=(S.unreadDrop||0)+1;save();renderBadges();toast('Drop zone · '+(env.payload&&env.payload.name||'new item'),'from '+(env.from||'peer').toUpperCase(),'amber');}});
+  function dzScenario(pl,source){var d=window.SRADropZone.fromScenario(pl,{source:source});return d;}
+  window.openBuilder=function(){$('p-builder').classList.add('on');};
+  window.closeBuilder=function(){$('p-builder').classList.remove('on');};
+  function builderRelease(pl){if(!pl)return;var wos=Array.isArray(pl.warningOrders)?pl.warningOrders:[];var stamp=String(Date.now()).slice(-4),n=0;
+    wos.forEach(function(w,i){var code='SC-'+stamp+'-'+String(i+1).padStart(2,'0'),ts=Date.now()+i;var sev=/urgent|crit|flash/i.test(w.priority||'')?'P1':/priority|major/i.test(w.priority||'')?'P2':'P3';
+      var title=(w.type||'SONAR ALERT')+' · '+(w.tag||'Untitled'),body=(w.body||'')+(pl.trigger?' — trigger: '+pl.trigger:'');
+      var p={code:code,site:cfg.site,siteName:S.siteName,msg:body,title:title,sev:sev,type:w.type||'SONAR ALERT',loc:pl.installation||'',etr:pl.outageDur||'Unknown',test:true,kind:'EXERCISE',ts:ts,channels:w.recipients||'per ADM-03 rules',by:S.name,role:'Base Commander',origin:'cmdr',scenario:{installation:pl.installation,severity:pl.severity,totalMw:pl.totalMw,coverPct:pl.coverPct,resilienceHrs:pl.resilienceHrs}};
+      S.warnords[code]={id:'cmdr:'+code,code:code,ts:ts,site:cfg.site,siteName:S.siteName,msg:body,title:title,test:true,channels:p.channels,kind:'EXERCISE',mine:true,sev:sev,etr:p.etr,missions:0,ack:{by:S.name,ts:ts,self:true}};
+      bus.publish('WARNORD',p,{site:cfg.site});n++;});
+    try{dzScenario(pl,'cmdr-builder · released to bus');}catch(x){}
+    S.lastEvent=Date.now();save();renderAll();closeBuilder();
+    toast('Scenario released',n+' SONAR alert'+(n===1?'':'s')+' queued as exercise · '+(pl.installation||S.siteName),'amber');buzz();if(n)go('outages');}
+  window.addEventListener('message',function(e){var d=e.data||{};if(d.type==='CLOSE_BUILDER')closeBuilder();else if(d.type==='BUILDER_DROP'){try{var dd=dzScenario(d.payload,'cmdr-builder');closeBuilder();toast('Scenario sent to Drop Zone',dd.name+' · copied to ADMIN + ie-SRS','amber');buzz();go('drop');}catch(x){console.warn('BUILDER_DROP',x);}}else if(d.type==='BUILDER_SCENARIO'){try{builderRelease(d.payload);}catch(x){console.warn('BUILDER_SCENARIO',x);}}});
   /* ── collapsible sections: caret / title tap toggles, state persisted ── */
   var SEC_KEY='cmdr_sec_closed';
   function secLoad(){try{return JSON.parse(localStorage.getItem(SEC_KEY)||'{}');}catch(e){return {};}}
