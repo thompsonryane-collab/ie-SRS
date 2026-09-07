@@ -366,7 +366,8 @@ body.onhome .homebtn{display:none}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,179,64,.25)}50%{box-shadow:0 0 0 7px rgba(255,179,64,.1)}}
 
 /* ══ TWO-STEP AUTHENTICATION · step 1 · GitHub-key gate ══ */
-#gate{position:fixed;inset:0;z-index:9001;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 24px)}
+#gate{position:fixed;inset:0;z-index:9001;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 90px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#gate>:first-child{margin-top:auto}#gate>:last-child{margin-bottom:auto}
 #gate.on{display:flex}
 #gate .gt-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
 #gate .gt-step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px}
@@ -383,7 +384,8 @@ body.onhome .homebtn{display:none}
 #gate .gt-go{margin-top:2px;height:50px;border-radius:14px;border:0;background:var(--cyan);color:#03121f;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;-webkit-tap-highlight-color:transparent}
 #gate .gt-go:disabled{opacity:.5}
 #gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
-#gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45}
+#gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45;flex:none;position:static}
+#gate>*{flex:none}
 #gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.bad{color:var(--red)}#gate .gt-msg.wait{color:var(--cyan)}
 #gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
 #lock .tsa,#gate .tsa{color:var(--cyan);letter-spacing:2.5px;margin-top:2px}
@@ -2930,7 +2932,7 @@ window.SRADropZone=(function(){
     function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
     function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gt-repo').innerHTML='<b>'+(c.repo||'')+'</b> · '+(c.branch||'main')+' · '+(c.path||'data/bus.json');$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
-    function done(){hide();toast('Linked to ADMIN','GitHub link · '+bus.cfg().repo,'green');LOCK.boot();}
+    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','GitHub link · '+bus.cfg().repo,'green');LOCK.boot();}
     function hint(e){e=String(e||'').replace(/^GitHub\s+/,'').replace(/read read/,'read');return /network|no route|failed to fetch/i.test(e)?'This phone cannot reach api.github.com (signal, VPN or Wi-Fi portal).':/401/.test(e)?'GitHub says the key is invalid or expired.':/403/.test(e)?'GitHub refused the key — check Resource owner = thompsonryane-collab and Contents = Read and write.':e;}
     function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('cmdr_auth',null),ring=ls('cmdr_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
@@ -2940,13 +2942,20 @@ window.SRADropZone=(function(){
         'device      : '+d.dev+' · transport '+d.transport+' · node '+d.node,
         'step-2 sess : '+(sess&&sess.key?'saved ('+(sess.name||sess.email||'?')+', key ends '+String(sess.key).slice(-2)+')':'none')+' · keyring '+(ring&&ring.ring?ring.ring.length+' users':'none')];
       var e=$('gt-diag');e.textContent=lines.join('\n');e.hidden=false;}catch(x){}}
-    function fail(t,silent){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';diag(fail.rawLen);fail.rawLen=0;
+    function fail(t,silent){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';
+      try{var st=bus.status();if(/401/.test(st.error||'')&&bus.cfg().token)lsSet(REJ_KEY,{fp:fp(bus.cfg().token),ts:Date.now()});}catch(e){}
+      diag(fail.rawLen);fail.rawLen=0;if(fail.note&&!silent)t=t+' '+fail.note;
       try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}                      /* never keep a key that GitHub rejected */
       if(silent){show();msg('The saved GitHub key no longer works. Enter a new key from ADMIN.','');}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
+    var REJ_KEY='cmdr_gt_rejected';
+    function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
     function clean(v){v=String(v||'').replace(/[\s\u200B-\u200D\uFEFF]/g,'');var i=Math.max(v.lastIndexOf('github_pat_'),v.lastIndexOf('ghp_'));return i>0?v.slice(i):v;}
     function connect(recheck){if(busy)return;var raw=$('gt-token').value,tok=recheck?(bus.cfg().token||''):clean(raw);
       if(!recheck&&tok!==raw.trim()){$('gt-token').value=tok;}fail.rawLen=recheck?0:raw.trim().length;try{$('gt-diag').hidden=true;}catch(e){}
+      fail.note='';if(!recheck){var rj=ls(REJ_KEY,null),n=(raw.match(/github_pat_|ghp_/g)||[]).length;
+        if(n>1)fail.note='Paste held '+n+' keys (a truncated head + a full key); the full one was sent. ';
+        if(rj&&rj.fp===fp(tok))fail.note+='This is the SAME key GitHub already rejected at '+new Date(rj.ts).toLocaleTimeString()+'. The phone is pasting an old clipboard entry — copy the new key again from ADMIN.';}
       if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete GitHub key (github_pat_… 93 chars or ghp_… 40 chars).','bad');return;}
       busy=true;if(!recheck){$('gt-go').disabled=true;$('gt-go').classList.add('busy');$('gt-go').textContent='Connecting…';msg('Checking the link…','wait');}
       bus.configure({transport:'github',token:tok,node:'cmdr'});cfg=bus.cfg();
