@@ -387,10 +387,11 @@ body.onhome .homebtn{display:none}
 #gate .gt-go:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 2px 4px rgba(0,40,60,.35),0 2px 6px rgba(0,0,0,.45)}
 #gate .gt-go:disabled{opacity:.5}
 #gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
-#gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45;flex:none;position:static}
+#gate .gt-msg{min-height:20px;font-size:13.5px;text-align:center;color:var(--ink2);max-width:340px;line-height:1.45;flex:none;position:static}
 #gate>*{flex:none}
 #gate>.lk-foot{position:absolute;left:22px;right:22px;bottom:calc(var(--sab) + 18px);margin:0}   /* sticky footer */
-#gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.bad{color:var(--red)}#gate .gt-msg.wait{color:var(--cyan)}
+#gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.wait{color:var(--cyan)}
+#gate .gt-msg.bad{color:#ff7a70;font-size:14.5px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 #gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));color:var(--ink2);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.4)}
 #lock .tsa,#gate .tsa{color:var(--cyan);letter-spacing:2.5px;margin-top:2px}
 #lock .lk-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
@@ -2029,12 +2030,6 @@ updateAiContext();
     <div class="so-foot"><button class="btn danger" style="height:48px;font-size:16px;width:100%" onclick="sendSonar()">Release SONAR</button>
     <div style="font-size:11.5px;color:var(--ink3);text-align:center;margin-top:8px">Logged to ADM-03 routing, ADM-05 audit and ADM-09 comms on release.</div></div>
   </div></div>
-  <div class="sheet" id="guide-sheet" onclick="if(event.target===this)closeCmdrGuide()"><div class="panel full">
-    <div class="grab"></div>
-    <div style="display:flex;justify-content:space-between;align-items:center"><button class="link homebtn" onclick="closeCmdrGuide();go('home')" aria-label="Home"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button><h3>CMDR Hub Guide</h3><button style="color:var(--cyan);font-size:16px;font-weight:600" onclick="closeCmdrGuide()">Done</button></div>
-    <div class="so-scroll" style="padding:0;margin:0 -16px;gap:0"><iframe id="guide-frame" title="CMDR Hub Users Guide" style="flex:1;width:100%;min-height:100%;border:0;background:#fff" src="about:blank"></iframe></div>
-    <div class="so-foot" style="display:flex;gap:10px"><a class="btn" id="guide-ext" href="#" target="_blank" rel="noopener" style="flex:1;text-align:center;text-decoration:none">Open in browser</a><button class="btn pri" style="flex:1" onclick="closeCmdrGuide()">Close</button></div>
-  </div></div>
   <div class="sheet" id="sheet" onclick="if(event.target===this)this.classList.remove('on')"><div class="panel"><div class="grab"></div><h3 id="sheet-t"></h3><p id="sheet-b"></p><button class="btn pri" onclick="document.getElementById('sheet').classList.remove('on')">Close</button></div></div>
 </div>
 
@@ -2094,7 +2089,7 @@ window.SRABus=(function(){
   /* ── github contents adapter ── */
   var DIAG={};
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[], alive=true;
+    var timer=null, sha=null, busy=false, queue=[], alive=true, onVis=null;
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -2136,8 +2131,12 @@ window.SRABus=(function(){
       })();
     }
     return {
-      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
-      stop:function(){alive=false;clearInterval(timer);timer=null;},
+      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();
+        var ms=Math.max(3,cfg.poll|0)*1000;
+        try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},'+ms+')'],{type:'text/javascript'})));w.onmessage=function(){if(alive)poll();};timer={w:w};}
+        catch(e){timer=setInterval(poll,ms);}
+        onVis=function(){if(!document.hidden&&alive)poll();};document.addEventListener('visibilitychange',onVis);},
+      stop:function(){alive=false;if(timer&&timer.w)timer.w.terminate();else clearInterval(timer);timer=null;document.removeEventListener('visibilitychange',onVis);},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
@@ -2853,7 +2852,7 @@ window.SRADropZone=(function(){
      flow: 6 digits → HELLO{key,authId} over SRABus (+ postMessage to opener/parent if embedded)
            → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
      auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
-  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=40000, AUTH_RESEND=12000;
+  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=60000, AUTH_RESEND=12000, AUTH_RESEND2=30000;
   var GATE_EACH_LAUNCH=true;   /* true: step 1 GitHub-key screen on every launch, field empty · false: once per device */
   var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
   window.LOCK=(function(){
@@ -2902,8 +2901,9 @@ window.SRADropZone=(function(){
       try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site},'*');}catch(e){}
       clearTimeout(waitT);clearTimeout(resendT);
       /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
-      resendT=setTimeout(function(){if(!pending)return;msg((pending.hit?'Key matches '+pending.hit.n+' · ':'')+'still waiting for ADMIN\u2026 re-sending','wait');
-        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true,resend:true}));}catch(e){}},AUTH_RESEND);
+      function resend(){if(!pending)return;msg((pending.hit?'Key matches '+pending.hit.n+' · ':'')+'still waiting for ADMIN\u2026 re-sending','wait');
+        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true,resend:true}));}catch(e){}}
+      resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
       waitT=setTimeout(function(){if(!pending)return;
         if(pending.hit){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
           var h=pending.hit;sess={key:pending.key,email:'',name:h.n||S.name,first:'',last:'',site:h.s||S.siteName,ts:Date.now(),via:'keyring'};lsSet(AUTH_KEY,sess);S.away=false;
@@ -2965,7 +2965,19 @@ window.SRADropZone=(function(){
     function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
     function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
-    function hint(e){e=String(e||'').replace(/^GitHub\s+/,'').replace(/read read/,'read');return /network|no route|failed to fetch/i.test(e)?'This phone cannot reach api.github.com (signal, VPN or Wi-Fi portal).':/401/.test(e)?'GitHub says the key is invalid or expired.':/403/.test(e)?'GitHub refused the key — check Resource owner = thompsonryane-collab and Contents = Read and write.':e;}
+    var NO_ROUTE='No route to the Foundry link \u2014 this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again. Or continue without link.';
+    function netErr(e){return /network|no route|failed to fetch|timeout/i.test(String(e||''));}
+    /* boot probe: test the route with the saved key so the no-route text shows before Connect is pressed (matches ADMIN) */
+    function probe(){var c=bus.cfg();if(!c.token)return;var u='https://api.github.com/repos/'+c.repo+'/contents/'+c.path+'?ref='+encodeURIComponent(c.branch||'main')+'&t='+Date.now();
+      fetch(u,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+c.token},cache:'no-store'}).then(function(r){if(!r.ok&&r.status!==404){msg(hint(String(r.status)),'bad');$('gt-alt').style.display='';}})
+      .catch(function(){msg(NO_ROUTE,'bad');$('gt-alt').style.display='';});}
+    function hint(e){e=String(e||'');
+      if(netErr(e))return NO_ROUTE;
+      if(/401/.test(e))return 'The Foundry key is invalid or expired.';
+      if(/403/.test(e))return 'The Foundry key was refused \u2014 it does not have read/write access to the link.';
+      if(/404/.test(e))return 'The link target was not found. Check the link settings under Link.';
+      if(/409|422|conflict/i.test(e))return 'The link is busy. Press Connect again.';
+      return e.replace(/^GitHub\s+/i,'Foundry ').replace(/api\.github\.com/gi,'the Foundry link').replace(/\bread read\b/,'read');}
     function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('cmdr_auth',null),ring=ls('cmdr_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
         'key sent    : '+d.tokenFp+' · '+d.tokenLen+' chars · '+d.tokenShape+(rawLen&&rawLen!==d.tokenLen?' (field had '+rawLen+', cleaned)':''),
@@ -2977,8 +2989,9 @@ window.SRADropZone=(function(){
     function fail(t,silent){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';
       try{var st=bus.status();if(/401/.test(st.error||'')&&bus.cfg().token)lsSet(REJ_KEY,{fp:fp(bus.cfg().token),ts:Date.now()});}catch(e){}
       diag(fail.rawLen);fail.rawLen=0;if(fail.note&&!silent)t=t+' '+fail.note;
-      try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}                      /* never keep a key that GitHub rejected */
-      if(silent){show();msg('The saved Foundry key no longer works. Enter a new key from ADMIN.','');}
+      var net=false;try{net=netErr(bus.status().error);}catch(e){}
+      if(!net){try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}}                /* never keep a key the link rejected \u2014 a network failure did not test the key */
+      if(silent){show();msg(net?hint(bus.status().error):'The saved Foundry key no longer works. Enter a new key from ADMIN.',net?'bad':'');if(net)$('gt-alt').style.display='';}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
     var REJ_KEY='cmdr_gt_rejected';
     function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
@@ -2998,12 +3011,12 @@ window.SRADropZone=(function(){
         if(armed||Date.now()-t0>1500){
           if(st.read==='ok'){busy=false;if(recheck){LOCK.boot();}else{msg('✓ Linked · '+cfg.repo,'ok');setTimeout(done,500);}return;}
           if(st.read==='error'||st.write==='error'){fail(hint(st.error||'GitHub rejected the key'),recheck);return;}}
-        if(Date.now()-t0>20000){fail('No answer from GitHub. Check your signal and try again.',recheck);return;}
+        if(Date.now()-t0>20000){fail(NO_ROUTE,recheck);return;}
         tmr=setTimeout(tick,300);})();}
     function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github'){hide();return true;}   /* gate is pre-locked in markup; release only here, done() or offline() */
       if(!c.token){show();return false;}
-      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');return false;}
+      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');probe();return false;}
       if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
@@ -3031,21 +3044,8 @@ window.SRADropZone=(function(){
 /* ── LOCK / LOG OUT TILES ── */
 function lockCmdr(){LOCK.lock();}
 function logoutCmdr(){LOCK.logout();}
-/* ── CMDR HUB USERS GUIDE (in-app viewer · never navigates the hub away) ── */
-var CMDR_GUIDE_URL='https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf';
-function openCmdrGuide(){
-  var sh=document.getElementById('guide-sheet'),fr=document.getElementById('guide-frame'),ex=document.getElementById('guide-ext');
-  var u=CMDR_GUIDE_URL+'?v='+Date.now();
-  if(ex)ex.href=u;
-  if(fr)fr.src=u;
-  if(sh)sh.classList.add('on');
-}
-function closeCmdrGuide(){
-  var sh=document.getElementById('guide-sheet'),fr=document.getElementById('guide-frame');
-  if(sh)sh.classList.remove('on');
-  if(fr)fr.src='about:blank';
-}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCmdrGuide();});
+/* ── CMDR HUB USERS GUIDE ── */
+function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-CMDR-Guide');}
 </script>
 </body>
 </html>

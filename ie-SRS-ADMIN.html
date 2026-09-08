@@ -5,11 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#0e1824">
 <title>ie-SRS // SYSTEM ADMIN PLATFORM — ie-SRS // SONAR | Reconnaissance | Simulation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
@@ -10175,27 +10170,19 @@ window.ADMLOCK = (function () {
   function $l(id) { return document.getElementById(id); }
   function dots() { var el = $l('al-dots'); if (!el) return; el.classList.remove('err'); var is = el.querySelectorAll('i'); for (var i = 0; i < 6; i++) is[i].classList.toggle('f', i < digits.length); }
   function msg(t, c) { var e = $l('al-msg'); if (e) { e.textContent = t || ''; e.className = 'al-msg ' + (c || ''); } }
-  function roleOf(a) { try { if (a.kind === 'seat' && a.siteId && a.who) { var st = window.ADMIN_CORE.acctState(a.siteId, a.who); if (st && st.role) return st.role; } var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
+  function roleOf(a) { try { var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
   function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
-  /* Any account that logs into ADMIN is tagged System Administrator (custom → SRASec record, seat → account override) */
-  function tagAdmin(a) { if (!a || !a.email) return; try {
-      if (a.kind === 'seat' && a.siteId && a.who) { var AC = window.ADMIN_CORE, st = AC.acctState(a.siteId, a.who); if (st.role !== 'System Administrator') { st.role = 'System Administrator'; st.adminSince = Date.now(); AC.setOverride(a.siteId + '|' + a.who, st); } }
-      else { var o = SRASec.custom(), r = o[String(a.email).toLowerCase()]; if (r && r.role !== 'System Administrator') { r.role = 'System Administrator'; r.adminSince = Date.now(); SRASec.saveCustom(o); } }
-      try { SRASec.markLive(a, { via: 'admin', github: linkIsLive() ? SRABus.cfg().repo : '' }); } catch (e) {}
-      try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_TAG_SYSADMIN', a.email, a.name + ' tagged System Administrator on ADMIN login'); } catch (e) {}
-      try { SRASec.repaint(); } catch (e) {}
-    } catch (e) {} }
   function show() { digits = ''; busy = false; dots(); msg(''); $l('adm-lock').classList.add('open'); }
   function hide() { $l('adm-lock').classList.remove('open'); }
   function submit() {
     busy = true; var key = digits;
     var a = null; try { a = window.SRASec ? SRASec.validate(key) : null; } catch (e) {}
-    var ok = key === ADMIN_MASTER_KEY || !!a;   /* any active security key logs in; user is tagged System Administrator below */
+    var ok = key === ADMIN_MASTER_KEY || isAdmin(a);
     setTimeout(function () {
-      if (ok) { if (a) tagAdmin(a); msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked' + (a ? ' · System Administrator' : ''), 'ok');
+      if (ok) { msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked', 'ok');
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · key ends ' + key.slice(-2)); } catch (e) {}
         setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
-      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg('Security key not recognised.', 'bad'); busy = false;
+      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg(a ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK_FAIL', 'admin', 'key ends ' + key.slice(-2)); } catch (e) {} }
     }, 150);
   }
@@ -10602,7 +10589,6 @@ function launchSim() {
     function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg();
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
     function hide() { $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
-    function step2() { try { if (window.ADMLOCK) ADMLOCK.show(); } catch (e) {} }   /* raised over the gate first; gate is hidden underneath it */
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
       if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a Foundry key.', 'bad'); return; }
       busy = true; btn(true); msg('Checking the link…', 'wait');
@@ -10613,11 +10599,11 @@ function launchSim() {
         if (st.read === '' || st.read === undefined) armed = true;
         if (armed || Date.now() - t0 > 1500) {
           if (st.read === 'ok' && st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry refused the write'), 'bad'); return; }
-          if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { step2(); hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
+          if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
           if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry rejected the key'), 'bad'); return; } }
         if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from Foundry. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
-    function skip() { step2(); hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
+    function skip() { hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
     /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
     function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
       var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
@@ -11862,9 +11848,6 @@ document.addEventListener("DOMContentLoaded",function(){
     <div class="adm-toolbar">
       <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;">140 SEATS · 70 INSTALLATIONS · sort and filter from the column carets</span>
       <span class="sp"></span>
-      <span id="usel-count" style="display:none;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#d4a05a;margin-right:6px;"></span>
-      <button class="adm-b sm warn" id="usel-del-btn" style="display:none;" onclick="admDeleteSelected()">&#x1F5D1; DELETE SELECTED</button>
-      <button class="adm-b sm" id="usel-clr-btn" style="display:none;" onclick="admSelectNone()">DESELECT</button>
       <button class="adm-b sm" onclick="cmReset('users')">CLEAR FILTERS</button>
       <button class="adm-b ok" onclick="openCreateAccount()">+ NEW ACCOUNT</button>
       <button class="adm-b" onclick="admExportUsers()">EXPORT CSV</button>
@@ -12220,10 +12203,10 @@ document.addEventListener("DOMContentLoaded",function(){
     function isOff(em){return !!(live[em]&&live[em].off);}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
-      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:(/system admin/i.test(a.role||'')?'SYS ADMIN':'CMDR'),name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
+      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
         status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);var lv=isLive(u.email);
-      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:(/system admin/i.test(st.role||'')?'SYS ADMIN':(w==='fm'?'FM':'BACKUP')),name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
+      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12232,7 +12215,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(reg&&r.region!==reg)return false; if(role&&r.who!==role)return false;
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
       if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
-    if(!CFGS.users)CFGS.users={id:'users',cols:[['sel','<input type="checkbox" id="usel-all" title="Select all shown" onclick="admSelectAllShown(this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:#18d4f8;vertical-align:middle">','none'],['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
+    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
     rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users);
     var all=userRows();
     $('au-strip').innerHTML=
@@ -12241,13 +12224,12 @@ document.addEventListener("DOMContentLoaded",function(){
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
       mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#c0c8d0')+
       mini('Showing',rows.length,'#18d4f8');
-    window.admUselShown=rows.map(function(r){return r.kind==='custom'?r.email:r.siteId+'|'+r.who;});
-    $('au-body').innerHTML=rows.length?rows.map(function(r){var uid=r.kind==='custom'?r.email:r.siteId+'|'+r.who,usel=!!USEL[uid];
+    $('au-body').innerHTML=rows.length?rows.map(function(r){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
       var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
       var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
-      return '<tr style="background:'+(usel?'rgba(24,212,248,.10)':r.kind==='custom'?'rgba(195,170,248,.04)':'transparent')+'"><td style="width:26px;text-align:center"><input type="checkbox"'+(usel?' checked':'')+' onclick="admSelectUser(\''+esc(uid)+'\',this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:#18d4f8;vertical-align:middle"></td><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
-        '<td><span style="color:'+(r.roleLbl==='SYS ADMIN'?'#d4a05a':r.who==='fm'?'#18d4f8':'#c3aaf8')+(r.roleLbl==='SYS ADMIN'?';font-weight:700':'')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
+      return '<tr'+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
+        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
         '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
@@ -12256,44 +12238,14 @@ document.addEventListener("DOMContentLoaded",function(){
         '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
-        '<button class="adm-b sm warn" title="Delete account" onclick="admCustomDelete(\''+esc(r.email)+'\')">&#x1F5D1; DEL</button></td></tr>'
+        '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></td></tr>'
         :
         '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         '<button class="adm-b sm" onclick="admUserReset(\''+r.siteId+'\',\''+r.who+'\')">RESET</button> '+
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="12" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
-    var nSel=Object.keys(USEL).length,ce=$('usel-count'),db=$('usel-del-btn'),cb=$('usel-clr-btn'),sa=$('usel-all');
-    if(ce){ce.textContent=nSel?nSel+' SELECTED':'';ce.style.display=nSel?'inline':'none';}
-    if(db)db.style.display=nSel?'inline-block':'none'; if(cb)cb.style.display=nSel?'inline-block':'none';
-    if(sa){var shown=window.admUselShown,k=shown.filter(function(id){return USEL[id];}).length;sa.checked=shown.length>0&&k===shown.length;sa.indeterminate=k>0&&k<shown.length;}
-  };
-  /* ══ USER ACCOUNTS · MULTI-SELECT + DELETE ══
-     row id: custom account → email · site seat → siteId|who
-     delete: custom account → removed from SRASec + session ended · seat → cannot be deleted (fixed installation seat) → key cleared, disabled, session ended */
-  var USEL={};
-  window.admUselShown=[];
-  window.admSelectUser=function(id,on){if(on)USEL[id]=1;else delete USEL[id];admPaintUsers();};
-  window.admSelectAllShown=function(on){USEL={};if(on)window.admUselShown.forEach(function(id){USEL[id]=1;});admPaintUsers();};
-  window.admSelectNone=function(){USEL={};admPaintUsers();};
-  window.admDeleteSelected=function(){
-    var ids=Object.keys(USEL);if(!ids.length)return;
-    var rows=userRows(),cust=[],seat=[];
-    ids.forEach(function(id){var r=rows.filter(function(x){return (x.kind==='custom'?x.email:x.siteId+'|'+x.who)===id;})[0];if(!r)return;(r.kind==='custom'?cust:seat).push(r);});
-    var lines=[];
-    if(cust.length)lines.push('DELETE '+cust.length+' account'+(cust.length>1?'s':'')+':\n  '+cust.map(function(r){return r.name+' <'+r.email+'>';}).join('\n  '));
-    if(seat.length)lines.push('DEACTIVATE '+seat.length+' installation seat'+(seat.length>1?'s':'')+' (seats cannot be deleted · key cleared + disabled):\n  '+seat.map(function(r){return r.site+' · '+r.name;}).join('\n  '));
-    if(!confirm(lines.join('\n\n')+'\n\nThis cannot be undone.'))return;
-    var o=SRASec.custom();
-    cust.forEach(function(r){delete o[r.email];try{SRASec.endLive(r.email);}catch(e){}C.audit('DELETE_ACCOUNT',r.email,'multi-select');});
-    SRASec.saveCustom(o);
-    seat.forEach(function(r){var st=C.acctState(r.siteId,r.who);st.security='';st.active=false;st.disabled=true;C.setOverride(r.siteId+'|'+r.who,st);try{SRASec.endLive(r.email);}catch(e){}C.audit('DEACTIVATE_SEAT',r.email,r.site+' · multi-select');});
-    try{SRASec.storeKeys();}catch(e){}
-    try{if(typeof publishKeyring==='function')publishKeyring(true);}catch(e){}
-    USEL={};
-    toastOk((cust.length?cust.length+' deleted':'')+(cust.length&&seat.length?' · ':'')+(seat.length?seat.length+' seat'+(seat.length>1?'s':'')+' deactivated':''));
-    admPaintUsers();admPaintStrip();
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="11" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
   window.admUserToggle=function(sid,who){var st=C.acctState(sid,who);st.disabled=!st.disabled;C.setOverride(sid+'|'+who,st);var s=C.SITE[sid];C.audit(st.disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',s[who].email,s.name);toastOk(s[who].name+' '+(st.disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
   window.admUserReset=function(sid,who){var s=C.SITE[sid];C.audit('RESET_API_KEY',s[who].email,s.name);toastOk('Reset link sent to '+s[who].email);};
@@ -13049,7 +13001,7 @@ window.SRABus=(function(){
 
   /* ── github contents adapter ── */
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[], alive=true;
+    var timer=null, sha=null, busy=false, queue=[], alive=true, onVis=null;
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -13090,8 +13042,14 @@ window.SRABus=(function(){
       })();
     }
     return {
-      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
-      stop:function(){alive=false;clearInterval(timer);timer=null;},
+      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();
+        var ms=Math.max(3,cfg.poll|0)*1000;
+        /* Background tabs get their timers throttled to ~1/min by Chrome/Safari, which is long enough for a phone's sign-in to time out.
+           A Worker ticker is exempt from that throttling, so ADMIN keeps answering while the tab is not in front. */
+        try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},'+ms+')'],{type:'text/javascript'})));w.onmessage=function(){if(alive)poll();};timer={w:w};}
+        catch(e){timer=setInterval(poll,ms);}
+        onVis=function(){if(!document.hidden&&alive)poll();};document.addEventListener('visibilitychange',onVis);},
+      stop:function(){alive=false;if(timer&&timer.w)timer.w.terminate();else clearInterval(timer);timer=null;document.removeEventListener('visibilitychange',onVis);},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
