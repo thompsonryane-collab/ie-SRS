@@ -13707,7 +13707,7 @@ window.SRADropZone=(function(){
     var real=!p.embedded&&(p.transport||'github')==='github';
     var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
     if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · logged out');}catch(e){}return;}
-    if(a&&p.away&&real){try{SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',away:true,ts:Math.min(env.ts||Date.now(),Date.now())});if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_LOCK',a.email,a.name+' · device locked · AWAY');}catch(e){}return;}
+    if(a&&p.away&&real&&!p.authId){try{SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',away:true,ts:Math.min(env.ts||Date.now(),Date.now())});if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_LOCK',a.email,a.name+' · device locked · AWAY');}catch(e){}return;}
     if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
