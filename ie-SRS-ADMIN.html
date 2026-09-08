@@ -10589,6 +10589,7 @@ function launchSim() {
     function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg();
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
     function hide() { $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
+    function step2() { try { if (window.ADMLOCK) setTimeout(function () { ADMLOCK.show(); }, 180); } catch (e) {} }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
       if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a Foundry key.', 'bad'); return; }
       busy = true; btn(true); msg('Checking the link…', 'wait');
@@ -10599,11 +10600,11 @@ function launchSim() {
         if (st.read === '' || st.read === undefined) armed = true;
         if (armed || Date.now() - t0 > 1500) {
           if (st.read === 'ok' && st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry refused the write'), 'bad'); return; }
-          if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
+          if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); step2(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
           if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry rejected the key'), 'bad'); return; } }
         if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from Foundry. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
-    function skip() { hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
+    function skip() { hide(); step2(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
     /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
     function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
       var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
