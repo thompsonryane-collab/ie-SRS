@@ -1906,6 +1906,7 @@ html::after {
 /* ── GITHUB KEY GATE ── */
 #gh-gate { display: none; position: fixed; inset: 0; z-index: 10050; background: rgba(4,8,14,.72); backdrop-filter: blur(6px); align-items: center; justify-content: center; }
 #gh-gate.open { display: flex; }
+#gh-gate.boot { background: #06080a; backdrop-filter: none; }   /* locked on open: nothing behind it is visible until the key is confirmed or skipped */
 #gh-gate .gg { width: 460px; background: linear-gradient(180deg, #0f1826, #0b1220); border: 1px solid rgba(24,212,248,.32); border-radius: 12px; box-shadow: 0 30px 70px rgba(0,0,0,.7), inset 0 1px 0 rgba(24,212,248,.15); padding: 22px 24px 18px; animation: dpIn .22s cubic-bezier(.32,.72,0,1); }
 #gh-gate .gg-eyebrow { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 3px; color: #6e90b0; }
 #gh-gate .gg-title { font-family: 'Orbitron', monospace; font-size: 16px; letter-spacing: 3px; color: #18d4f8; margin: 6px 0 8px; }
@@ -2399,7 +2400,7 @@ html::after {
 #fs-btn.active { color: #9ebc52; border-color: rgba(158,188,82,.55); background: rgba(158,188,82,.10); }
 #fs-btn.blocked { color: #c07050; border-color: rgba(192,112,80,.5); }
 #fs-btn svg { display: block; }
-.sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4db88a;box-shadow:0 0 6px #4db88a;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
+.sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c0c8d0;box-shadow:0 0 6px #c0c8d0;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
 </style>
 </head>
 <body>
@@ -2545,7 +2546,7 @@ html::after {
     return 'HEALTHY';
   }
   function healthColor(h){return h==='HEALTHY'?'#4db88a':h==='DEGRADED'?'#d4a05a':h==='OFFLINE'?'#e08a45':'#e05555';}
-  function stColor(st){return st==='online'?'#4db88a':st==='degraded'?'#d4a05a':st==='away'?'#6e90b0':'#e05555';}
+  function stColor(st){return st==='online'?'#4db88a':st==='degraded'?'#d4a05a':st==='away'?'#f2d24b':'#e05555';}
   function ago(min){return min<1?'now':min<60?min+'m ago':min<1440?(min/60).toFixed(1)+'h ago':Math.round(min/1440)+'d ago';}
 
   function summary(){
@@ -2779,7 +2780,7 @@ html::after {
 
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
-<div id="gh-gate" role="dialog" aria-label="GitHub key">
+<div id="gh-gate" class="open boot" role="dialog" aria-label="GitHub key">
     <div class="gg">
       <div class="gg-eyebrow">ie-SRS ADMIN · CMDR LINK</div>
       <div class="gg-title">GITHUB KEY</div>
@@ -10584,7 +10585,6 @@ function launchSim() {
     var demoPick = document.getElementById('demo-pick');
     if (demoPick) demoPick.style.display = 'none';
     setTimeout(function() { splash.style.display = 'none'; updateAiStatus(); }, 660);
-    setTimeout(function() { try { window.GHGATE && GHGATE.boot(); } catch (e) {} }, 720);
   };
 
   // ── GITHUB KEY GATE (opens on load when no token is configured) ──
@@ -10596,7 +10596,7 @@ function launchSim() {
     function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
     function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg(); var r = $g('gg-repo'); if (r) r.innerHTML = '<b>' + (c.repo || '') + '</b> · ' + (c.branch || 'main') + ' · ' + (c.path || 'data/bus.json');
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
-    function hide() { $g('gh-gate').classList.remove('open'); clearTimeout(tmr); busy = false; btn(false); }
+    function hide() { $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
       if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a GitHub key (github_pat_… or ghp_…).', 'bad'); return; }
       busy = true; btn(true); msg('Checking the link…', 'wait');
@@ -10612,7 +10612,7 @@ function launchSim() {
         if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from GitHub. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
     function skip() { hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a GitHub key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
-    /* Triggered from the splash ENTER button on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
+    /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
     function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
       var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
       show();
@@ -10621,7 +10621,8 @@ function launchSim() {
       else if (c.token && (st.read === 'error' || st.write === 'error')) msg(hint(st.error || 'The stored key was rejected') + ' Enter a new key.', 'bad');
       else if (c.token) msg('A key is stored but the link is not confirmed yet — paste the key and CONNECT, or CONTINUE.', 'wait');
     } catch (e) {} }
-    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } }); });
+    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } });
+      setTimeout(function(){ try { boot(); } catch (e) {} }, 60); });
     return { show: show, connect: connect, skip: skip, boot: boot };
   })();
 
@@ -12199,13 +12200,15 @@ document.addEventListener("DOMContentLoaded",function(){
   function userRows(){
     var rows=[], live=window.SRASec?SRASec.live():{}, now=Date.now();
     function liveMin(em){var e=live[em];return e?Math.round((now-e.ts)/60000):null;}
-    function isLive(em){var m=liveMin(em);return m!==null&&m<6;}
+    function isLive(em){var m=liveMin(em);return m!==null&&m<6&&!(live[em]&&live[em].off);}
+    function isAway(em){return isLive(em)&&!!(live[em]&&live[em].away);}
+    function isOff(em){return !!(live[em]&&live[em].off);}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
       rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
-        status:a.disabled?'disabled':isLive(em)?'online':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
+        status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);var lv=isLive(u.email);
-      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':lv?'online':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
+      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12219,13 +12222,13 @@ document.addEventListener("DOMContentLoaded",function(){
     var all=userRows();
     $('au-strip').innerHTML=
       mini('Total seats',all.length,'#ffffff')+mini('Online',all.filter(function(r){return r.status==='online';}).length,'#4db88a')+
-      mini('Away',all.filter(function(r){return r.status==='away';}).length,'#6e90b0')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
+      mini('Away',all.filter(function(r){return r.status==='away';}).length,'#f2d24b')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
-      mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#4db88a')+
+      mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#c0c8d0')+
       mini('Showing',rows.length,'#18d4f8');
     $('au-body').innerHTML=rows.length?rows.map(function(r){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
-      var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);
+      var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
       var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
       return '<tr'+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
         '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
@@ -12290,9 +12293,9 @@ document.addEventListener("DOMContentLoaded",function(){
       try{C.audit('CMDR_KEY_AUTH',acct.email,acct.name+' · '+(acct.site||'')+' · github:'+((extra&&extra.github)||'—'));}catch(e){}
       try{window.dispatchEvent(new CustomEvent('security-authenticated',{detail:l[acct.email]}));}catch(e){}
       SRASec.repaint(); return l[acct.email];},
-    endLive:function(email){var l=SRASec.live();delete l[email];lsW(SEC_LIVE,l);SRASec.repaint();},
-    isLive:function(email){var e=SRASec.live()[email];return !!(e&&Date.now()-e.ts<LIVE_MS);},
-    liveList:function(){var l=SRASec.live();return Object.keys(l).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
+    endLive:function(email){var l=SRASec.live();var e=l[email]||{};l[email]={email:email,name:e.name||'',site:e.site||'',off:true,ts:Date.now()};lsW(SEC_LIVE,l);SRASec.repaint();},
+    isLive:function(email){var e=SRASec.live()[email];return !!(e&&!e.off&&Date.now()-e.ts<LIVE_MS);},
+    liveList:function(){var l=SRASec.live();return Object.keys(l).filter(function(k){return !l[k].off;}).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
     repaint:function(){['admPaintUsers','admPaintStrip','admPaintPresence','admPaintCmdr'].forEach(function(f){try{if(typeof window[f]==='function'){if(f==='admPaintUsers'&&!($('overlay-adm-users')&&$('overlay-adm-users').classList.contains('visible')))return;if(f==='admPaintPresence'&&!($('overlay-adm-msg')&&$('overlay-adm-msg').classList.contains('visible')))return;if(f==='admPaintCmdr'&&!($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible')))return;window[f]();}}catch(e){}});}
   };
   window.storeSecurityKeys=SRASec.storeKeys;
@@ -13573,7 +13576,8 @@ window.SRADropZone=(function(){
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     var real=!p.embedded&&(p.transport||'github')==='github';
     var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
-    if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · device closed');}catch(e){}return;}
+    if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · logged out');}catch(e){}return;}
+    if(a&&p.away&&real){try{SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',away:true,ts:Math.min(env.ts||Date.now(),Date.now())});if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_LOCK',a.email,a.name+' · device locked · AWAY');}catch(e){}return;}
     if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
