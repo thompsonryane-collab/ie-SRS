@@ -41,6 +41,7 @@ html,body{height:100%;background:#03080e;color:var(--tx);font-family:var(--mono)
 #lt-tag{font-family:var(--dsp);font-weight:700;font-size:1.05vmin;letter-spacing:.24em;color:var(--gold);white-space:nowrap;padding-bottom:.3vmin}
 #cap{font-family:var(--ui);font-weight:500;font-size:2.05vmin;line-height:1.35;color:#fff;max-width:74%;text-shadow:0 2px 12px rgba(0,0,0,.8);min-height:5.6vmin}
 #cap .k{color:var(--cyan)}
+#lower.cc-off #lt-tag,#lower.cc-off #cap{visibility:hidden}
 #vo{margin-left:auto;display:flex;align-items:center;gap:.8vmin;font-size:1.05vmin;letter-spacing:.2em;color:var(--sage);padding-bottom:.4vmin}
 .bars{display:flex;align-items:flex-end;gap:.25vmin;height:1.5vmin}
 .bars i{width:.3vmin;background:var(--sage);border-radius:1px;animation:bar .7s ease-in-out infinite alternate;transform-origin:bottom}
@@ -154,6 +155,7 @@ body.paused #scene *{animation-play-state:paused!important}
       <button id="b-prev" onclick="ctlPrev()" title="Previous chapter (←)">&#9664;&#9664; PREVIOUS</button>
       <button id="b-skip" onclick="ctlSkip()" title="Next chapter (→)">NEXT &#9654;&#9654;</button>
       <button id="b-mute" onclick="ctlMute()" title="Mute the narrator">&#128264; VOICE ON</button>
+      <button id="b-cc" onclick="ctlCC()" title="Closed captions (C)">&#9647; CC OFF</button>
       <span class="sp"></span>
       <span class="meta" id="meta">CHAPTER 1 / 9</span>
     </div>
@@ -166,7 +168,7 @@ body.paused #scene *{animation-play-state:paused!important}
       <button id="b-start" onclick="startShow()">&#9654;&nbsp; START BROADCAST</button>
       <button id="b-fs-gate" class="fs" onclick="ctlFullscreen()" title="Full screen (F)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span>FULL SCREEN</span></button>
     </div>
-    <small>APPROX. 6 MIN · SPACE PAUSES · ← → CHAPTERS · F TOGGLES FULL SCREEN · SIMULATED DATA · UNCLASSIFIED DEMO</small>
+    <small>APPROX. 4 MIN · SPACE PAUSES · ← → CHAPTERS · F TOGGLES FULL SCREEN · C CAPTIONS · SIMULATED DATA · UNCLASSIFIED DEMO</small>
   </div>
 </div>
 </div>
@@ -250,7 +252,7 @@ const SCENES=[];
 
 /* 0 — cold open */
 SCENES.push({id:'open',chapter:'COLD OPEN',min:6,
-narr:'ie-SRS. This is a scenario broadcast of SONAR, the Shore Outage Notification, Analysis and Response system. Naval Base San Diego, zero four nineteen in the morning. What follows is a simulated cyber-attack against installation energy infrastructure, and the response that SONAR makes possible. I will walk you through it.',
+narr:'Welcome to ie-SRS. This is a scenario broadcast of the Shore Outage Notification, Analysis and Response system — SONAR. The scenario begins. At zero four nineteen in the morning, Naval Base San Diego simulates a cyber-attack against installation energy infrastructure — with SONAR. The base goes dark. The picture doesn’t.',
 cap:'A simulated cyber-attack on Naval Base San Diego — and the response SONAR makes possible.',
 build(g){
   const R={};
@@ -269,7 +271,7 @@ tick(R,t){const s=Math.max(0,180-Math.floor(t*60));R.time.textContent='T-MINUS 0
 
 /* 1 — the intrusion */
 SCENES.push({id:'threat',chapter:'01 · INTRUSION',min:21,
-narr:'It starts quietly. Ninety minutes earlier, a phishing email opened on a contractor workstation gave an attacker a foothold inside the facility-related control system network. Three findings from the last assessment are still open: default credentials on the substation remote terminal unit, an unpatched operator interface, and Modbus traffic sent in the clear. The attacker does not need to be clever. They only need to be patient.',
+narr:'The attack starts quietly. Ninety minutes earlier, a contractor opens a phishing email on their workstation. This gave the attacker a foothold inside the FRCS network. The threat assessment revealed three findings: default credentials on the substation remote terminal unit, an unpatched operator interface, and Modbus traffic sent in the clear. This is a well-organized attack, impacting real world installation mission readiness, and every minute counts.',
 cap:'Three open FRCS findings — default RTU credentials, an unpatched HMI, unencrypted Modbus — give the attacker a path to the substation.',
 build(g){
   const R={};
@@ -328,7 +330,7 @@ function logln(R,s,color){const y=R.logLines.length*19;const t=txt(0,y,s,{'font-
 
 /* 2 — attack executes · admin Global Map (connected systems) */
 SCENES.push({id:'map',chapter:'02 · SYSTEM MAP',min:25,
-narr:'At zero four twenty-two, the attacker opens breaker fifty-two M one. Utility power to the base is gone. This is the admin platform system map — the view that monitors every connected ie-SRS instance across the region. Both San Diego instances, the facility manager primary and the backup secondary, drop from online to degraded as the control network goes dark. San Diego turns red, and so does the inter-service ring that depends on it. Let us zoom in and open the site map.',
+narr:'At zero four twenty-two, the attacker opens breaker fifty-two M one. Utility power to the base is gone. ie-SRS monitors all SONAR instances across the globe. SONAR is notified that San Diego is offline. An automated SONAR alert is launched to the base commander, facility manager and backup via LAN line to the admin platform and mobile CMDR hub.',
 cap:'The admin system map monitors every connected instance. NB San Diego’s instance pair drops to degraded the moment the breaker opens.',
 build(g){
   const R={};
@@ -385,9 +387,154 @@ function setPill(row,l,c){row.rc.setAttribute('stroke',c);row.rc.setAttribute('f
 function feedln(R,s,c){const words=s.split(' ');let line='';const lines=[];words.forEach(w=>{if((line+' '+w).trim().length>56){lines.push(line.trim());line=w;}else line+=' '+w;});if(line.trim())lines.push(line.trim());
   lines.forEach((ln,i)=>{R.feedY+=22;R.feedLines.push(txt(i?24:0,R.feedY,ln,{'font-size':15,fill:c||'#b4c7da'},R.feed));});R.feedY+=4;}
 
+/* 5B — SONAR on CMDR mobile: zoom into the commander's phone */
+SCENES.push({id:'cmdr',chapter:'03 · CMDR MOBILE',min:40,
+narr:'Let’s zoom in on the iOS mobile CMDR hub app. Access is two-step — a device security key, then a six-digit PIN. The mobile application SONAR offers situational awareness that doesn’t run on shore power. The SONAR alert lands on the CMDR hub as a push notification. The commander reads and acknowledges the alert, it is time-stamped and stored on record in the admin comms log. The commander is notified from anywhere on the installation in under a minute. SONAR bypasses traditional methods of communication such as a phone tree and email. Most of us can appreciate the manual endurance it takes to successfully coordinate via these two methods during an emergency. Let’s harness the available technology to protect our mission critical infrastructure to maintain mission readiness.',
+cap:'Two-step access — security key, then six-digit PIN. The SONAR alert then lands as a push: one tap to read, one tap to acknowledge, and the ack rides the bus back to ADMIN.',
+build(g){
+  const R={};R.defs=el('defs',{},g);
+  el('rect',{width:1600,height:900,fill:'#07111c'},g);
+  /* camera group — everything zoomable lives here */
+  const CAM=el('g',{},g);R.cam=CAM;R.zoom={k:1,cx:800,cy:450,tk:1,tcx:800,tcy:450,t0:0,dur:0,fk:1,fcx:800,fcy:450};
+  /* dimmed dispatch backdrop */
+  el('ellipse',{cx:800,cy:760,rx:900,ry:120,fill:'#0c1a2a'},CAM);
+  for(let i=0;i<7;i++)el('ellipse',{cx:800,cy:760,rx:120+i*110,ry:16+i*15,fill:'none',stroke:'#18d4f8','stroke-opacity':.05},CAM);
+  const B=el('g',{transform:'translate(800 760)',opacity:.6},CAM);isoTile(B,-2,-2,4,4,'#14283a',{stroke:'#22384d'});[[-1.6,-1.6,1.2,1,28],[-.2,-1.7,1.4,1.1,40],[-1.7,0,1.2,1.4,22],[.1,.1,1.4,1.2,32]].forEach(b=>isoBox(B,b[0],b[1],b[2],b[3],b[4],'#2b4a63',{win:2}));
+  txt(0,90,'NB SAN DIEGO · FM INSTANCE',{'font-size':11,fill:'#18d4f8','text-anchor':'middle','letter-spacing':2},B);
+  const E=el('g',{transform:'translate(640 420)',opacity:.15},CAM);el('rect',{width:320,height:110,rx:8,fill:'#0e1824',stroke:'#27394d'},E);txt(160,24,'ROUTING ENGINE · ADM-03',{class:'dsp','font-size':11,fill:'#e4cc8c','text-anchor':'middle','letter-spacing':3},E);['evaluate recipients by role','apply channel rules · MDM policy','write audit entry','dispatch'].forEach((s,i)=>txt(160,48+i*17,'● '+s,{'font-size':10.5,fill:'#5fd98a','text-anchor':'middle'},E));
+  [[520,230,'Navy Region Southwest HQ','flag'],[1080,230,'System Admin','gear'],[1360,340,'Backup Facilities Support','shield'],[800,110,'DASN rollup','chart']].forEach(r=>{const n=el('g',{transform:`translate(${r[0]} ${r[1]})`,opacity:.3},CAM);el('circle',{r:34,fill:'#0e1824',stroke:'#7f96ad','stroke-width':1.5},n);drawIcon(n,r[3],'#7f96ad');txt(0,58,r[2],{class:'ui','font-size':15,fill:'#fff','text-anchor':'middle'},n);});
+  /* base commander node (hot) */
+  const C=el('g',{transform:'translate(240 340)'},CAM);el('circle',{r:34,fill:'#0e1824',stroke:'#e4cc8c','stroke-width':1.5},C);drawIcon(C,'star','#e4cc8c');
+  txt(0,58,'Base Commander',{class:'ui','font-size':15,fill:'#fff','text-anchor':'middle'},C);txt(0,76,'CAPT · NB San Diego',{'font-size':10,fill:'#7f96ad','text-anchor':'middle'},C);
+  const mob=el('g',{transform:'translate(-27 92)'},C);el('rect',{width:54,height:18,rx:9,fill:'#111d2b',stroke:'#e4cc8c'},mob);txt(27,12,'▮ mobile',{'font-size':9,fill:'#e4cc8c','text-anchor':'middle'},mob);
+  R.arcs=el('g',{},CAM);
+  /* ── the phone: static CMDR hub mockup ── */
+  const PX=430,PY=150,PW=250,PH=540;R.phoneAt=[PX+PW/2,PY+PH/2];
+  const P=el('g',{transform:`translate(${PX} ${PY})`,class:'hid'},CAM);R.phone=P;
+  el('rect',{x:-9,y:-9,width:PW+18,height:PH+18,rx:38,fill:'#0a0d12',stroke:'#2a3646','stroke-width':2},P);
+  el('rect',{width:PW,height:PH,rx:30,fill:'#0b1220'},P);
+  el('rect',{x:PW/2-40,y:8,width:80,height:18,rx:9,fill:'#05080d'},P);
+  el('rect',{x:PW/2-36,y:PH-8,width:72,height:3,rx:1.5,fill:'#3a4656'},P);
+  const SCR=el('g',{transform:'translate(0 32)'},P);
+  /* status row */
+  txt(18,12,'9:41',{'font-size':10,fill:'#fff','font-weight':700},SCR);txt(PW-18,12,'▂▄▆ 5G ▮',{'font-size':8,fill:'#fff','text-anchor':'end'},SCR);
+  /* header */
+  const H=el('g',{transform:'translate(0 22)'},SCR);el('rect',{width:PW,height:40,fill:'#0e1727'},H);
+  el('rect',{x:12,y:7,width:26,height:26,rx:8,fill:'#18d4f8'},H);el('path',{d:'M26 12l-6 8h5l-2 7 7-9h-5z',fill:'#062330'},H);
+  txt(46,18,'ie-SRS CMDR',{class:'ui','font-size':11,fill:'#fff','font-weight':700},H);txt(46,30,'Naval Base San Diego · CO view',{'font-size':7.5,fill:'#8fb0d0'},H);
+  const lk=el('g',{transform:`translate(${PW-62} 11)`},H);el('rect',{width:50,height:18,rx:9,fill:'#0b1a12',stroke:'#4fd98a'},lk);el('circle',{cx:11,cy:9,r:3,fill:'#4fd98a'},lk);txt(30,12.5,'LINK',{'font-size':7.5,fill:'#4fd98a','text-anchor':'middle','letter-spacing':1},lk);
+  /* tiles grid (mirrors cmdr/index.html home) */
+  const TILES=[['Sys health','#5fd98a','#1f7a4c','M-7 0h3l1.5-3.5 2 7 1.5-4.5 1 1.5H7'],['Mission impact','#a389e8','#5d3fb8','M0 0m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0M0 0m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0'],['Microgrid','#3fe0ff','#0f9ccc','M0 0m-7 0a7 7 0 1 0 14 0a7 7 0 1 0-14 0M1-4l-3 4h4l-3 4'],
+    ['Black start','#3a4656','#1c2430','M0-6v6M-4-4a5.5 5.5 0 1 0 8 0'],['Live map','#5fd98a','#1f7a4c','M-7-4l4-2 4 2 4-2v10l-4 2-4-2-4 2zM-3-6v10M5-4v10'],['Call EOC','#ff6b5e','#c93b32','M-6-5h3l1.5 3.5-2 1a8 8 0 0 0 4 4l1-2 3.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5A12 12 0 0 1-7.5-3.5 1.5 1.5 0 0 1-6-5z'],
+    ['Message','#29d3c8','#118d85','M-7-5h14v8H-3l-4 3z'],['Outages','#ff6b5e','#c93b32','M1-7l-7 9h5l-1 6 7-9h-5zM-7-7l14 14'],['SONAR','#ff8a5c','#d9442f','M0 0m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M-4-4a5.7 5.7 0 0 0 0 8M4-4a5.7 5.7 0 0 1 0 8M-7-7a10 10 0 0 0 0 14M7-7a10 10 0 0 1 0 14'],
+    ['Link','#ffb340','#c47a10','M-1 2a3.5 3.5 0 0 0 5 0l2-2a3.5 3.5 0 0 0-5-5l-.7.7M1-2a3.5 3.5 0 0 0-5 0l-2 2a3.5 3.5 0 0 0 5 5l.7-.7'],['Status','#6f86a6','#3d5070','M-6-6h5v5h-5zM1-6h5v5H1zM-6 1h5v5h-5zM1 1h5v5H1z']];
+  const G=el('g',{transform:'translate(0 78)'},SCR);R.tiles={};
+  TILES.forEach((t,i)=>{const col=i%3,row=(i/3)|0;const tg=el('g',{transform:`translate(${20+col*74} ${row*84})`},G);
+    el('rect',{width:58,height:58,rx:15,fill:`url(#cmg${i})`},tg);
+    const gr=el('linearGradient',{id:'cmg'+i,x1:0,y1:0,x2:1,y2:1},R.defs);el('stop',{offset:0,'stop-color':t[1]},gr);el('stop',{offset:1,'stop-color':t[2]},gr);
+    el('path',{d:t[3],transform:'translate(29 29) scale(1.35)',fill:'none',stroke:'#fff','stroke-width':1.5,'stroke-linecap':'round','stroke-linejoin':'round'},tg);
+    txt(29,72,t[0],{class:'ui','font-size':8.5,fill:'#dbe6f2','text-anchor':'middle'},tg);R.tiles[t[0]]=tg;});
+  /* badge on Outages (hidden until push) */
+  const ot=R.tiles['Outages'];R.badge=el('g',{transform:'translate(56 2)',class:'hid'},ot);el('circle',{r:8,fill:'#ff3b30',stroke:'#0b1220','stroke-width':2},R.badge);txt(0,3,'1',{'font-size':9,fill:'#fff','text-anchor':'middle','font-weight':700},R.badge);
+  /* push banner */
+  const PB=el('g',{transform:'translate(10 -70)',class:'hid'},SCR);R.push=PB;el('rect',{width:PW-20,height:54,rx:12,fill:'#1a2333',stroke:'#2c3a4d'},PB);
+  el('rect',{x:9,y:9,width:22,height:22,rx:6,fill:'#ff8a5c'},PB);el('path',{d:'M20 20m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M16 16a5 5 0 0 0 0 8M24 16a5 5 0 0 1 0 8',fill:'none',stroke:'#fff','stroke-width':1.3},PB);
+  txt(38,17,'ie-SRS CMDR · SONAR ALERT',{class:'ui','font-size':8,fill:'#8fb0d0','letter-spacing':.5},PB);txt(PW-30,17,'now',{'font-size':7.5,fill:'#8fb0d0','text-anchor':'end'},PB);
+  txt(38,31,'P1 · Loss of power · Piers 2–6 shore power',{class:'ui','font-size':9,fill:'#fff','font-weight':600},PB);txt(38,44,'WO-NBSD-260903-0422 · Feeder 8A · FM J. Alvarez',{'font-size':7.5,fill:'#c9d7e6'},PB);
+  /* alert card sheet */
+  const SH=el('g',{transform:`translate(0 ${PH-32-262})`,class:'hid'},SCR);R.sheet=SH;
+  el('rect',{width:PW,height:262,rx:22,fill:'#111c2c',stroke:'#27394d'},SH);el('rect',{x:PW/2-18,y:8,width:36,height:4,rx:2,fill:'#3a4656'},SH);
+  const card=el('g',{transform:'translate(14 24)'},SH);el('rect',{width:PW-28,height:150,rx:14,fill:'#182436',stroke:'#3a2a2a'},card);
+  el('rect',{x:12,y:12,width:34,height:34,rx:9,fill:'#ff5a4e'},card);txt(29,35,'P1',{class:'dsp','font-size':13,fill:'#fff','text-anchor':'middle','font-weight':700},card);
+  txt(56,24,'Loss of power · Piers 2–6',{class:'ui','font-size':10.5,fill:'#fff','font-weight':700},card);txt(56,37,'Feeder 8A · substation breaker open',{'font-size':8,fill:'#c9d7e6'},card);txt(56,48,'04:23:18 · WO-NBSD-260903-0422',{'font-size':7.5,fill:'#8fb0d0'},card);
+  el('line',{x1:12,y1:60,x2:PW-40,y2:60,stroke:'#27394d'},card);
+  [['IMPACT','4 ships on shore power · 42 vessels berthed'],['ACTION','Pier microgrid islanded · BESS 12 MWh carrying'],['ETR','45 min · convoy dispatched · CNRSW notified']].forEach((r,i)=>{txt(12,76+i*15,r[0],{'font-size':7,fill:'#8fb0d0','letter-spacing':1.5},card);txt(56,76+i*15,r[1],{'font-size':8,fill:'#dbe6f2'},card);});
+  R.ack=el('g',{transform:`translate(12 118)`},card);el('rect',{width:PW-52,height:24,rx:8,fill:'#18d4f8'},R.ack);R.ackT=txt((PW-52)/2,16,'Acknowledge',{class:'ui','font-size':10,fill:'#04202a','text-anchor':'middle','font-weight':700},R.ack);
+  R.rt=txt(PW/2,208,'',{'font-size':8,fill:'#5fd98a','text-anchor':'middle','letter-spacing':.5},SH);R.rt2=txt(PW/2,222,'',{'font-size':7.5,fill:'#8fb0d0','text-anchor':'middle'},SH);
+  const dim=el('rect',{width:PW,height:PH-32,fill:'#000',opacity:0},SCR);R.dim=dim;SCR.insertBefore(dim,SH);
+  /* tap ring */
+  R.tap=el('circle',{r:10,fill:'none',stroke:'#fff','stroke-width':2,class:'hid'},SCR);
+  /* side callouts (outside phone, in camera space) */
+  const CO=el('g',{class:'hid'},CAM);R.callouts=CO;
+  [[720,208,'AUTH · STEP 1 · SECURITY KEY','GitHub link key · SHA-256 keyring match'],[720,306,'AUTH · STEP 2 · SIX-DIGIT PIN','device-bound · MDM enrolled · no password'],[720,404,'PUSH · 04:23:18','APNs via GitHub Contents transport · CUI-safe'],[720,502,'TAP · 04:23:31','P1 card: impact, action, ETR · no dashboard login'],[720,600,'ACK · 04:23:36','round-trip to ADM-09 comms log · audit entry written']].forEach((c,i)=>{const n=el('g',{transform:`translate(${c[0]} ${c[1]})`,opacity:0},CO);n.dataset.i=i;el('line',{x1:-38,y1:0,x2:-4,y2:0,stroke:'#18d4f8','stroke-opacity':.7},n);el('circle',{r:3,fill:'#18d4f8'},n);txt(10,-4,c[2],{class:'dsp','font-size':13,fill:'#18d4f8','letter-spacing':2},n);txt(10,14,c[3],{'font-size':10.5,fill:'#b4c7da'},n);});
+  /* value strip */
+  R.val=txt(800,72,'DETECTION → COMMANDER BRIEFED & ON RECORD · 00:00:18',{class:'hid dsp','font-size':14,fill:'#5fd98a','text-anchor':'middle','letter-spacing':3},g);
+  /* ── two-step authentication lock screen (step 1 key · step 2 PIN) ── */
+  const AU=el('g',{class:'t'},SCR);R.auth=AU;R.KEY='ghp_4aT9'+'\u2022'.repeat(18);R.keyN=-1;
+  el('rect',{y:18,width:PW,height:PH-50,fill:'#060c15'},AU);
+  el('rect',{x:PW/2-19,y:52,width:38,height:38,rx:11,fill:'#18d4f8'},AU);
+  el('path',{d:'M2-8l-8 10h6l-2 8 8-10h-6z',transform:`translate(${PW/2} 71)`,fill:'#062330'},AU);
+  txt(PW/2,110,'ie-SRS CMDR',{class:'ui','font-size':12,fill:'#fff','text-anchor':'middle','font-weight':700},AU);
+  txt(PW/2,124,'SECURE ACCESS \u00b7 CUI \u00b7 DEVICE BOUND',{'font-size':7,fill:'#8fb0d0','text-anchor':'middle','letter-spacing':1.4},AU);
+  R.auStep=txt(PW/2,152,'STEP 1 OF 2 \u00b7 SECURITY KEY',{class:'dsp','font-size':10,fill:'#18d4f8','text-anchor':'middle','letter-spacing':2.4},AU);
+  const AUB=el('g',{transform:'translate(0 162)'},AU);
+  el('rect',{x:PW/2-52,y:0,width:48,height:3,rx:1.5,fill:'#18d4f8'},AUB);
+  R.auBar2=el('rect',{x:PW/2+4,y:0,width:48,height:3,rx:1.5,fill:'#27394d'},AUB);
+  /* step 1 — GitHub link key */
+  const S1=el('g',{transform:'translate(0 184)',class:'t'},AU);R.au1=S1;
+  txt(24,0,'GITHUB LINK KEY',{'font-size':7,fill:'#8fb0d0','letter-spacing':1.4},S1);
+  el('rect',{x:22,y:8,width:PW-44,height:32,rx:8,fill:'#0d1626',stroke:'#2c4560'},S1);
+  R.keyT=txt(34,29,'',{'font-size':10,fill:'#dbe6f2','letter-spacing':.6},S1);
+  R.keyCur=el('rect',{x:36,y:17,width:1.6,height:14,fill:'#18d4f8'},S1);
+  R.au1btn=el('g',{transform:'translate(22 50)',opacity:.3},S1);
+  el('rect',{width:PW-44,height:30,rx:8,fill:'#123044',stroke:'#18d4f8'},R.au1btn);
+  R.au1btnT=txt((PW-44)/2,20,'VERIFY KEY',{class:'ui','font-size':10,fill:'#18d4f8','text-anchor':'middle','letter-spacing':1.6},R.au1btn);
+  R.au1ok=txt(PW/2,100,'',{'font-size':8,fill:'#5fd98a','text-anchor':'middle','letter-spacing':.6},S1);
+  /* step 2 — six-digit PIN */
+  const S2=el('g',{transform:'translate(0 184)',class:'hid t'},AU);R.au2=S2;
+  txt(PW/2,0,'ENTER SIX-DIGIT PIN',{'font-size':7,fill:'#8fb0d0','text-anchor':'middle','letter-spacing':1.4},S2);
+  R.pin=[];for(let i=0;i<6;i++)R.pin.push(el('circle',{cx:PW/2-50+i*20,cy:18,r:5,fill:'none',stroke:'#3a5670','stroke-width':1.6},S2));
+  R.pad={};['1','2','3','4','5','6','7','8','9','\u232b','0','\u2713'].forEach((k,i)=>{const c=i%3,r=(i/3)|0,ok=k==='\u2713';
+    const kg=el('g',{transform:`translate(${39+c*60} ${44+r*42})`},S2);
+    el('rect',{width:52,height:34,rx:9,fill:ok?'#123a2a':'#0e1727',stroke:ok?'#2f7d55':'#27394d'},kg);
+    txt(26,23,k,{class:'ui','font-size':13,fill:ok?'#5fd98a':'#dbe6f2','text-anchor':'middle'},kg);R.pad[k]=kg;});
+  R.au2ok=txt(PW/2,232,'',{'font-size':8,fill:'#5fd98a','text-anchor':'middle','letter-spacing':.6},S2);
+  txt(PW/2,PH-64,'key never leaves the device \u00b7 no password \u00b7 MDM enrolled',{'font-size':7,fill:'#4d6organ'},AU);
+  SCR.insertBefore(AU,R.tap);
+  return R;},
+steps:[
+  [.3,R=>{show(R.phone);arc(R,[240,432],[R.phoneAt[0]-125,R.phoneAt[1]-120],'#e4cc8c',1.2,false,'2 6');}],
+  [1.6,R=>camTo(R,1.42,555,420,1.8)],
+  [2.4,R=>{show(R.callouts);calloutOn(R,0);}],
+  [5.9,R=>{tapAt(R,125,249);R.au1btnT.textContent='VERIFYING\u2026';}],
+  [6.5,R=>{R.au1ok.textContent='\u2713 KEY VERIFIED \u00b7 SHA-256 MATCH \u00b7 KEYRING';R.au1btnT.textContent='VERIFIED';R.au1btn.querySelector('rect').setAttribute('stroke','#5fd98a');R.au1btnT.setAttribute('fill','#5fd98a');}],
+  [7.1,R=>{show(R.au1,false);show(R.au2);R.auStep.textContent='STEP 2 OF 2 \u00b7 SIX-DIGIT PIN';R.auBar2.setAttribute('fill','#18d4f8');calloutOn(R,1);}],
+  [7.9,R=>pinTap(R,'4',0)],
+  [8.6,R=>pinTap(R,'8',1)],
+  [9.3,R=>pinTap(R,'1',2)],
+  [10,R=>pinTap(R,'9',3)],
+  [10.7,R=>pinTap(R,'0',4)],
+  [11.4,R=>pinTap(R,'3',5)],
+  [12.1,R=>{pinTap(R,'\u2713',-1);R.au2ok.textContent='\u2713 PIN ACCEPTED \u00b7 30 s WINDOW';}],
+  [12.9,R=>{R.auStep.textContent='AUTHENTICATED \u00b7 SESSION OPEN';R.auStep.setAttribute('fill','#5fd98a');R.auBar2.setAttribute('fill','#5fd98a');}],
+  [13.7,R=>show(R.auth,false)],
+  [14.9,R=>{show(R.push);R.push.setAttribute('transform','translate(10 -70)');R.push.style.transition='transform .5s cubic-bezier(.2,.9,.3,1.2)';requestAnimationFrame(()=>R.push.setAttribute('transform','translate(10 4)'));show(R.badge);}],
+  [15.9,R=>calloutOn(R,2)],
+  [19.6,R=>tapAt(R,125,30)],
+  [20.2,R=>{show(R.push,false);R.dim.setAttribute('opacity',.55);show(R.sheet);calloutOn(R,3);camTo(R,1.48,555,440,1.4);}],
+  [24.8,R=>tapAt(R,125,R.sheet.transform.baseVal.getItem(0).matrix.f+24+130)],
+  [25.3,R=>{R.ack.querySelector('rect').setAttribute('fill','#4fd98a');R.ackT.textContent='\u2713 Acknowledged \u00b7 04:23:36';R.rt.textContent='ACK \u2192 ADM-09 COMMS LOG \u00b7 delivered';R.rt2.textContent='CAPT R. Thompson \u00b7 CO NB San Diego \u00b7 via CMDR mobile';calloutOn(R,4);}],
+  [27.5,R=>arc(R,[R.phoneAt[0]+125,R.phoneAt[1]-40],[1080,270],'#5fd98a',1.4,true,'2 6')],
+  [31,R=>{camTo(R,1.25,720,430,2.2);show(R.val);}],
+],
+tick(R,t){const z=R.zoom;
+  if(R.auth&&t>=2.6){const K=R.KEY,n=Math.min(K.length,Math.floor((t-2.6)/.105));
+    if(n!==R.keyN){R.keyN=n;R.keyT.textContent=K.slice(0,n);R.keyCur.setAttribute('x',36+n*5.6);if(n>=K.length)R.au1btn.setAttribute('opacity',1);}
+    R.keyCur.setAttribute('opacity',n>=K.length?((t*1.6)%1<.5?1:0):1);}
+  if(z.dur){const k=clamp((performance.now()-z.t0)/1000/z.dur,0,1),e=ease(k);z.k=z.fk+(z.tk-z.fk)*e;z.cx=z.fcx+(z.tcx-z.fcx)*e;z.cy=z.fcy+(z.tcy-z.fcy)*e;if(k>=1)z.dur=0;}
+  R.cam.setAttribute('transform',`translate(800 450) scale(${z.k}) translate(${-z.cx} ${-z.cy})`);}
+});
+function camTo(R,k,cx,cy,dur){const z=R.zoom;z.fk=z.k;z.fcx=z.cx;z.fcy=z.cy;z.tk=k;z.tcx=cx;z.tcy=cy;z.t0=performance.now();z.dur=dur;}
+function pinTap(R,k,i){const g=R.pad[k];if(!g)return;const m=g.transform.baseVal.getItem(0).matrix;
+  tapAt(R,m.e+26,184+m.f+17);const r=g.querySelector('rect'),f=r.getAttribute('fill');
+  r.setAttribute('fill','#1d3a55');setTimeout(()=>r.setAttribute('fill',f),220);
+  if(i>=0){const d=R.pin[i];d.setAttribute('fill','#18d4f8');d.setAttribute('stroke','#18d4f8');}}
+function calloutOn(R,i){[...R.callouts.children].forEach(n=>{if(+n.dataset.i===i){n.style.transition='opacity .5s';n.setAttribute('opacity',1);}else if(+n.dataset.i<i)n.setAttribute('opacity',.45);});}
+function tapAt(R,x,y){const t=R.tap;show(t);t.setAttribute('cx',x);t.setAttribute('cy',y);t.setAttribute('r',6);t.setAttribute('opacity',1);const a=el('animate',{attributeName:'r',from:6,to:26,dur:'.5s',fill:'freeze'},t),b=el('animate',{attributeName:'opacity',from:1,to:0,dur:'.5s',fill:'freeze'},t);a.beginElement();b.beginElement();setTimeout(()=>{show(t,false);t.innerHTML='';},600);}
+
 /* 3 — isometric site map · outage footprint */
-SCENES.push({id:'iso',chapter:'03 · SITE MAP',min:19.5,
-narr:'This is the installation at building level. The utility feed is gone. Piers two, four and six lose shore power to four ships. The clinic and the data center are on generator, but the fuel farm pumps are electric — they are dark. Twelve hundred personnel are inside the outage boundary. The resilience readiness score falls from eighty-four to forty-one in under a minute. In a paper process, this is the moment where a facility manager starts making phone calls, and nobody above the installation knows yet.',
+SCENES.push({id:'iso',chapter:'04 · SITE MAP',min:19.5,
+narr:'This is the installation at building level layout. The utility feed is gone. Piers two, four and six lose shore power to four ships. The clinic and the data center are on generator power, but the fuel farm pumps are electric — they are dark. Twelve hundred personnel are inside the outage boundary — the resilience readiness score falls from eighty-four to forty-one in under a minute. This is the moment when a facility manager would use traditional methods to communicate the outage — losing valuable time every minute, and still nobody above the installation has been notified. The clock is ticking.',
 cap:'Building-level outage footprint: four ships off shore power, fuel pumps dark, 1,200 personnel inside the boundary. RRS 84 → 41.',
 build(g){
   const R={};
@@ -608,62 +755,9 @@ function gmRow(R,i,label,hb){const r=R.layer.querySelector('#gm-r'+i);r.classLis
 function gmK(R,i,v){R.layer.querySelector('#gm-k'+i).textContent=v;}
 })();
 
-/* 4 — facility manager releases the SONAR alert */
-SCENES.push({id:'fm',chapter:'04 · SONAR ALERT',min:29,
-narr:'With ie-SRS, the facility manager opens the SONAR alert screen instead of the phone. The system has already drafted the order from the FRCS alarm — who, what, when, where, and impact. She confirms the scope, tags it mission-affecting, checks the routing the platform proposes, and releases it. Forty seconds from screen to send, and she never left the console that raised the alarm.',
-cap:'The order is auto-drafted from the alarm. The FM confirms scope, tags it mission-affecting, and releases — 40 seconds, screen to send.',
-build(g){
-  const R={};
-  const TX='#ffffff', TD='#b4c7da', TM='#8ea4ba', WELL='#182a3d', WS='#2f4a66';
-  /* console frame — primary FM instance (full-width) */
-  const F=el('g',{transform:'translate(40 60)'},g);R.F=F;
-  el('rect',{width:1520,height:706,rx:10,fill:'#0b1522',stroke:'#3a5670'},F);
-  el('rect',{width:1520,height:50,rx:10,fill:'#0e1824'},F);el('rect',{y:25,width:1520,height:25,fill:'#0e1824'},F);
-  txt(22,32,'ie-SRS',{class:'dsp','font-size':18,fill:'#fff','letter-spacing':3},F);txt(110,32,'PRIMARY · FACILITY MANAGER INSTANCE · NB SAN DIEGO',{'font-size':16,fill:'#5ee0ff','letter-spacing':2},F);
-  txt(1498,32,'R. DELGADO · FM · CAC ✓',{'font-size':16,fill:TD,'text-anchor':'end'},F);
-  const st=el('g',{transform:'translate(920 12)'},F);el('rect',{width:210,height:26,rx:13,fill:'rgba(226,104,95,.18)',stroke:'#e2685f'},st);txt(105,18,'● OUTAGE ACTIVE 04:22',{'font-size':14,fill:'#ff8f86','text-anchor':'middle','letter-spacing':1},st);
-  /* left: alarm source */
-  const L=el('g',{transform:'translate(22 70)'},F);
-  el('rect',{width:400,height:616,rx:6,fill:'#0e1824',stroke:'#2c4560'},L);
-  txt(16,30,'DETECTION · SOURCE ALARMS',{'font-size':14,fill:TD,'letter-spacing':2},L);
-  [['04:22:06','FRCS','52-M1 breaker OPEN · utility 0.0 MW','#ff8f86'],['04:22:09','AMI','2,140 meters — 1,981 report zero volts','#ff8f86'],['04:22:14','BMS','Clinic ATS → generator · DC ATS → generator','#ffbf5e'],['04:22:20','FRCS','Fuel farm pump controller offline','#ff8f86'],['04:22:31','SEC','RTU session anomaly — admin login 03:58','#ffbf5e']].forEach((a,i)=>{const y=52+i*78;const row=el('g',{transform:`translate(16 ${y})`},L);el('rect',{width:368,height:66,rx:4,fill:WELL,stroke:WS},row);el('rect',{width:4,height:66,fill:a[3]},row);txt(16,24,a[0]+'  '+a[1],{'font-size':14.5,fill:a[3]},row);txt(16,50,a[2],{'font-size':14,fill:TX},row);});
-  R.autod=txt(16,470,'',{'font-size':15,fill:'#5fd98a'},L);R.autod2=txt(16,494,'',{'font-size':15,fill:'#5fd98a'},L);
-  txt(16,560,'AUTO-DRAFT',{'font-size':13,fill:TD,'letter-spacing':2},L);txt(16,584,'Fields pre-filled from FRCS + AMI + BMS',{'font-size':14,fill:TD},L);
-  /* right: SONAR alert form */
-  const W=el('g',{transform:'translate(444 70)'},F);R.W=W;
-  el('rect',{width:1054,height:616,rx:6,fill:'#0e1824',stroke:'#2c4560'},W);
-  txt(22,36,'SONAR ALERT',{class:'dsp','font-size':21,fill:'#f0dc9a','letter-spacing':4},W);
-  R.code=txt(1032,36,'WO-NBSD-260903-0422',{'font-size':16,fill:TD,'text-anchor':'end'},W);
-  R.fields={};
-  const fields=[['WHO','Facility Manager R. Delgado · NB San Diego (nb-sd) · Backup: K. Whitfield'],['WHAT','Loss of utility feed — 12 kV breaker 52-M1 opened by unauthorized FRCS command'],['WHEN','03 SEP 2026 · 04:22 PDT · ongoing · est. restoration unknown (cyber — isolate first)'],['WHERE','Piers 2 / 4 / 6 · Base HQ · Barracks · Fuel Farm · (Clinic + Data Center on generator)'],['IMPACT','4 ships off shore power · fuel pumps down · 1,200 personnel · mission-affecting']];
-  fields.forEach((f,i)=>{const y=54+i*80;const grp=el('g',{transform:`translate(22 ${y})`},W);txt(0,14,f[0],{'font-size':14,fill:TD,'letter-spacing':2},grp);el('rect',{y:22,width:1010,height:48,rx:4,fill:WELL,stroke:WS},grp);const t=txt(14,53,'',{'font-size':17.5,fill:TX},grp);R.fields[f[0]]={t,full:f[1],box:grp.querySelector('rect')};});
-  /* criticality + routing */
-  const C=el('g',{transform:'translate(22 458)'},W);txt(0,14,'CRITICALITY',{'font-size':14,fill:TD,'letter-spacing':2},C);
-  R.crit=[];['DEGRADED — non-mission','MISSION-AFFECTING','CRITICAL — life safety'].forEach((l,i)=>{const b=el('g',{transform:`translate(${i*300} 24)`},C);const r=el('rect',{width:286,height:38,rx:4,fill:WELL,stroke:WS},b);const t=txt(143,25,l,{'font-size':15.5,fill:TD,'text-anchor':'middle'},b);R.crit.push({r,t});});
-  const S=el('g',{transform:'translate(22 536)'},W);txt(0,14,'ROUTING  (evaluated by role · ADM-03 rules)',{'font-size':14,fill:TD,'letter-spacing':2},S);
-  R.route=[];['Base Commander','CNRSW HQ','System Admin','Backup FS','DASN rollup'].forEach((l,i)=>{const b=el('g',{transform:`translate(${i*146} 24)`},S);const r=el('rect',{width:140,height:32,rx:16,fill:WELL,stroke:WS},b);const t=txt(70,21,'○ '+l,{'font-size':13,fill:TD,'text-anchor':'middle'},b);R.route.push({r,t,l});});
-  R.rel=el('g',{transform:'translate(752 550)'},W);el('rect',{width:290,height:50,rx:6,fill:'rgba(95,217,138,.14)',stroke:'#5fd98a','stroke-width':2},R.rel);R.relT=txt(145,31,'RELEASE SONAR ALERT',{class:'dsp','font-size':15,fill:'#5fd98a','text-anchor':'middle','letter-spacing':2},R.rel);
-  R.cursor=el('g',{transform:'translate(300 640)',opacity:0},F);el('path',{d:'M0 0L0 22L6 16L11 26L15 24L10 14L17 14Z',fill:'#fff',stroke:'#07101a','stroke-width':1.2},R.cursor);
-  R.timer=txt(1498,700,'00:00',{class:'dsp','font-size':17,fill:TD,'text-anchor':'end','letter-spacing':2},F);
-  R.typing=null;return R;},
-steps:[
-  [1,R=>{R.autod.textContent='✓ Draft generated from FRCS + AMI alarms';R.autod2.textContent='  04:22:38 · ready for FM review';R.t0=performance.now();}],
-  [1.5,R=>typeField(R,'WHO')],[4.6,R=>typeField(R,'WHAT')],[7.6,R=>typeField(R,'WHEN')],[10.6,R=>typeField(R,'WHERE')],[13.6,R=>typeField(R,'IMPACT')],
-  [17,R=>{R.cursor.setAttribute('opacity',1);moveCursor(R,900,590,.8);}],
-  [18.2,R=>{const c=R.crit[1];c.r.setAttribute('fill','rgba(226,104,95,.2)');c.r.setAttribute('stroke','#e2685f');c.t.setAttribute('fill','#ff8f86');}],
-  [19.5,R=>{moveCursor(R,720,660,.6);}],
-  [20.4,R=>{R.route.forEach((r,i)=>setTimeout(()=>{r.r.setAttribute('stroke',i===4?'#a389e8':'#18d4f8');r.t.textContent=(i===4?'◐ ':'● ')+r.l;r.t.setAttribute('fill',i===4?'#c4b0ff':'#5ee0ff');},i*260));}],
-  [23.5,R=>{moveCursor(R,1340,646,.9);}],
-  [25,R=>{R.rel.querySelector('rect').setAttribute('fill','#5fd98a');R.relT.setAttribute('fill','#07101a');R.relT.textContent='RELEASED ✓ 04:23:18';R.released=true;el('circle',{cx:1340,cy:646,r:12,fill:'none',stroke:'#5fd98a','stroke-width':2,class:'ring'},R.F);}],
-  [26.5,R=>{R.code.setAttribute('fill','#5fd98a');}],
-],
-tick(R){if(R.t0&&!R.released){const s=Math.min(40,(performance.now()-R.t0)/1000*40/20);R.timer.textContent='00:'+String(Math.floor(s)).padStart(2,'0');}}});
-function typeField(R,k){const f=R.fields[k];f.box.setAttribute('stroke','#18d4f8');let i=0;const iv=setInterval(()=>{if(SHOW.paused)return;i+=1;f.t.textContent=f.full.slice(0,i)+(i<f.full.length?'▍':'');if(i>=f.full.length){clearInterval(iv);f.box.setAttribute('stroke','#1c2a3a');}},32);}
-function moveCursor(R,x,y,dur){R.cursor.style.transition=`transform ${dur}s cubic-bezier(.4,0,.2,1)`;R.cursor.setAttribute('transform',`translate(${x} ${y})`);}
-
 /* 5 — signals: the order moves */
 SCENES.push({id:'signals',chapter:'05 · DISPATCH',min:24,
-narr:'Now watch the order move. It leaves the base as one message, and the routing engine splits it by role. The base commander receives it on email and government mobile. Navy Region Southwest headquarters is alerted because the severity is above threshold. The system administrator sees it for platform health. Backup facilities support is always in the loop. Every arc you see was permission-gated: the platform checked each recipient’s account role before it dispatched. Now follow the mobile channel.',
+narr:'Now watch the order move. It leaves the base as one message, and the routing engine splits it by role. The base commander receives it via email and CMDR hub mobile. Navy Region Southwest headquarters is alerted because the severity is above threshold. The system administrator monitors the platform health. Redundant facility support is always in the loop. Every arc you see was permission-gated: the platform checked each recipient’s account role before it dispatched.',
 cap:'One message leaves the base; the routing engine splits it by role. Every arc is permission-gated before dispatch.',
 build(g){
   const R={};
@@ -725,176 +819,8 @@ function fire(R,id,chs){const r=R.rc[id];show(r.gate);r.n.setAttribute('opacity'
     setTimeout(()=>{if(SHOW.paused)return;const chip=[...r.chips.children].find(x=>x.dataset.ch===c);if(chip){chip.setAttribute('opacity',1);chip.querySelector('rect').setAttribute('stroke',r.c);chip.querySelector('text').setAttribute('fill',r.c);}R.ep++;R.count.textContent=`${R.sent} / 4 roles · ${R.ep} / 9 endpoints`;},1500+i*180);});
   R.sent++;R.count.textContent=`${R.sent} / 4 roles · ${R.ep} / 9 endpoints`;}
 
-/* 5B — SONAR on CMDR mobile: zoom into the commander's phone */
-SCENES.push({id:'cmdr',chapter:'06 · CMDR MOBILE',min:26,
-narr:'Zoom in on the government mobile. The SONAR alert lands on the CMDR hub as a push notification and the Outages tile lights up. The commander taps once to read the priority one card, once more to acknowledge. That acknowledgement rides the same bus back to the admin comms log with a timestamp. No phone tree, no email chain: the commander is briefed and on record from anywhere on the installation in under a minute.',
-cap:'The SONAR alert lands on the CMDR mobile hub. One tap to read, one tap to acknowledge — the ack rides the bus back to ADMIN.',
-build(g){
-  const R={};R.defs=el('defs',{},g);
-  el('rect',{width:1600,height:900,fill:'#07111c'},g);
-  /* camera group — everything zoomable lives here */
-  const CAM=el('g',{},g);R.cam=CAM;R.zoom={k:1,cx:800,cy:450,tk:1,tcx:800,tcy:450,t0:0,dur:0,fk:1,fcx:800,fcy:450};
-  /* dimmed dispatch backdrop */
-  el('ellipse',{cx:800,cy:760,rx:900,ry:120,fill:'#0c1a2a'},CAM);
-  for(let i=0;i<7;i++)el('ellipse',{cx:800,cy:760,rx:120+i*110,ry:16+i*15,fill:'none',stroke:'#18d4f8','stroke-opacity':.05},CAM);
-  const B=el('g',{transform:'translate(800 760)',opacity:.6},CAM);isoTile(B,-2,-2,4,4,'#14283a',{stroke:'#22384d'});[[-1.6,-1.6,1.2,1,28],[-.2,-1.7,1.4,1.1,40],[-1.7,0,1.2,1.4,22],[.1,.1,1.4,1.2,32]].forEach(b=>isoBox(B,b[0],b[1],b[2],b[3],b[4],'#2b4a63',{win:2}));
-  txt(0,90,'NB SAN DIEGO · FM INSTANCE',{'font-size':11,fill:'#18d4f8','text-anchor':'middle','letter-spacing':2},B);
-  const E=el('g',{transform:'translate(640 420)',opacity:.15},CAM);el('rect',{width:320,height:110,rx:8,fill:'#0e1824',stroke:'#27394d'},E);txt(160,24,'ROUTING ENGINE · ADM-03',{class:'dsp','font-size':11,fill:'#e4cc8c','text-anchor':'middle','letter-spacing':3},E);['evaluate recipients by role','apply channel rules · MDM policy','write audit entry','dispatch'].forEach((s,i)=>txt(160,48+i*17,'● '+s,{'font-size':10.5,fill:'#5fd98a','text-anchor':'middle'},E));
-  [[520,230,'Navy Region Southwest HQ','flag'],[1080,230,'System Admin','gear'],[1360,340,'Backup Facilities Support','shield'],[800,110,'DASN rollup','chart']].forEach(r=>{const n=el('g',{transform:`translate(${r[0]} ${r[1]})`,opacity:.3},CAM);el('circle',{r:34,fill:'#0e1824',stroke:'#7f96ad','stroke-width':1.5},n);drawIcon(n,r[3],'#7f96ad');txt(0,58,r[2],{class:'ui','font-size':15,fill:'#fff','text-anchor':'middle'},n);});
-  /* base commander node (hot) */
-  const C=el('g',{transform:'translate(240 340)'},CAM);el('circle',{r:34,fill:'#0e1824',stroke:'#e4cc8c','stroke-width':1.5},C);drawIcon(C,'star','#e4cc8c');
-  txt(0,58,'Base Commander',{class:'ui','font-size':15,fill:'#fff','text-anchor':'middle'},C);txt(0,76,'CAPT · NB San Diego',{'font-size':10,fill:'#7f96ad','text-anchor':'middle'},C);
-  const mob=el('g',{transform:'translate(-27 92)'},C);el('rect',{width:54,height:18,rx:9,fill:'#111d2b',stroke:'#e4cc8c'},mob);txt(27,12,'▮ mobile',{'font-size':9,fill:'#e4cc8c','text-anchor':'middle'},mob);
-  R.arcs=el('g',{},CAM);
-  /* ── the phone: static CMDR hub mockup ── */
-  const PX=430,PY=150,PW=250,PH=540;R.phoneAt=[PX+PW/2,PY+PH/2];
-  const P=el('g',{transform:`translate(${PX} ${PY})`,class:'hid'},CAM);R.phone=P;
-  el('rect',{x:-9,y:-9,width:PW+18,height:PH+18,rx:38,fill:'#0a0d12',stroke:'#2a3646','stroke-width':2},P);
-  el('rect',{width:PW,height:PH,rx:30,fill:'#0b1220'},P);
-  el('rect',{x:PW/2-40,y:8,width:80,height:18,rx:9,fill:'#05080d'},P);
-  el('rect',{x:PW/2-36,y:PH-8,width:72,height:3,rx:1.5,fill:'#3a4656'},P);
-  const SCR=el('g',{transform:'translate(0 32)'},P);
-  /* status row */
-  txt(18,12,'9:41',{'font-size':10,fill:'#fff','font-weight':700},SCR);txt(PW-18,12,'▂▄▆ 5G ▮',{'font-size':8,fill:'#fff','text-anchor':'end'},SCR);
-  /* header */
-  const H=el('g',{transform:'translate(0 22)'},SCR);el('rect',{width:PW,height:40,fill:'#0e1727'},H);
-  el('rect',{x:12,y:7,width:26,height:26,rx:8,fill:'#18d4f8'},H);el('path',{d:'M26 12l-6 8h5l-2 7 7-9h-5z',fill:'#062330'},H);
-  txt(46,18,'ie-SRS CMDR',{class:'ui','font-size':11,fill:'#fff','font-weight':700},H);txt(46,30,'Naval Base San Diego · CO view',{'font-size':7.5,fill:'#8fb0d0'},H);
-  const lk=el('g',{transform:`translate(${PW-62} 11)`},H);el('rect',{width:50,height:18,rx:9,fill:'#0b1a12',stroke:'#4fd98a'},lk);el('circle',{cx:11,cy:9,r:3,fill:'#4fd98a'},lk);txt(30,12.5,'LINK',{'font-size':7.5,fill:'#4fd98a','text-anchor':'middle','letter-spacing':1},lk);
-  /* tiles grid (mirrors cmdr/index.html home) */
-  const TILES=[['Sys health','#5fd98a','#1f7a4c','M-7 0h3l1.5-3.5 2 7 1.5-4.5 1 1.5H7'],['Mission impact','#a389e8','#5d3fb8','M0 0m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0M0 0m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0'],['Microgrid','#3fe0ff','#0f9ccc','M0 0m-7 0a7 7 0 1 0 14 0a7 7 0 1 0-14 0M1-4l-3 4h4l-3 4'],
-    ['Black start','#3a4656','#1c2430','M0-6v6M-4-4a5.5 5.5 0 1 0 8 0'],['Live map','#5fd98a','#1f7a4c','M-7-4l4-2 4 2 4-2v10l-4 2-4-2-4 2zM-3-6v10M5-4v10'],['Call EOC','#ff6b5e','#c93b32','M-6-5h3l1.5 3.5-2 1a8 8 0 0 0 4 4l1-2 3.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5A12 12 0 0 1-7.5-3.5 1.5 1.5 0 0 1-6-5z'],
-    ['Message','#29d3c8','#118d85','M-7-5h14v8H-3l-4 3z'],['Outages','#ff6b5e','#c93b32','M1-7l-7 9h5l-1 6 7-9h-5zM-7-7l14 14'],['SONAR','#ff8a5c','#d9442f','M0 0m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M-4-4a5.7 5.7 0 0 0 0 8M4-4a5.7 5.7 0 0 1 0 8M-7-7a10 10 0 0 0 0 14M7-7a10 10 0 0 1 0 14'],
-    ['Link','#ffb340','#c47a10','M-1 2a3.5 3.5 0 0 0 5 0l2-2a3.5 3.5 0 0 0-5-5l-.7.7M1-2a3.5 3.5 0 0 0-5 0l-2 2a3.5 3.5 0 0 0 5 5l.7-.7'],['Status','#6f86a6','#3d5070','M-6-6h5v5h-5zM1-6h5v5H1zM-6 1h5v5h-5zM1 1h5v5H1z']];
-  const G=el('g',{transform:'translate(0 78)'},SCR);R.tiles={};
-  TILES.forEach((t,i)=>{const col=i%3,row=(i/3)|0;const tg=el('g',{transform:`translate(${20+col*74} ${row*84})`},G);
-    el('rect',{width:58,height:58,rx:15,fill:`url(#cmg${i})`},tg);
-    const gr=el('linearGradient',{id:'cmg'+i,x1:0,y1:0,x2:1,y2:1},R.defs);el('stop',{offset:0,'stop-color':t[1]},gr);el('stop',{offset:1,'stop-color':t[2]},gr);
-    el('path',{d:t[3],transform:'translate(29 29) scale(1.35)',fill:'none',stroke:'#fff','stroke-width':1.5,'stroke-linecap':'round','stroke-linejoin':'round'},tg);
-    txt(29,72,t[0],{class:'ui','font-size':8.5,fill:'#dbe6f2','text-anchor':'middle'},tg);R.tiles[t[0]]=tg;});
-  /* badge on Outages (hidden until push) */
-  const ot=R.tiles['Outages'];R.badge=el('g',{transform:'translate(56 2)',class:'hid'},ot);el('circle',{r:8,fill:'#ff3b30',stroke:'#0b1220','stroke-width':2},R.badge);txt(0,3,'1',{'font-size':9,fill:'#fff','text-anchor':'middle','font-weight':700},R.badge);
-  /* push banner */
-  const PB=el('g',{transform:'translate(10 -70)',class:'hid'},SCR);R.push=PB;el('rect',{width:PW-20,height:54,rx:12,fill:'#1a2333',stroke:'#2c3a4d'},PB);
-  el('rect',{x:9,y:9,width:22,height:22,rx:6,fill:'#ff8a5c'},PB);el('path',{d:'M20 20m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M16 16a5 5 0 0 0 0 8M24 16a5 5 0 0 1 0 8',fill:'none',stroke:'#fff','stroke-width':1.3},PB);
-  txt(38,17,'ie-SRS CMDR · SONAR ALERT',{class:'ui','font-size':8,fill:'#8fb0d0','letter-spacing':.5},PB);txt(PW-30,17,'now',{'font-size':7.5,fill:'#8fb0d0','text-anchor':'end'},PB);
-  txt(38,31,'P1 · Loss of power · Piers 2–6 shore power',{class:'ui','font-size':9,fill:'#fff','font-weight':600},PB);txt(38,44,'WO-NBSD-260903-0422 · Feeder 8A · FM J. Alvarez',{'font-size':7.5,fill:'#c9d7e6'},PB);
-  /* alert card sheet */
-  const SH=el('g',{transform:`translate(0 ${PH-32-262})`,class:'hid'},SCR);R.sheet=SH;
-  el('rect',{width:PW,height:262,rx:22,fill:'#111c2c',stroke:'#27394d'},SH);el('rect',{x:PW/2-18,y:8,width:36,height:4,rx:2,fill:'#3a4656'},SH);
-  const card=el('g',{transform:'translate(14 24)'},SH);el('rect',{width:PW-28,height:150,rx:14,fill:'#182436',stroke:'#3a2a2a'},card);
-  el('rect',{x:12,y:12,width:34,height:34,rx:9,fill:'#ff5a4e'},card);txt(29,35,'P1',{class:'dsp','font-size':13,fill:'#fff','text-anchor':'middle','font-weight':700},card);
-  txt(56,24,'Loss of power · Piers 2–6',{class:'ui','font-size':10.5,fill:'#fff','font-weight':700},card);txt(56,37,'Feeder 8A · substation breaker open',{'font-size':8,fill:'#c9d7e6'},card);txt(56,48,'04:23:18 · WO-NBSD-260903-0422',{'font-size':7.5,fill:'#8fb0d0'},card);
-  el('line',{x1:12,y1:60,x2:PW-40,y2:60,stroke:'#27394d'},card);
-  [['IMPACT','4 ships on shore power · 42 vessels berthed'],['ACTION','Pier microgrid islanded · BESS 12 MWh carrying'],['ETR','45 min · convoy dispatched · CNRSW notified']].forEach((r,i)=>{txt(12,76+i*15,r[0],{'font-size':7,fill:'#8fb0d0','letter-spacing':1.5},card);txt(56,76+i*15,r[1],{'font-size':8,fill:'#dbe6f2'},card);});
-  R.ack=el('g',{transform:`translate(12 118)`},card);el('rect',{width:PW-52,height:24,rx:8,fill:'#18d4f8'},R.ack);R.ackT=txt((PW-52)/2,16,'Acknowledge',{class:'ui','font-size':10,fill:'#04202a','text-anchor':'middle','font-weight':700},R.ack);
-  R.rt=txt(PW/2,208,'',{'font-size':8,fill:'#5fd98a','text-anchor':'middle','letter-spacing':.5},SH);R.rt2=txt(PW/2,222,'',{'font-size':7.5,fill:'#8fb0d0','text-anchor':'middle'},SH);
-  const dim=el('rect',{width:PW,height:PH-32,fill:'#000',opacity:0},SCR);R.dim=dim;SCR.insertBefore(dim,SH);
-  /* tap ring */
-  R.tap=el('circle',{r:10,fill:'none',stroke:'#fff','stroke-width':2,class:'hid'},SCR);
-  /* side callouts (outside phone, in camera space) */
-  const CO=el('g',{class:'hid'},CAM);R.callouts=CO;
-  [[720,250,'PUSH · 04:23:18','APNs via GitHub Contents transport · CUI-safe payload'],[720,420,'TAP · 04:23:31','P1 card: impact, action, ETR — no dashboard login needed'],[720,590,'ACK · 04:23:36','round-trip to ADM-09 comms log · audit entry written']].forEach((c,i)=>{const n=el('g',{transform:`translate(${c[0]} ${c[1]})`,opacity:0},CO);n.dataset.i=i;el('line',{x1:-38,y1:0,x2:-4,y2:0,stroke:'#18d4f8','stroke-opacity':.7},n);el('circle',{r:3,fill:'#18d4f8'},n);txt(10,-4,c[2],{class:'dsp','font-size':13,fill:'#18d4f8','letter-spacing':2},n);txt(10,14,c[3],{'font-size':10.5,fill:'#b4c7da'},n);});
-  /* value strip */
-  R.val=txt(800,72,'DETECTION → COMMANDER BRIEFED & ON RECORD · 00:00:18',{class:'hid dsp','font-size':14,fill:'#5fd98a','text-anchor':'middle','letter-spacing':3},g);
-  return R;},
-steps:[
-  [.3,R=>{show(R.phone);arc(R,[240,432],[R.phoneAt[0]-125,R.phoneAt[1]-120],'#e4cc8c',1.2,false,'2 6');}],
-  [1.6,R=>camTo(R,1.42,555,420,1.8)],
-  [3.2,R=>{show(R.push);R.push.setAttribute('transform','translate(10 -70)');R.push.style.transition='transform .5s cubic-bezier(.2,.9,.3,1.2)';requestAnimationFrame(()=>R.push.setAttribute('transform','translate(10 4)'));show(R.badge);}],
-  [4.2,R=>{show(R.callouts);calloutOn(R,0);}],
-  [8,R=>tapAt(R,125,30)],
-  [8.6,R=>{show(R.push,false);R.dim.setAttribute('opacity',.55);show(R.sheet);calloutOn(R,1);camTo(R,1.48,555,440,1.4);}],
-  [13,R=>tapAt(R,125,R.sheet.transform.baseVal.getItem(0).matrix.f+24+130)],
-  [13.5,R=>{R.ack.querySelector('rect').setAttribute('fill','#4fd98a');R.ackT.textContent='✓ Acknowledged · 04:23:36';R.rt.textContent='ACK → ADM-09 COMMS LOG · delivered';R.rt2.textContent='CAPT R. Thompson · CO NB San Diego · via CMDR mobile';calloutOn(R,2);}],
-  [15,R=>arc(R,[R.phoneAt[0]+125,R.phoneAt[1]-40],[1080,270],'#5fd98a',1.4,true,'2 6')],
-  [18,R=>{camTo(R,1.25,720,430,2.2);show(R.val);}],
-],
-tick(R){const z=R.zoom;if(z.dur){const k=clamp((performance.now()-z.t0)/1000/z.dur,0,1),e=ease(k);z.k=z.fk+(z.tk-z.fk)*e;z.cx=z.fcx+(z.tcx-z.fcx)*e;z.cy=z.fcy+(z.tcy-z.fcy)*e;if(k>=1)z.dur=0;}
-  R.cam.setAttribute('transform',`translate(800 450) scale(${z.k}) translate(${-z.cx} ${-z.cy})`);}
-});
-function camTo(R,k,cx,cy,dur){const z=R.zoom;z.fk=z.k;z.fcx=z.cx;z.fcy=z.cy;z.tk=k;z.tcx=cx;z.tcy=cy;z.t0=performance.now();z.dur=dur;}
-function calloutOn(R,i){[...R.callouts.children].forEach(n=>{if(+n.dataset.i===i){n.style.transition='opacity .5s';n.setAttribute('opacity',1);}else if(+n.dataset.i<i)n.setAttribute('opacity',.45);});}
-function tapAt(R,x,y){const t=R.tap;show(t);t.setAttribute('cx',x);t.setAttribute('cy',y);t.setAttribute('r',6);t.setAttribute('opacity',1);const a=el('animate',{attributeName:'r',from:6,to:26,dur:'.5s',fill:'freeze'},t),b=el('animate',{attributeName:'opacity',from:1,to:0,dur:'.5s',fill:'freeze'},t);a.beginElement();b.beginElement();setTimeout(()=>{show(t,false);t.innerHTML='';},600);}
-
-/* 6B — CMDR builds a SONAR scenario on mobile; it syncs to ADMIN's SYS-04 Data Drop Zone */
-SCENES.push({id:'scenario',chapter:'07 · MOBILE SCENARIO',min:20,
-narr:'And it runs the other way. From the same phone, the commander opens the SONAR Scenario Builder, queues the alerts, and sends the package to the Data Drop Zone. Seconds later it is sitting in ADMIN, synced over the bus, ready for the routing review — no laptop, no VPN, no email attachment.',
-cap:'The commander builds a SONAR scenario on mobile and sends it to the Data Drop Zone — it syncs to ADMIN over the same bus.',
-build(g){
-  const R={};
-  el('rect',{width:1600,height:900,fill:'#07111c'},g);
-  const D=el('defs',{},g);const gr=el('linearGradient',{id:'scg1',x1:0,y1:0,x2:1,y2:1},D);el('stop',{offset:0,'stop-color':'#e8a33d'},gr);el('stop',{offset:1,'stop-color':'#8a5a12'},gr);
-  const gr2=el('linearGradient',{id:'scg2',x1:0,y1:0,x2:1,y2:1},D);el('stop',{offset:0,'stop-color':'#b0b8c4'},gr2);el('stop',{offset:1,'stop-color':'#4f5a68'},gr2);
-  txt(800,120,'CMDR → ADMIN · SCENARIO SYNC',{class:'dsp','font-size':16,fill:'#18d4f8','text-anchor':'middle','letter-spacing':5},g);
-  /* ── left: landscape phone with the Scenario Builder ── */
-  const PX=90,PY=230,PW=640,PH=300;
-  const P=el('g',{transform:`translate(${PX} ${PY})`},g);
-  el('rect',{x:-10,y:-10,width:PW+20,height:PH+20,rx:34,fill:'#0a0d12',stroke:'#2a3646','stroke-width':2},P);
-  el('rect',{width:PW,height:PH,rx:26,fill:'#0b1220'},P);
-  el('rect',{x:8,y:PH/2-30,width:16,height:60,rx:8,fill:'#05080d'},P);
-  const S=el('g',{transform:'translate(34 14)'},P);const SW=PW-48;
-  /* chrome */
-  el('rect',{width:SW,height:30,fill:'#0e1727'},S);
-  txt(10,20,'←',{'font-size':13,fill:'#8fb0d0'},S);txt(34,20,'⬡ SONAR',{class:'dsp','font-size':10,fill:'#4db88a','letter-spacing':2},S);
-  R.stepLbl=txt(SW-118,20,'1 · ORDERS',{class:'dsp','font-size':9,fill:'#4db88a','letter-spacing':2,'text-anchor':'end'},S);
-  [['✕','#e05555',SW-104],['⤓','#e8a33d',SW-70],['▶','#4db88a',SW-36]].forEach(b=>{const bg=el('g',{transform:`translate(${b[2]} 5)`},S);el('rect',{width:28,height:20,rx:4,fill:b[0]==='▶'?b[1]:'transparent',stroke:b[1],'stroke-opacity':.7},bg);txt(14,14,b[0],{'font-size':11,fill:b[0]==='▶'?'#071a10':b[1],'text-anchor':'middle'},bg);if(b[0]==='⤓')R.dropBtn=bg;});
-  /* ribbon */
-  const RB=el('g',{transform:'translate(0 30)'},S);el('rect',{width:SW,height:24,fill:'#0c1522'},RB);R.steps=[];
-  for(let i=0;i<7;i++){const x=12+i*(SW-24)/7;const st=el('g',{transform:`translate(${x} 12)`,opacity:i?.55:1},RB);el('circle',{r:7,fill:i?'none':'#4db88a','fill-opacity':i?0:.25,stroke:'#4db88a','stroke-width':1},st);txt(0,3,String(i+1),{'font-size':7,fill:'#dbe6f2','text-anchor':'middle'},st);R.steps.push(st);}
-  R.ul=el('rect',{x:0,y:52,width:(SW-24)/7+12,height:2,fill:'#4db88a'},RB);
-  /* body: composer (left) + queue (right) */
-  const BD=el('g',{transform:'translate(10 64)'},S);
-  el('rect',{width:SW*.5-8,height:PH-100,rx:6,fill:'#0e1727',stroke:'#1d2a3c'},BD);
-  txt(10,16,'⊕ COMPOSE NEW ORDER',{class:'dsp','font-size':8,fill:'#8fb0d0','letter-spacing':2},BD);
-  [['ORDER TYPE','SONAR ALERT',10,28,SW*.24-12],['PRIORITY','URGENT',SW*.25+2,28,SW*.24-12],['ORDER TAG','WARN-001 · FUEL RESUPPLY',10,68,SW*.5-28],['ORDER BODY','Convoy en route via Harbor Drive. Diesel 22%.',10,108,SW*.5-28]].forEach(f=>{txt(f[2],f[3],f[0],{'font-size':6.5,fill:'#6e90b0','letter-spacing':1.5},BD);el('rect',{x:f[2],y:f[3]+4,width:f[4],height:f[0]==='ORDER BODY'?40:20,rx:3,fill:'#111c2c',stroke:'#1d2a3c'},BD);txt(f[2]+6,f[3]+17,f[1],{'font-size':8,fill:'#dbe6f2'},BD);});
-  R.addBtn=el('g',{transform:`translate(10 ${PH-138})`},BD);el('rect',{width:SW*.5-28,height:22,rx:4,fill:'rgba(232,163,61,.15)',stroke:'#e8a33d'},R.addBtn);txt((SW*.5-28)/2,15,'＋ QUEUE',{class:'dsp','font-size':8,fill:'#e8a33d','text-anchor':'middle','letter-spacing':2},R.addBtn);
-  const Q=el('g',{transform:`translate(${SW*.5+2} 0)`},BD);el('rect',{width:SW*.5-12,height:PH-100,rx:6,fill:'#0e1727',stroke:'#1d2a3c'},Q);
-  txt(10,16,'QUEUE',{class:'dsp','font-size':8,fill:'#8fb0d0','letter-spacing':2},Q);R.qBadge=txt(SW*.5-22,16,'0 orders',{'font-size':7,fill:'#6e90b0','text-anchor':'end'},Q);
-  R.qEmpty=txt((SW*.5-12)/2,70,'NO SONAR ALERTS QUEUED',{'font-size':7,fill:'#3a5470','text-anchor':'middle','letter-spacing':1.5},Q);
-  R.cards=[];[['WARN-001 · FUEL RESUPPLY','URGENT'],['WARN-002 · PIER MICROGRID ISLANDING','PRIORITY'],['WARN-003 · BARGE COORDINATION','ROUTINE']].forEach((c,i)=>{const cg=el('g',{transform:`translate(8 ${28+i*44})`,class:'hid'},Q);el('rect',{width:SW*.5-28,height:38,rx:4,fill:'#111c2c',stroke:'#e8a33d','stroke-opacity':.5},cg);el('rect',{x:6,y:8,width:5,height:5,rx:1,fill:'#e8a33d'},cg);txt(16,14,c[0],{'font-size':7.5,fill:'#fff'},cg);txt(16,28,'SONAR ALERT · '+c[1]+' · Installation CO · NAVFAC · DLA',{'font-size':6,fill:'#8fb0d0'},cg);R.cards.push(cg);});
-  txt(PW/2,PH+34,'CMDR MOBILE · SONAR SCENARIO BUILDER · LANDSCAPE',{'font-size':10,fill:'#7f96ad','text-anchor':'middle','letter-spacing':2},P);
-  /* ── right: ADMIN SYS-04 Data Drop Zone card ── */
-  const AX=880,AY=230,AW=630,AH=300;
-  const A=el('g',{transform:`translate(${AX} ${AY})`},g);
-  el('rect',{width:AW,height:AH,rx:10,fill:'#0b1422',stroke:'#27394d'},A);
-  el('rect',{width:AW,height:34,rx:10,fill:'#0e1824'},A);el('rect',{y:24,width:AW,height:10,fill:'#0e1824'},A);
-  txt(14,22,'ie-SRS ADMIN',{class:'dsp','font-size':10,fill:'#18d4f8','letter-spacing':3},A);txt(130,22,'SYS-04 // DATA DROP ZONE',{'font-size':10,fill:'#b0b8c4','letter-spacing':2},A);
-  R.sync=el('g',{transform:`translate(${AW-150} 10)`},A);R.syncDot=el('circle',{cx:6,cy:7,r:4,fill:'#d4a05a'},R.sync);R.syncT=txt(16,11,'GITHUB · LOCAL',{'font-size':8,fill:'#8fb0d0','letter-spacing':1.5},R.sync);
-  const DZ=el('g',{transform:'translate(18 52)'},A);
-  el('rect',{width:AW-36,height:70,rx:8,fill:'rgba(176,184,196,.04)',stroke:'#4f5a68','stroke-dasharray':'5 4'},DZ);
-  txt((AW-36)/2,30,'⤓',{'font-size':20,fill:'#b0b8c4','text-anchor':'middle'},DZ);txt((AW-36)/2,52,'DROP FILES OR TAP TO UPLOAD · XLSX · CSV · JSON · SCENARIO PACKAGES',{'font-size':8,fill:'#8fb0d0','text-anchor':'middle','letter-spacing':1.5},DZ);
-  R.count=txt(AW-18,150,'0 ITEMS',{class:'dsp','font-size':9,fill:'#8fb0d0','text-anchor':'end','letter-spacing':2},A);
-  R.row=el('g',{transform:'translate(18 160)',class:'hid'},A);
-  el('rect',{width:AW-36,height:62,rx:8,fill:'#111c2c',stroke:'#e8a33d','stroke-opacity':.6},R.row);
-  el('rect',{x:12,y:13,width:36,height:36,rx:9,fill:'#e8a33d'},R.row);txt(30,37,'⬡',{'font-size':16,fill:'#0b1220','text-anchor':'middle'},R.row);
-  txt(60,26,'NB San Diego · Hurricane · CAT 3',{class:'ui','font-size':12,fill:'#fff','font-weight':600},R.row);
-  el('rect',{x:270,y:16,width:62,height:14,rx:3,fill:'none',stroke:'#4f5a68'},R.row);txt(301,26,'SCENARIO',{'font-size':7.5,fill:'#b0b8c4','text-anchor':'middle','letter-spacing':1.5},R.row);
-  el('rect',{x:338,y:16,width:36,height:14,rx:3,fill:'none',stroke:'#e8a33d'},R.row);txt(356,26,'NEW',{'font-size':7.5,fill:'#e8a33d','text-anchor':'middle','letter-spacing':1.5},R.row);
-  txt(60,44,'3 alerts · 4 assets · 58 MW · 92% cover',{'font-size':9,fill:'#e8a33d'},R.row);
-  R.rowMeta=txt(60,56,'SCENARIO · 2.4 KB · from CMDR · CAPT R. Thompson · 04:26:12',{'font-size':8.5,fill:'#8fb0d0'},R.row);
-  [['View',AW-36-124],['Delete',AW-36-64]].filter(function(b){return true;}).forEach(b=>{const bg=el('g',{transform:`translate(${b[1]} 19)`},R.row);el('rect',{width:54,height:22,rx:5,fill:'rgba(255,255,255,.08)',stroke:'#3a4656'},bg);txt(27,15,b[0],{'font-size':9,fill:b[0]==='Delete'?'#ff8a80':'#fff','text-anchor':'middle'},bg);});
-  R.audit=txt(18,AH-16,'',{'font-size':8.5,fill:'#4db88a','letter-spacing':1},A);
-  txt(AX+AW/2,AY+AH+34,'ADMIN · SYS-04 DATA DROP ZONE · SYNCED OVER THE ie-SRS BUS',{'font-size':10,fill:'#7f96ad','text-anchor':'middle','letter-spacing':2},g);
-  /* bus lane between them */
-  R.arcs=el('g',{},g);
-  R.lane=txt(800,620,'',{class:'dsp','font-size':9,fill:'#e8a33d','text-anchor':'middle','letter-spacing':3},g);
-  /* value strip */
-  R.val=txt(800,690,'',{class:'dsp','font-size':13,fill:'#5fd98a','text-anchor':'middle','letter-spacing':3},g);
-  return R;},
-steps:[
-  [1.5,R=>{show(R.cards[0]);show(R.qEmpty,false);R.qBadge.textContent='1 order';R.addBtn.querySelector('rect').setAttribute('fill','rgba(232,163,61,.35)');}],
-  [3,R=>{show(R.cards[1]);R.qBadge.textContent='2 orders';}],
-  [4.5,R=>{show(R.cards[2]);R.qBadge.textContent='3 orders';}],
-  [6.5,R=>{R.steps.forEach((s,i)=>s.setAttribute('opacity',i<=3?1:.55));R.ul.setAttribute('x',3*(R.ul.width.baseVal.value));R.stepLbl.textContent='4 · ASSETS';}],
-  [8.5,R=>{R.dropBtn.querySelector('rect').setAttribute('fill','#e8a33d');R.dropBtn.querySelector('text').setAttribute('fill','#1a0f00');R.lane.textContent='DROP · SC-4F2A · 2.4 KB · bus.publish(\'DROP\')';
-    arc(R,[740,380],[880,370],'#e8a33d',1.6,true,'2 6');}],
-  [10.4,R=>{show(R.row);R.count.textContent='1 ITEM';R.syncDot.setAttribute('fill','#4db88a');R.syncT.textContent='GITHUB · SYNCED';R.audit.textContent='AUDIT · DROPZONE_RECV · scenario from cmdr · CAPT R. Thompson';}],
-  [13,R=>{R.val.textContent='SCENARIO AUTHORED ON MOBILE → IN ADMIN IN 4 SECONDS · NO LAPTOP · NO VPN · NO ATTACHMENT';}],
-]});
-
 /* 8 — call-home to Foundry ADVANA admin platform */
-SCENES.push({id:'advana',chapter:'08 · ADVANA',min:15.5,
+SCENES.push({id:'advana',chapter:'06 · ADVANA',min:15.5,
 narr:'The same order calls home to the admin platform hosted on Foundry ADVANA. The instance reaches out — nothing ever connects into the base. The order appears in the dispatch log, the audit trail is written, and the enterprise dashboard flips San Diego to open SONAR alert. Headquarters can see it without calling anyone.',
 cap:'The order calls home to the admin platform on Foundry ADVANA — dispatch log, audit entry, enterprise dashboard, all without a phone call.',
 build(g){
@@ -934,11 +860,11 @@ steps:[
 ]});
 
 /* 7 — response & value */
-SCENES.push({id:'value',chapter:'09 · RESPONSE',min:24.5,
+SCENES.push({id:'value',chapter:'07 · RESPONSE',min:24.5,
 narr:'Ninety seconds after the breaker opened, the commander acknowledges. The battery system and the diesel generators island the critical loads. Piers two and four come back on ship power, the fuel pumps return, and regional headquarters begins staging resupply. Same attack, without the system: command awareness in hours. With it: ninety seconds. That is the value of SONAR — visibility at the speed of the event.',
 cap:'Commander acknowledges at 90 seconds. Microgrid islands the critical loads. Without the system, command awareness takes hours.',
 build(g){
-  const R=SCENES[3].build(g);   /* reuse the site map, start from the dark state */
+  const R=SCENES.find(x=>x.id==='iso').build(g);   /* reuse the site map, start from the dark state */
   ['sub'].forEach(id=>{const s=R.b.sub;s.g.querySelectorAll('polygon').forEach(p=>p.setAttribute('fill','#3a2226'));});R.feeds.forEach(f=>{f.setAttribute('stroke','#e2685f');f.setAttribute('class','');f.setAttribute('stroke-opacity',.35);});
   ['p2','p4','p6','p8','hq','bar','fuel'].forEach(id=>darkBld(R,id));R.ships.forEach(s=>s.lamp.setAttribute('fill','#3a2a2a'));Object.values(R.zones).forEach(z=>show(z));
   ['sub','p2','p4','p6','hq','fuel'].forEach(id=>lo(R,id,'LOST'));['med','dc'].forEach(id=>lo(R,id,'ON GEN','#e8a33d'));
@@ -962,11 +888,11 @@ steps:[
   [15,R=>{show(R.tl);R.tlT0=performance.now();R.tlAnim=true;}],
   [22,R=>{R.tlNote.textContent='Phone tree: ~3 h 40 m · 4 calls';R.tlNote2.textContent='ie-SRS: 04:23:18 → ack 04:23:36';R.tlNote3.textContent='every step audited · zero calls';}],
 ],
-tick(R,t){SCENES[3].tick(R,t);if(R.tlAnim){const k=clamp((performance.now()-R.tlT0)/4000,0,1);R.barA.setAttribute('width',250*ease(k));R.barAT.textContent=(Math.round(220*ease(k)))+' min';R.barB.setAttribute('width',Math.max(3,250*ease(k)*(1.5/220)*1.2));R.barBT.textContent=(Math.round(90*ease(k)))+' s';if(k>=1)R.tlAnim=false;}}});
+tick(R,t){SCENES.find(x=>x.id==='iso').tick(R,t);if(R.tlAnim){const k=clamp((performance.now()-R.tlT0)/4000,0,1);R.barA.setAttribute('width',250*ease(k));R.barAT.textContent=(Math.round(220*ease(k)))+' min';R.barB.setAttribute('width',Math.max(3,250*ease(k)*(1.5/220)*1.2));R.barBT.textContent=(Math.round(90*ease(k)))+' s';if(k>=1)R.tlAnim=false;}}});
 
 /* 8 — close */
 SCENES.push({id:'close',chapter:'CLOSE',min:7,
-narr:'Detection to command awareness in ninety seconds. Four roles, nine endpoints, every dispatch audited, and the enterprise picture updated without a single phone call. That is what SONAR buys you. This has been ie-SRS. Thank you for watching.',
+narr:'Detection to command awareness in ninety seconds. Four roles, nine endpoints, every dispatch audited, and the enterprise picture updated without a single phone call. That is what SONAR buys you. Thank you for your time and attention. We will open the floor for questions.',
 cap:'Detection to command awareness: 90 seconds. Four roles, nine endpoints, every dispatch audited — no phone calls.',
 build(g){
   const R={};
@@ -980,8 +906,8 @@ build(g){
 steps:[[.6,R=>R.k[0].setAttribute('opacity',1)],[1.6,R=>R.k[1].setAttribute('opacity',1)],[2.6,R=>R.k[2].setAttribute('opacity',1)],[3.6,R=>R.k[3].setAttribute('opacity',1)],[5,R=>{R.foot.setAttribute('opacity',1);R.foot2.setAttribute('opacity',1);}]]});
 
 /* ═══ ENGINE ═══════════════════════════════════════════════════ */
-const CLOCKS={open:'04:19:40',threat:'04:20:10',map:'04:22:00',iso:'04:22:50',fm:'04:22:38',signals:'04:23:18',advana:'04:23:19',value:'04:23:36',close:'04:30:00',cmdr:'04:23:18',scenario:'04:26:05'};
-const SHOW={i:-1,R:null,t:0,last:0,paused:false,started:false,fired:new Set(),narrDone:false,muted:false,epoch:0,total:SCENES.reduce((a,s)=>a+s.min,0)};
+const CLOCKS={open:'04:19:40',threat:'04:20:10',map:'04:22:00',cmdr:'04:22:25',iso:'04:22:50',signals:'04:23:18',advana:'04:23:19',value:'04:23:36',close:'04:30:00'};
+const SHOW={i:-1,R:null,t:0,last:0,paused:false,started:false,fired:new Set(),narrDone:false,muted:false,cc:false,epoch:0,total:SCENES.reduce((a,s)=>a+s.min,0)};
 const svg=$('scene');
 const DEBUG=/[?&]debug/.test(location.search);const STATS=[];
 function stat(){return STATS[STATS.length-1];}
@@ -998,14 +924,14 @@ function pickVoice(){if(VO.unsupported)return;const vs=speechSynthesis.getVoices
   VO.voice=v;VO.ready=true;}
 if(!VO.unsupported){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 function chunks(text){const s=(text.match(/[^.!?]+[.!?]+["”']?\s*/g)||[text]).map(x=>x.trim()).filter(Boolean);const out=[];for(let i=0;i<s.length;i+=2)out.push((s[i]+' '+(s[i+1]||'')).trim());return out;}
-const SAY=[[/\bie-SRS\b/g,'I-E S-R-S'],[/\bFRCS\b/g,'F-R-C-S'],[/\bCMDR\b/g,'commander'],[/\bADVANA\b/g,'ad-vah-na'],[/\bVPN\b/g,'V-P-N'],[/\bSDG&E\b/g,'S-D-G-and-E'],[/\bNAVFAC\b/g,'nav-fac'],[/\bBESS\b/g,'bess'],[/\bMW\b/g,'megawatts'],[/\bkV\b/g,'kilovolt']];
+const SAY=[[/\bie-SRS\b/g,'I-E S-R-S'],[/\bFRCS\b/g,'F-R-C-S'],[/\bCMDR\b/g,'commander'],[/\bADVANA\b/g,'ad-vah-na'],[/\bVPN\b/g,'V-P-N'],[/\biOS\b/g,'i-O-S'],[/\bLAN\b/g,'L-A-N'],[/\bSDG&E\b/g,'S-D-G-and-E'],[/\bNAVFAC\b/g,'nav-fac'],[/\bBESS\b/g,'bess'],[/\bMW\b/g,'megawatts'],[/\bkV\b/g,'kilovolt']];
 function sayable(t){return SAY.reduce(function(a,r){return a.replace(r[0],r[1]);},t);}
 function speak(text,onDone){text=sayable(text);
   if(VO.unsupported||SHOW.muted){setTimeout(onDone,0);return;}
   try{speechSynthesis.cancel();}catch(e){}
   const parts=chunks(text);let idx=0;const myEpoch=SHOW.epoch;let first=true;
   function next(){if(myEpoch!==SHOW.epoch)return;if(idx>=parts.length){setVoState('idle');onDone();return;}
-    const u=new SpeechSynthesisUtterance(parts[idx++]);if(VO.voice)u.voice=VO.voice;u.rate=.88;u.pitch=1.02;u.volume=1;
+    const u=new SpeechSynthesisUtterance(parts[idx++]);if(VO.voice)u.voice=VO.voice;u.rate=.94;u.pitch=1.02;u.volume=1;
     u.onend=()=>{if(myEpoch!==SHOW.epoch)return;next();};u.onerror=e=>{if(myEpoch!==SHOW.epoch)return;if(e.error==='interrupted'||e.error==='canceled')return;next();};
     u.onstart=()=>{if(first){first=false;const s=stat();if(s&&s.first==null)s.first=(performance.now()-s.t0)/1000;paintDebug();}};
     VO.u=u;setVoState('speaking');speechSynthesis.speak(u);}
@@ -1053,7 +979,7 @@ function loop(now){
   sc.steps.forEach((st,k)=>{if(!SHOW.fired.has(k)&&SHOW.sceneT>=st[0]){SHOW.fired.add(k);try{st[1](R);}catch(e){console.warn('step',sc.id,k,e);}}});
   if(sc.tick){try{sc.tick(R,SHOW.sceneT,dt);}catch(e){}}
   const frac=clamp((SHOW.elapsedBefore+Math.min(SHOW.sceneT,sc.min))/SHOW.total,0,1);$('prog-fill').style.width=(frac*100).toFixed(2)+'%';
-  const narrOk=(SHOW.narrDone&&performance.now()-(SHOW.narrDoneAt||0)>=2400)||VO.unsupported||SHOW.muted;
+  const narrOk=(SHOW.narrDone&&performance.now()-(SHOW.narrDoneAt||0)>=1000)||VO.unsupported||SHOW.muted;
   const hardCap=sc.min+40;   /* never hang on a stuck utterance */
   if((SHOW.sceneT>=sc.min&&narrOk)||SHOW.sceneT>=hardCap)gotoScene(SHOW.i+1);
 }
@@ -1067,6 +993,8 @@ function ctlPause(){if(!SHOW.started)return;SHOW.paused=!SHOW.paused;const b=$('
 function ctlReplay(){SHOW.epoch++;try{speechSynthesis.cancel();}catch(e){}if(SHOW.paused)ctlPause();try{if(SHOW.i>=0&&SHOW.i<SCENES.length&&SCENES[SHOW.i].teardown)SCENES[SHOW.i].teardown(SHOW.R);}catch(x){}for(let i=0;i<SCENES.length;i++)clearScene(i);SHOW.i=-1;SHOW.t=0;SHOW.started=true;SHOW.last=performance.now();$('prog-fill').style.width='0%';gotoScene(0);}
 function ctlPrev(){if(!SHOW.started)return;if(SHOW.paused)ctlPause();const back=(SHOW.i>=SCENES.length)?SCENES.length-1:(SHOW.sceneT>4?SHOW.i:SHOW.i-1);gotoScene(Math.max(0,back));}
 function ctlSkip(){if(!SHOW.started||SHOW.i>=SCENES.length)return;if(SHOW.paused)ctlPause();gotoScene(SHOW.i+1);}
+function ctlCC(){SHOW.cc=!SHOW.cc;applyCC();}
+function applyCC(){const b=$('b-cc');if(!b)return;b.innerHTML=SHOW.cc?'&#9646; CC ON':'&#9647; CC OFF';b.classList.toggle('hot',SHOW.cc);$('lower').classList.toggle('cc-off',!SHOW.cc);}
 function ctlMute(){SHOW.muted=!SHOW.muted;const b=$('b-mute');b.innerHTML=SHOW.muted?'&#128263; VOICE OFF':'&#128264; VOICE ON';b.classList.toggle('warn',SHOW.muted);if(SHOW.muted){SHOW.epoch++;try{speechSynthesis.cancel();}catch(e){}setVoState('idle');SHOW.narrDone=true;}else if(SHOW.started&&SHOW.i<SCENES.length){SHOW.narrDone=false;speak(SCENES[SHOW.i].narr,()=>{SHOW.narrDone=true;});}}
 /* ── full screen ── */
 const FS={el:$('wrap')};   /* full-screen the centring wrapper, so the 16:9 stage letterboxes instead of being cropped on 16:10 / 21:9 displays */
@@ -1075,7 +1003,8 @@ function ctlFullscreen(){try{if(fsActive()){(document.exitFullscreen||document.w
 function paintFs(){const on=fsActive();['b-fs','b-fs-gate'].forEach(id=>{const b=$(id);if(!b)return;b.classList.toggle('on',on);b.title=on?'Exit full screen (F)':'Full screen (F)';const s=b.querySelector('span');if(s)s.textContent=on?'EXIT FULL SCREEN':'FULL SCREEN';});}
 ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,paintFs));
 if(!(document.fullscreenEnabled||document.webkitFullscreenEnabled))document.body.classList.add('nofs');
-document.addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F'){ctlFullscreen();return;}if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;if(e.key===' '){e.preventDefault();SHOW.started?ctlPause():startShow();}else if(e.key==='ArrowRight'){ctlSkip();}else if(e.key==='ArrowLeft'){ctlPrev();}else if(e.key==='r'||e.key==='R'){ctlReplay();}else if(e.key==='m'||e.key==='M'){ctlMute();}});
+document.addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F'){ctlFullscreen();return;}if(e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;if(e.key===' '){e.preventDefault();SHOW.started?ctlPause():startShow();}else if(e.key==='ArrowRight'){ctlSkip();}else if(e.key==='ArrowLeft'){ctlPrev();}else if(e.key==='r'||e.key==='R'){ctlReplay();}else if(e.key==='m'||e.key==='M'){ctlMute();}else if(e.key==='c'||e.key==='C'){ctlCC();}});
+applyCC();
 /* tab hidden → hold the clock so narration and visuals stay in step */
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&SHOW.started&&!SHOW.paused)ctlPause();});
 window.addEventListener('beforeunload',()=>{try{speechSynthesis.cancel();}catch(e){}});
