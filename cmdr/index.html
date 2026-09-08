@@ -387,10 +387,11 @@ body.onhome .homebtn{display:none}
 #gate .gt-go:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 2px 4px rgba(0,40,60,.35),0 2px 6px rgba(0,0,0,.45)}
 #gate .gt-go:disabled{opacity:.5}
 #gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
-#gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45;flex:none;position:static}
+#gate .gt-msg{min-height:20px;font-size:13.5px;text-align:center;color:var(--ink2);max-width:340px;line-height:1.45;flex:none;position:static}
 #gate>*{flex:none}
 #gate>.lk-foot{position:absolute;left:22px;right:22px;bottom:calc(var(--sab) + 18px);margin:0}   /* sticky footer */
-#gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.bad{color:var(--red)}#gate .gt-msg.wait{color:var(--cyan)}
+#gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.wait{color:var(--cyan)}
+#gate .gt-msg.bad{color:#ff7a70;font-size:14.5px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 #gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));color:var(--ink2);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.4)}
 #lock .tsa,#gate .tsa{color:var(--cyan);letter-spacing:2.5px;margin-top:2px}
 #lock .lk-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
@@ -566,7 +567,7 @@ html,body{position:relative;height:100%;background:var(--bg);color:var(--tx);fon
 body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
 
 /* CHROME */
-#chrome{height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 12px;flex-shrink:0;overflow:hidden}
+#chrome{min-height:40px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;flex-wrap:wrap;row-gap:4px;gap:8px;padding:4px 12px;flex-shrink:0;overflow:visible}
 .c-back{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--txd);background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:5px 11px;cursor:pointer;transition:color .15s,border-color .15s;white-space:nowrap;flex-shrink:0}
 .c-back:hover{color:var(--txh);border-color:var(--sage)}
 .c-title{font-family:var(--dsp);font-size:11px;letter-spacing:2px;color:var(--sage);white-space:nowrap}
@@ -873,13 +874,14 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 @media(max-width:700px) and (orientation:portrait){#rot.arm{display:flex}}
 @media(max-width:1000px) and (pointer:coarse){
   :root{--pad:10px;--gap:8px}
-  #chrome{height:44px;padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);gap:6px}
+  #chrome{min-height:44px;padding:calc(env(safe-area-inset-top) + 4px) calc(env(safe-area-inset-right) + 8px) 4px calc(env(safe-area-inset-left) + 8px);gap:6px}
+  .c-sub{flex:1 1 120px;min-width:0}
   #chrome .c-lbl,.step-l{display:none}
   .c-back,.c-clear-btn,.c-run-btn{min-width:40px;height:32px;padding:0 10px;font-size:15px;display:inline-flex;align-items:center;justify-content:center}
   .c-title{font-size:12px}
   .c-sub{display:flex;align-items:center;justify-content:flex-end}
   .c-step{display:inline;font-family:var(--dsp);font-size:10px;letter-spacing:2px;color:var(--sage)}
-  #ribbon{height:40px;justify-content:space-between;padding:0 env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+  #ribbon{height:40px;justify-content:space-between;padding:0 calc(env(safe-area-inset-right) + 6px) 0 calc(env(safe-area-inset-left) + 6px)}
   .step{padding:0 8px;gap:5px;flex:1;justify-content:center}
   .step-i{display:block}
   .step-dv{display:none}
@@ -893,7 +895,7 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 }
 /* landscape phone: two-column pane so a whole step fits with little scrolling */
 @media(max-width:1000px) and (max-height:520px) and (orientation:landscape) and (pointer:coarse){
-  #chrome{height:38px}
+  #chrome{min-height:38px;padding-top:calc(env(safe-area-inset-top) + 2px);padding-bottom:2px}
   #ribbon{height:34px}
   .pane.active{display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:var(--gap)}
   .pane.active&gt;.section{min-width:0}
@@ -2088,7 +2090,7 @@ window.SRABus=(function(){
   /* ── github contents adapter ── */
   var DIAG={};
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[], alive=true;
+    var timer=null, sha=null, busy=false, queue=[], alive=true, onVis=null;
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -2130,8 +2132,12 @@ window.SRABus=(function(){
       })();
     }
     return {
-      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
-      stop:function(){alive=false;clearInterval(timer);timer=null;},
+      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();
+        var ms=Math.max(3,cfg.poll|0)*1000;
+        try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},'+ms+')'],{type:'text/javascript'})));w.onmessage=function(){if(alive)poll();};timer={w:w};}
+        catch(e){timer=setInterval(poll,ms);}
+        onVis=function(){if(!document.hidden&&alive)poll();};document.addEventListener('visibilitychange',onVis);},
+      stop:function(){alive=false;if(timer&&timer.w)timer.w.terminate();else clearInterval(timer);timer=null;document.removeEventListener('visibilitychange',onVis);},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
@@ -2835,7 +2841,7 @@ window.SRADropZone=(function(){
       (p.wos||[]).forEach(function(w){var code=w.code;if(code&&!S.warnords[code])S.warnords[code]={id:w.id||env.id+':'+code,code:code,ts:w.ts||env.ts,site:w.site,siteName:w.siteName,msg:w.msg,title:w.test?'Test SONAR alert':'SONAR alert',test:!!w.test,channels:w.channels,kind:w.kind};});
       if(!replay)toast('ADMIN status received',(p.siteName||cfg.site)+' · '+(p.openWO||0)+' open WO','green');
     }else if(env.type==='ACK'){return;}
-    else if(env.type==='HELLO'){if(p.auth&&!replay)LOCK.result(p);else if(!replay)toast('ADMIN hub online',p.app||'','green');}
+    else if(env.type==='HELLO'){if(p.auth&&!replay){LOCK.result(p);LOCK.lateConfirm(p);}else if(!replay)toast('ADMIN hub online',p.app||'','green');}
     else if(env.type==='KEYRING'){if(p.ring)LOCK.keyring(p.ring,env.ts);}
     S.lastEvent=env.ts;save();renderAll();
   }
@@ -2847,11 +2853,11 @@ window.SRADropZone=(function(){
      flow: 6 digits → HELLO{key,authId} over SRABus (+ postMessage to opener/parent if embedded)
            → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
      auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
-  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=25000;
+  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=60000, AUTH_RESEND=12000, AUTH_RESEND2=30000;
   var GATE_EACH_LAUNCH=true;   /* true: step 1 GitHub-key screen on every launch, field empty · false: once per device */
   var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
   window.LOCK=(function(){
-    var digits='', pending=null, waitT=null, busy=false, sess=ls(AUTH_KEY,null);
+    var digits='', pending=null, waitT=null, resendT=null, busy=false, sess=ls(AUTH_KEY,null);
     function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
     function dots(){var el=$('lk-dots');if(!el)return;el.classList.remove('err');var is=el.querySelectorAll('i');for(var i=0;i<6;i++)is[i].classList.toggle('f',i<digits.length);}
     function msg(t,c){var e=$('lk-msg');if(!e)return;e.textContent=t||'';e.className='lk-msg '+(c||'');}
@@ -2894,11 +2900,23 @@ window.SRADropZone=(function(){
       try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true}));}catch(e){}
       /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
       try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site},'*');}catch(e){}
-      clearTimeout(waitT);waitT=setTimeout(function(){if(!pending)return;busy=false;msg((pending.hit?'Key matches '+pending.hit.n+', but ':'')+'ADMIN did not answer. Is ADMIN open and the CMDR link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
+      clearTimeout(waitT);clearTimeout(resendT);
+      /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
+      function resend(){if(!pending)return;msg((pending.hit?'Key matches '+pending.hit.n+' · ':'')+'still waiting for ADMIN\u2026 re-sending','wait');
+        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true,resend:true}));}catch(e){}}
+      resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
+      waitT=setTimeout(function(){if(!pending)return;
+        if(pending.hit){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
+          var h=pending.hit;sess={key:pending.key,email:'',name:h.n||S.name,first:'',last:'',site:h.s||S.siteName,ts:Date.now(),via:'keyring'};lsSet(AUTH_KEY,sess);S.away=false;
+          pending=null;busy=false;msg('\u2713 '+sess.name+' \u00b7 verified by keyring \u00b7 ADMIN confirmation pending','ok');
+          try{ADMIN_CORE&&0;}catch(e){}
+          setTimeout(function(){hide();renderAll();autoLink();announce();toast('Signed in via keyring',sess.name+' \u00b7 ADMIN has not confirmed yet \u2014 LIVE status will update when it does','amber');},650);return;}
+        busy=false;msg('ADMIN did not answer. Is ADMIN open and the CMDR link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
     }
+    function lateConfirm(p){ if(pending||!sess||sess.via!=='keyring'||p.auth!=='ok'||!p.name)return; sess=Object.assign({},sess,{email:p.email||sess.email,name:p.name,first:p.first||'',last:p.last||'',site:p.site||sess.site,via:p.via||'admin'});lsSet(AUTH_KEY,sess);toast('ADMIN confirmed',sess.name+' \u00b7 LIVE','green');renderAll(); }
     function result(p){
       if(!pending)return; if(p.authId&&p.authId!==pending.authId)return;
-      clearTimeout(waitT);
+      clearTimeout(waitT);clearTimeout(resendT);
       if(p.auth==='ok'){
         sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
         lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;save();}
@@ -2920,6 +2938,8 @@ window.SRADropZone=(function(){
       back:function(){if(busy)return;digits=digits.slice(0,-1);dots();},
       clear:function(){if(busy)return;digits='';dots();msg('');},
       retry:function(){$('lk-alt').style.display='none';digits='';dots();msg('');},
+      lateConfirm:lateConfirm,
+      drop:function(){sess=null;pending=null;busy=false;clearTimeout(waitT);clearTimeout(resendT);localStorage.removeItem(AUTH_KEY);},
       offline:function(){$('lk-alt').style.display='none';hide();toast('Offline mode','Not verified — ADMIN will not show you as LIVE','amber');},
       result:result,
       session:function(){return valid(sess)?sess:null;},
@@ -2946,7 +2966,19 @@ window.SRADropZone=(function(){
     function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
     function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
-    function hint(e){e=String(e||'').replace(/^GitHub\s+/,'').replace(/read read/,'read');return /network|no route|failed to fetch/i.test(e)?'This phone cannot reach api.github.com (signal, VPN or Wi-Fi portal).':/401/.test(e)?'GitHub says the key is invalid or expired.':/403/.test(e)?'GitHub refused the key — check Resource owner = thompsonryane-collab and Contents = Read and write.':e;}
+    var NO_ROUTE='No route to the Foundry link \u2014 this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again. Or continue without link.';
+    function netErr(e){return /network|no route|failed to fetch|timeout/i.test(String(e||''));}
+    /* boot probe: test the route with the saved key so the no-route text shows before Connect is pressed (matches ADMIN) */
+    function probe(){var c=bus.cfg();if(!c.token)return;var u='https://api.github.com/repos/'+c.repo+'/contents/'+c.path+'?ref='+encodeURIComponent(c.branch||'main')+'&t='+Date.now();
+      fetch(u,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+c.token},cache:'no-store'}).then(function(r){if(!r.ok&&r.status!==404){msg(hint(String(r.status)),'bad');$('gt-alt').style.display='';}})
+      .catch(function(){msg(NO_ROUTE,'bad');$('gt-alt').style.display='';});}
+    function hint(e){e=String(e||'');
+      if(netErr(e))return NO_ROUTE;
+      if(/401/.test(e))return 'The Foundry key is invalid or expired.';
+      if(/403/.test(e))return 'The Foundry key was refused \u2014 it does not have read/write access to the link.';
+      if(/404/.test(e))return 'The link target was not found. Check the link settings under Link.';
+      if(/409|422|conflict/i.test(e))return 'The link is busy. Press Connect again.';
+      return e.replace(/^GitHub\s+/i,'Foundry ').replace(/api\.github\.com/gi,'the Foundry link').replace(/\bread read\b/,'read');}
     function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('cmdr_auth',null),ring=ls('cmdr_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
         'key sent    : '+d.tokenFp+' · '+d.tokenLen+' chars · '+d.tokenShape+(rawLen&&rawLen!==d.tokenLen?' (field had '+rawLen+', cleaned)':''),
@@ -2958,8 +2990,9 @@ window.SRADropZone=(function(){
     function fail(t,silent){busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';
       try{var st=bus.status();if(/401/.test(st.error||'')&&bus.cfg().token)lsSet(REJ_KEY,{fp:fp(bus.cfg().token),ts:Date.now()});}catch(e){}
       diag(fail.rawLen);fail.rawLen=0;if(fail.note&&!silent)t=t+' '+fail.note;
-      try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}                      /* never keep a key that GitHub rejected */
-      if(silent){show();msg('The saved Foundry key no longer works. Enter a new key from ADMIN.','');}
+      var net=false;try{net=netErr(bus.status().error);}catch(e){}
+      if(!net){try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}}                /* never keep a key the link rejected \u2014 a network failure did not test the key */
+      if(silent){show();msg(net?hint(bus.status().error):'The saved Foundry key no longer works. Enter a new key from ADMIN.',net?'bad':'');if(net)$('gt-alt').style.display='';}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
     var REJ_KEY='cmdr_gt_rejected';
     function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
@@ -2979,12 +3012,12 @@ window.SRADropZone=(function(){
         if(armed||Date.now()-t0>1500){
           if(st.read==='ok'){busy=false;if(recheck){LOCK.boot();}else{msg('✓ Linked · '+cfg.repo,'ok');setTimeout(done,500);}return;}
           if(st.read==='error'||st.write==='error'){fail(hint(st.error||'GitHub rejected the key'),recheck);return;}}
-        if(Date.now()-t0>20000){fail('No answer from GitHub. Check your signal and try again.',recheck);return;}
+        if(Date.now()-t0>20000){fail(NO_ROUTE,recheck);return;}
         tmr=setTimeout(tick,300);})();}
     function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github'){hide();return true;}   /* gate is pre-locked in markup; release only here, done() or offline() */
       if(!c.token){show();return false;}
-      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');return false;}
+      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');probe();return false;}
       if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
@@ -2999,7 +3032,12 @@ window.SRADropZone=(function(){
   function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true}));}
   setInterval(heartbeat,HB);
   /* BYE when the page is closed / backgrounded for good, so ADMIN drops the LIVE marker instead of waiting for the TTL */
-  window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}});
+  /* app closed (swipe up / tab discarded): tell ADMIN, drop the session, and leave the phone on the authenticator so any restored snapshot is the auth screen */
+  window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}
+    try{LOCK.drop();S.away=false;save();}catch(e){}
+    try{LOCK.hideForRelink();GATE.show();document.body.classList.add('locked');}catch(e){}});
+  /* restored from the back-forward cache instead of reloaded: force a real launch so both steps run */
+  window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastHB>HB/2)heartbeat();});
   window.CMDR={state:function(){return S;},handle:handle,bus:bus};
 })();
@@ -3008,7 +3046,7 @@ window.SRADropZone=(function(){
 function lockCmdr(){LOCK.lock();}
 function logoutCmdr(){LOCK.logout();}
 /* ── CMDR HUB USERS GUIDE ── */
-function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf','ie-SRS-CMDR-Guide');}
+function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-CMDR-Guide');}
 </script>
 </body>
 </html>
