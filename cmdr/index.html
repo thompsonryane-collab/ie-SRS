@@ -366,28 +366,32 @@ body.onhome .homebtn{display:none}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,179,64,.25)}50%{box-shadow:0 0 0 7px rgba(255,179,64,.1)}}
 
 /* ══ TWO-STEP AUTHENTICATION · step 1 · GitHub-key gate ══ */
-#gate{position:fixed;inset:0;z-index:9001;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 90px);overflow-y:auto;-webkit-overflow-scrolling:touch}
-#gate>:first-child{margin-top:auto}#gate>:last-child{margin-bottom:auto}
+#gate{position:fixed;inset:0;z-index:9001;background:radial-gradient(140% 70% at 50% -10%,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 35%,rgba(255,255,255,0) 60%),linear-gradient(115deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.07) 50%,rgba(255,255,255,0) 60%),radial-gradient(120% 100% at 50% 100%,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 60%),linear-gradient(180deg,#3a3f47 0%,#2b2f36 45%,#22262c 100%);display:none;flex-direction:column;align-items:center;justify-content:flex-start;gap:14px;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 90px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#gate>.lk-brand{margin-top:auto}
+#gate>.gt-msg{margin-bottom:auto}   /* centre the brand→card→msg group; alt/diag drop below it, footer is pinned */
 #gate.on{display:flex}
 #gate .gt-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
 #gate .gt-step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px}
 #gate .gt-step i{width:26px;height:1px;background:var(--line)}
 #gate .gt-step span.dim{opacity:.45}
-#gate .gt-card{width:100%;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}
+#gate .gt-card{width:100%;max-width:340px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.45),0 14px 30px rgba(0,0,0,.5)}
 #gate .gt-card label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3)}
-#gate .gt-card input{width:100%;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;padding:13px 12px;border-radius:12px;border:1px solid var(--line);background:#0a1119;color:var(--ink);outline:none}
+#gate .gt-card input{width:100%;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;padding:13px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.35);background:linear-gradient(180deg,#f2f4f7,#ffffff 40%);color:#07111f;caret-color:#07111f;outline:none;box-shadow:inset 0 2px 4px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.9)}
 #gate .gt-card input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(72,207,255,.15)}
 #gate .gt-repo{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--ink2);line-height:1.6}
 #gate .gt-repo b{color:var(--cyan);font-weight:600}
-#gate .gt-eye{align-self:flex-end;margin:-4px 0 2px;font-size:12px;font-weight:600;color:var(--cyan);padding:6px 10px;border-radius:10px;background:none;border:1px solid rgba(63,214,255,.35)}
+#gate .gt-eye{align-self:flex-end;margin:-4px 0 2px;font-size:12px;font-weight:600;color:var(--cyan);padding:6px 10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.03));border:1px solid rgba(63,214,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.4)}
+#gate .gt-eye:active{transform:translateY(1px);box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
 #gate .gt-diag{margin:6px 22px 0;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid var(--line);font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink2);white-space:pre-wrap;word-break:break-all;text-align:left;user-select:text;-webkit-user-select:text}
-#gate .gt-go{margin-top:2px;height:50px;border-radius:14px;border:0;background:var(--cyan);color:#03121f;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;-webkit-tap-highlight-color:transparent}
+#gate .gt-go{margin-top:2px;height:50px;border-radius:14px;border:1px solid rgba(0,60,80,.55);background:linear-gradient(180deg,#8ee9ff 0%,#3fd6ff 48%,#1fb6e6 52%,#159ccb 100%);color:#03121f;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.5px;-webkit-tap-highlight-color:transparent;box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -2px 0 rgba(0,40,60,.35),0 6px 14px rgba(0,0,0,.45);text-shadow:0 1px 0 rgba(255,255,255,.35);transition:transform .08s,box-shadow .08s}
+#gate .gt-go:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 2px 4px rgba(0,40,60,.35),0 2px 6px rgba(0,0,0,.45)}
 #gate .gt-go:disabled{opacity:.5}
 #gate .gt-go.busy{background:var(--card2);color:var(--cyan);border:1px solid var(--cyan)}
 #gate .gt-msg{min-height:20px;font-size:13px;text-align:center;color:var(--ink3);max-width:320px;line-height:1.45;flex:none;position:static}
 #gate>*{flex:none}
+#gate>.lk-foot{position:absolute;left:22px;right:22px;bottom:calc(var(--sab) + 18px);margin:0}   /* sticky footer */
 #gate .gt-msg.ok{color:var(--green)}#gate .gt-msg.bad{color:var(--red)}#gate .gt-msg.wait{color:var(--cyan)}
-#gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
+#gate .gt-alt{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));color:var(--ink2);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.4)}
 #lock .tsa,#gate .tsa{color:var(--cyan);letter-spacing:2.5px;margin-top:2px}
 #lock .lk-step{display:flex;gap:8px;align-items:center;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
 #lock .lk-step b{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--cyan);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px}
@@ -422,18 +426,14 @@ body.onhome .homebtn{display:none}
 #lock .lk-alt button{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
 </style>
 </head>
-<body>
+<body class="locked">
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the CMDR link; shown once per device ══ -->
-<div id="gate" role="dialog" aria-label="Two-step authentication · step 1 · GitHub key">
+<div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · Foundry key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
   <div class="lk-t2 tsa">Two-step authentication</div>
-  <div class="gt-step"><b>1</b><span>GitHub key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
-  <div class="lk-h">GITHUB KEY</div>
-  <div class="lk-s">Enter the GitHub key issued for the CMDR link. It connects this phone to ADMIN.</div>
+  <div class="gt-step"><b>1</b><span>Foundry key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
   <div class="gt-card">
-    <label for="gt-token">GitHub key</label>
-    <input id="gt-token" type="text" name="cmdr-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="github_pat_…" enterkeyhint="go" style="-webkit-text-security:disc">
-    <div class="gt-repo" id="gt-repo"></div>
+    <input id="gt-token" type="text" name="cmdr-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="" enterkeyhint="go" style="-webkit-text-security:disc">
     <button type="button" class="gt-eye" id="gt-eye" onclick="GATE.eye()">Show key</button>
     <button class="gt-go" id="gt-go" onclick="GATE.connect()">Connect</button>
   </div>
@@ -446,7 +446,7 @@ body.onhome .homebtn{display:none}
 <div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
   <div class="lk-t2 tsa">Two-step authentication</div>
-  <div class="lk-step"><b class="done" role="button" title="Change GitHub key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">GitHub key</span><i></i><b>2</b><span>Security key</span></div>
+  <div class="lk-step"><b class="done" role="button" title="Change Foundry key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">Foundry key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
   <div class="lk-s" id="lk-sub">Enter the 6-digit key issued to you in ADMIN · User Accounts</div>
   <div class="lk-dots" id="lk-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -457,7 +457,7 @@ body.onhome .homebtn{display:none}
     <button onclick="LOCK.press(7)">7</button><button onclick="LOCK.press(8)">8</button><button onclick="LOCK.press(9)">9</button>
     <button class="sec" onclick="LOCK.clear()">Clear</button><button onclick="LOCK.press(0)">0</button><button class="sec bk" onclick="LOCK.back()" aria-label="Backspace">⌫</button>
   </div>
-  <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change GitHub key</button><button onclick="LOCK.offline()">Continue offline</button></div>
+  <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change Foundry key</button><button onclick="LOCK.offline()">Continue offline</button></div>
   <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the CMDR link · keys never leave this device</div>
 </div>
 <div id="app">
@@ -491,6 +491,8 @@ body.onhome .homebtn{display:none}
         <button onclick="go('link')"><span class="nl amber" id="hl-link"></span><div class="ic c-amber"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><div class="l">Link</div></button>
       </div>
       <button onclick="go('dash')"><span class="nl" id="hl-status"></span><div class="ic c-slate"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg></div><div class="l">Status</div></button>
+      <button onclick="lockCmdr()" id="tile-lock"><div class="ic c-amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/></svg></div><div class="l">Lock</div></button>
+      <button onclick="logoutCmdr()" id="tile-logout"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M14 8l4 4-4 4M18 12H9"/></svg></div><div class="l">Log out</div></button>
     </div>
   </div>
 
@@ -2863,7 +2865,7 @@ window.SRADropZone=(function(){
       else{bus.configure({});}
       if(typeof renderAll==='function')renderAll();}catch(e){}}
     function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'},extra||{})));}catch(e){}}
-    function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}
+    function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;if(S.away)p.away=true;}
       try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
     var RING_KEY='cmdr_keyring';
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
@@ -2898,7 +2900,7 @@ window.SRADropZone=(function(){
       clearTimeout(waitT);
       if(p.auth==='ok'){
         sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
-        lsSet(AUTH_KEY,sess); if(p.name){S.name=p.name;save();}
+        lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;save();}
         pending=null;busy=false;msg('✓ '+sess.name+' · LIVE','ok');
         setTimeout(function(){hide();renderAll();autoLink();announce();},650);
       }else{
@@ -2921,6 +2923,11 @@ window.SRADropZone=(function(){
       result:result,
       session:function(){return valid(sess)?sess:null;},
       signout:function(){sess=null;localStorage.removeItem(AUTH_KEY);show();toast('Signed out','Enter a security key to go LIVE again','amber');},
+      lock:function(){S.away=true;save();try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',away:true}));}catch(e){}
+        show();msg('Locked \u00b7 status AWAY \u00b7 enter your security key to resume','wait');},
+      logout:function(){S.away=false;try{if(sess&&sess.key)bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}
+        sess=null;save();localStorage.removeItem(AUTH_KEY);hide();toast('Logged out','Status OFFLINE \u00b7 sign in again to go LIVE','red');
+        GATE.show();try{$('gt-msg').textContent='Logged out. Enter the Foundry key issued for this device, then your security key.';}catch(e){}},
       boot:function(){var el=$('lk-session');if(valid(sess)&&!LOCK_EACH_LAUNCH){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
     };
   })();
@@ -2935,9 +2942,9 @@ window.SRADropZone=(function(){
   window.GATE=(function(){
     var unsub=null, tmr=null, busy=false;
     function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
-    function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gt-repo').innerHTML='<b>'+(c.repo||'')+'</b> · '+(c.branch||'main')+' · '+(c.path||'data/bus.json');$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
+    function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
-    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','GitHub link · '+bus.cfg().repo,'green');LOCK.boot();}
+    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
     function hint(e){e=String(e||'').replace(/^GitHub\s+/,'').replace(/read read/,'read');return /network|no route|failed to fetch/i.test(e)?'This phone cannot reach api.github.com (signal, VPN or Wi-Fi portal).':/401/.test(e)?'GitHub says the key is invalid or expired.':/403/.test(e)?'GitHub refused the key — check Resource owner = thompsonryane-collab and Contents = Read and write.':e;}
     function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('cmdr_auth',null),ring=ls('cmdr_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
@@ -2951,7 +2958,7 @@ window.SRADropZone=(function(){
       try{var st=bus.status();if(/401/.test(st.error||'')&&bus.cfg().token)lsSet(REJ_KEY,{fp:fp(bus.cfg().token),ts:Date.now()});}catch(e){}
       diag(fail.rawLen);fail.rawLen=0;if(fail.note&&!silent)t=t+' '+fail.note;
       try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}                      /* never keep a key that GitHub rejected */
-      if(silent){show();msg('The saved GitHub key no longer works. Enter a new key from ADMIN.','');}
+      if(silent){show();msg('The saved Foundry key no longer works. Enter a new key from ADMIN.','');}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
     var REJ_KEY='cmdr_gt_rejected';
     function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
@@ -2961,7 +2968,7 @@ window.SRADropZone=(function(){
       fail.note='';if(!recheck){var rj=ls(REJ_KEY,null),n=(raw.match(/github_pat_|ghp_/g)||[]).length;
         if(n>1)fail.note='Paste held '+n+' keys (a truncated head + a full key); the full one was sent. ';
         if(rj&&rj.fp===fp(tok))fail.note+='This is the SAME key GitHub already rejected at '+new Date(rj.ts).toLocaleTimeString()+'. The phone is pasting an old clipboard entry — copy the new key again from ADMIN.';}
-      if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete GitHub key (github_pat_… 93 chars or ghp_… 40 chars).','bad');return;}
+      if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete Foundry key.','bad');return;}
       busy=true;if(!recheck){$('gt-go').disabled=true;$('gt-go').classList.add('busy');$('gt-go').textContent='Connecting…';msg('Checking the link…','wait');}
       bus.configure({transport:'github',token:tok,node:'cmdr'});cfg=bus.cfg();
       /* poll the bus status until this attempt produces a fresh read result (stale results from a previous attempt are ignored) */
@@ -2974,13 +2981,13 @@ window.SRADropZone=(function(){
         if(Date.now()-t0>20000){fail('No answer from GitHub. Check your signal and try again.',recheck);return;}
         tmr=setTimeout(tick,300);})();}
     function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
-    function boot(){var c=bus.cfg();if(c.transport!=='github')return true;
+    function boot(){var c=bus.cfg();if(c.transport!=='github'){hide();return true;}   /* gate is pre-locked in markup; release only here, done() or offline() */
       if(!c.token){show();return false;}
-      if(GATE_EACH_LAUNCH){show();msg('Enter the GitHub key issued for this device, then your security key.','');return false;}
+      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');return false;}
       if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
-    function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();$('gt-token').placeholder='new github_pat_…';msg('Enter the new GitHub key.','');}
+    function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();msg('Enter the new Foundry key.','');}
     try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
     return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye};
   })();
@@ -2996,6 +3003,9 @@ window.SRADropZone=(function(){
   window.CMDR={state:function(){return S;},handle:handle,bus:bus};
 })();
 
+/* ── LOCK / LOG OUT TILES ── */
+function lockCmdr(){LOCK.lock();}
+function logoutCmdr(){LOCK.logout();}
 /* ── CMDR HUB USERS GUIDE ── */
 function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf','ie-SRS-CMDR-Guide');}
 </script>
