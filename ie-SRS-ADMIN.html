@@ -10170,19 +10170,27 @@ window.ADMLOCK = (function () {
   function $l(id) { return document.getElementById(id); }
   function dots() { var el = $l('al-dots'); if (!el) return; el.classList.remove('err'); var is = el.querySelectorAll('i'); for (var i = 0; i < 6; i++) is[i].classList.toggle('f', i < digits.length); }
   function msg(t, c) { var e = $l('al-msg'); if (e) { e.textContent = t || ''; e.className = 'al-msg ' + (c || ''); } }
-  function roleOf(a) { try { var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
+  function roleOf(a) { try { if (a.kind === 'seat' && a.siteId && a.who) { var st = window.ADMIN_CORE.acctState(a.siteId, a.who); if (st && st.role) return st.role; } var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
   function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
+  /* Any account that logs into ADMIN is tagged System Administrator (custom → SRASec record, seat → account override) */
+  function tagAdmin(a) { if (!a || !a.email) return; try {
+      if (a.kind === 'seat' && a.siteId && a.who) { var AC = window.ADMIN_CORE, st = AC.acctState(a.siteId, a.who); if (st.role !== 'System Administrator') { st.role = 'System Administrator'; st.adminSince = Date.now(); AC.setOverride(a.siteId + '|' + a.who, st); } }
+      else { var o = SRASec.custom(), r = o[String(a.email).toLowerCase()]; if (r && r.role !== 'System Administrator') { r.role = 'System Administrator'; r.adminSince = Date.now(); SRASec.saveCustom(o); } }
+      try { SRASec.markLive(a, { via: 'admin', github: linkIsLive() ? SRABus.cfg().repo : '' }); } catch (e) {}
+      try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_TAG_SYSADMIN', a.email, a.name + ' tagged System Administrator on ADMIN login'); } catch (e) {}
+      try { SRASec.repaint(); } catch (e) {}
+    } catch (e) {} }
   function show() { digits = ''; busy = false; dots(); msg(''); $l('adm-lock').classList.add('open'); }
   function hide() { $l('adm-lock').classList.remove('open'); }
   function submit() {
     busy = true; var key = digits;
     var a = null; try { a = window.SRASec ? SRASec.validate(key) : null; } catch (e) {}
-    var ok = key === ADMIN_MASTER_KEY || isAdmin(a);
+    var ok = key === ADMIN_MASTER_KEY || !!a;   /* any active security key logs in; user is tagged System Administrator below */
     setTimeout(function () {
-      if (ok) { msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked', 'ok');
+      if (ok) { if (a) tagAdmin(a); msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked' + (a ? ' · System Administrator' : ''), 'ok');
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · key ends ' + key.slice(-2)); } catch (e) {}
         setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
-      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg(a ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
+      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg('Security key not recognised.', 'bad'); busy = false;
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK_FAIL', 'admin', 'key ends ' + key.slice(-2)); } catch (e) {} }
     }, 150);
   }
@@ -12204,10 +12212,10 @@ document.addEventListener("DOMContentLoaded",function(){
     function isOff(em){return !!(live[em]&&live[em].off);}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
-      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
+      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:(/system admin/i.test(a.role||'')?'SYS ADMIN':'CMDR'),name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
         status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);var lv=isLive(u.email);
-      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
+      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:(/system admin/i.test(st.role||'')?'SYS ADMIN':(w==='fm'?'FM':'BACKUP')),name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12230,7 +12238,7 @@ document.addEventListener("DOMContentLoaded",function(){
       var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
       var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
       return '<tr'+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
-        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
+        '<td><span style="color:'+(r.roleLbl==='SYS ADMIN'?'#d4a05a':r.who==='fm'?'#18d4f8':'#c3aaf8')+(r.roleLbl==='SYS ADMIN'?';font-weight:700':'')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
         '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
