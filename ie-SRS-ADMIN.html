@@ -13702,7 +13702,8 @@ window.SRADropZone=(function(){
       ringDigest=digest;ringLast=Date.now();SRABus.publish('KEYRING',{node:'admin',count:ring.length,ring:ring});});}catch(e){}}
   window.publishKeyring=publishKeyring;
   function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
-    SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(true);if(!p.key||!window.SRASec)return;
+    SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
+    if(!p.key||!window.SRASec)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     var real=!p.embedded&&(p.transport||'github')==='github';
     var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
@@ -13712,7 +13713,8 @@ window.SRADropZone=(function(){
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
     if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
-        SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'},{site:site});
+        var okp={node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'};
+        SRABus.publish('HELLO',okp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},okp,{resend:true}),{site:site});}catch(e){}},6000);   /* second copy survives a lost write */
         autoConnect(a,site,p);}
     }else if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',authId:p.authId,reason:'Invalid or disabled security key'},{site:site});
       try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_KEY_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
