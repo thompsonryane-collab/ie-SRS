@@ -1917,6 +1917,13 @@ html::after {
   radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%),
   linear-gradient(180deg, #3a3f47 0%, #2b2f36 45%, #22262c 100%); }
 #adm-lock.open { display: flex; }
+/* ── STEP 2 HARD LOCK ──
+   Set on <body> at parse time and cleared only by a verified security key.
+   Nothing but the two authentication gates is allowed to paint until then.
+   visibility (not display) so layout/measurement inside the shell stays valid. */
+body.adm-locked { overflow: hidden; }
+body.adm-locked > *:not(#adm-lock):not(#gh-gate):not(script):not(style) { visibility: hidden !important; }
+body.adm-locked > #adm-lock, body.adm-locked > #gh-gate { visibility: visible !important; }
 #adm-lock .gg-step i { width: 26px; height: 1px; background: rgba(255,255,255,.18); }
 #adm-lock .gg-step b.done { background: #4fd98a; border-color: #4fd98a; color: #03121f; }
 #adm-lock .al-dots { display: flex; gap: 14px; margin: 6px 0 4px; }
@@ -2428,7 +2435,7 @@ html::after {
 .sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c0c8d0;box-shadow:0 0 6px #c0c8d0;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
 </style>
 </head>
-<body>
+<body class="adm-locked">
 
 <div id="scan-line"></div>
 
@@ -10166,20 +10173,29 @@ function showSplash() {
    Unlocks with any active System Administrator security key, or the master backup key. */
 var ADMIN_MASTER_KEY = '201219';
 window.ADMLOCK = (function () {
-  var digits = '', busy = false;
+  var digits = '', busy = false, unlocked = false;
   function $l(id) { return document.getElementById(id); }
   function dots() { var el = $l('al-dots'); if (!el) return; el.classList.remove('err'); var is = el.querySelectorAll('i'); for (var i = 0; i < 6; i++) is[i].classList.toggle('f', i < digits.length); }
   function msg(t, c) { var e = $l('al-msg'); if (e) { e.textContent = t || ''; e.className = 'al-msg ' + (c || ''); } }
   function roleOf(a) { try { var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
   function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
-  function show() { digits = ''; busy = false; dots(); msg(''); $l('adm-lock').classList.add('open'); }
-  function hide() { $l('adm-lock').classList.remove('open'); }
+  /* show() always re-arms the lock: the admin surface is hidden again until a key is accepted. */
+  function show() { digits = ''; busy = false; unlocked = false; dots(); msg('');
+    try { document.body.classList.add('adm-locked'); } catch (e) {}
+    var el = $l('adm-lock'); if (el) el.classList.add('open'); }
+  function close() { var el = $l('adm-lock'); if (el) el.classList.remove('open'); }
+  /* hide() is a no-op while locked — the overlay cannot be dismissed without a key. */
+  function hide() { if (!unlocked) return; close(); }
+  /* reset() drops the pad but keeps the surface locked (log out hands control back to STEP 1). */
+  function reset() { unlocked = false; digits = ''; busy = false; dots(); msg('');
+    try { document.body.classList.add('adm-locked'); } catch (e) {} close(); }
   function submit() {
     busy = true; var key = digits;
     var a = null; try { a = window.SRASec ? SRASec.validate(key) : null; } catch (e) {}
     var ok = key === ADMIN_MASTER_KEY || isAdmin(a);
     setTimeout(function () {
-      if (ok) { msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked', 'ok');
+      if (ok) { unlocked = true; msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked', 'ok');
+        try { document.body.classList.remove('adm-locked'); } catch (e) {}
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · key ends ' + key.slice(-2)); } catch (e) {}
         setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
       else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg(a ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
@@ -10191,7 +10207,8 @@ window.ADMLOCK = (function () {
     if (/^[0-9]$/.test(e.key)) ADMLOCK.press(e.key); else if (e.key === 'Backspace') ADMLOCK.back(); else if (e.key === 'Escape') ADMLOCK.clear();
   });
   return {
-    show: show, hide: hide,
+    show: show, hide: hide, reset: reset,
+    isLocked: function () { return !unlocked; },
     press: function (d) { if (busy || digits.length >= 6) return; digits += String(d); dots(); msg(''); if (digits.length === 6) setTimeout(submit, 110); },
     back: function () { if (busy) return; digits = digits.slice(0, -1); dots(); },
     clear: function () { if (busy) return; digits = ''; dots(); msg(''); }
@@ -10206,7 +10223,7 @@ function lockAdmin() {
 function logoutAdmin() {
   try { if (typeof closeApp === "function") closeApp(); } catch (e) {}
   try { if (typeof closeDemoPlayer === "function") closeDemoPlayer(); } catch (e) {}
-  try { ADMLOCK.hide(); } catch (e) {}
+  try { ADMLOCK.reset(); } catch (e) {}   /* re-arm STEP 2 · the surface stays locked behind STEP 1 */
   try { document.querySelectorAll('.app-overlay.visible').forEach(function (o) { closeApp(o.id); }); } catch (e) {}
   window._inedApiKey = null; window._inedApiEmail = null; try { updateAiStatus(); } catch (e) {}   /* ARIA session key is cleared on log out */
   var g = document.getElementById("gh-gate");
@@ -10588,7 +10605,10 @@ function launchSim() {
     function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
     function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg();
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
-    function hide() { $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
+    /* STEP 1 never releases the surface on its own: STEP 2 is raised first (z 10060 over 10050),
+       so there is no frame in which the admin screen is visible without a security key. */
+    function hide() { try { if (window.ADMLOCK && ADMLOCK.isLocked()) ADMLOCK.show(); } catch (e) {}
+      $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
       if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a Foundry key.', 'bad'); return; }
       busy = true; btn(true); msg('Checking the link…', 'wait');
