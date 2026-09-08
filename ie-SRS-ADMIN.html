@@ -2648,161 +2648,7 @@ html::after {
 <script>
 (function(){function p(){var C=window.ADMIN_CORE;if(!C)return;var s=C.summary();function t(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}t("sp-t-inst",s.online);t("sp-t-users",s.usersOnline);t("sp-t-wo",s.openWO);t("sp-t-wo-sub",s.outages+" SITES IN OUTAGE");t("sp-t-pend",s.pendingAccounts);t("sp-t-dev",s.devicesPending+" DEVICES NOT ENROLLED");}document.addEventListener("DOMContentLoaded",p);setInterval(p,10000);})();
 </script>
-<div id="splash">
-  <canvas id="bg-canvas"></canvas>
-
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
-
-  <!-- ── STATUS BAR ── -->
-  <div id="sp-status-bar">
-    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#e05555;margin-right:14px;">&#x2B21; SYSTEM ADMIN PLATFORM &middot; 70 INSTALLATIONS &middot; 140 INSTANCES</div>
-    <div id="sp-clock" style="color:#00e5ff;text-shadow:0 0 12px rgba(0,229,255,0.6);letter-spacing:2.5px;font-size:10px;font-family:'Share Tech Mono',monospace;">--:--:-- EDT</div>
-  </div>
-
-  <!-- ── LEFT TELEMETRY ── -->
-  <div class="side-telem" id="telem-left">
-    <div class="telem-block">
-      <div class="telem-label">Instances Online</div>
-      <div class="telem-value" style="color:#9ebc52;" id="sp-t-inst">—</div>
-      <div class="telem-sub">OF 140 · 70 SITES</div>
-    </div>
-    <div class="telem-block">
-      <div class="telem-label">Users Online</div>
-      <div class="telem-value" id="sp-t-users">—</div>
-      <div class="telem-sub">FM + BACKUP SEATS</div>
-    </div>
-    <div class="telem-block">
-      <div class="telem-label">Open SONAR Alerts</div>
-      <div class="telem-value" style="color:#e05555;" id="sp-t-wo">—</div>
-      <div class="telem-sub" id="sp-t-wo-sub">SITES IN OUTAGE</div>
-    </div>
-  </div>
-
-  <!-- ── RIGHT TELEMETRY ── -->
-  <div class="side-telem" id="telem-right">
-    <div class="telem-block" style="text-align:right;">
-      <div class="telem-label">Hosting</div>
-      <div class="telem-value" style="color:#18d4f8;">ADVANA</div>
-      <div class="telem-sub">FOUNDRY ENCLAVE · CUI</div>
-    </div>
-    <div class="telem-block" style="text-align:right;">
-      <div class="telem-label">Regions</div>
-      <div class="telem-value">11 CNR</div>
-      <div class="telem-sub">CONUS · OCONUS</div>
-    </div>
-    <div class="telem-block" style="text-align:right;">
-      <div class="telem-label">Pending Accounts</div>
-      <div class="telem-value" style="color:#d4a05a;" id="sp-t-pend">—</div>
-      <div class="telem-sub" id="sp-t-dev">DEVICES NOT ENROLLED</div>
-    </div>
-  </div>
-
-  <!-- ── CENTER PANEL ── -->
-  <div id="center-panel">
-
-    <!-- Logo -->
-    <div class="logo-wrap" style="margin-bottom:20px;">
-      <div id="sp-logo-wrap">
-        <div class="sp-logo-i">
-          <svg width="22" height="32" viewBox="0 0 22 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="7" y="0" width="8" height="8" rx="3" fill="white"/>
-            <rect x="5" y="13" width="12" height="19" rx="3" fill="white"/>
-          </svg>
-          <span class="sp-logo-e">e</span>
-        </div>
-        <div class="sp-logo-esr">SRS</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:4px;color:#e05555;text-shadow:0 0 10px rgba(224,85,85,.6);border:1px solid rgba(224,85,85,.45);border-radius:3px;padding:2px 9px;margin-left:10px;white-space:nowrap;">ADMIN</div>
-      </div>
-      <div class="sp-eyebrow-orig" style="color:#e05555;text-shadow:0 0 10px rgba(224,85,85,.55),0 0 2px rgba(224,85,85,.8);">SYSTEM ADMIN PLATFORM<br>ACCOUNTS | INSTANCES | SONAR<br>SHORE OUTAGE NOTIFICATION, ANALYSIS &amp; RESPONSE</div>
-    </div>
-
-    <div class="sp-divider-v2"><span>CREDENTIALS</span></div>
-
-    <!-- Login fields (hidden until API AUTH enabled) -->
-    <div id="sp-login-fields">
-      <div class="model-select-row">
-        <span class="model-sel-lbl">MODEL</span>
-        <select id="sp-model-select" class="model-sel" onchange="onModelChange(this.value)">
-          <option value="aria">ARIA</option>
-          <option value="gemini">Gemini — Google</option>
-          <option value="capra">Capra — Classified</option>
-        </select>
-      </div>
-      <div class="login-row">
-        <input class="login-input" id="sp-username" type="text" placeholder="username / email" autocomplete="off" oninput="clearEnterError()">
-        <input class="login-input" id="sp-password" type="password" placeholder="paste API key" oninput="clearEnterError()">
-      </div>
-    </div>
-
-    <!-- Enter button -->
-    <button id="enter-btn" onclick="handleEnter()">&#x2B21; &nbsp; ENTER</button>
-    <div id="sp-enter-error">&#x26A0; &nbsp;EMAIL AND API KEY REQUIRED</div>
-
-    <!-- GUEST / API AUTH toggle -->
-    <div class="toggle-row">
-      <span class="t-lbl active" id="sp-toggle-off-lbl">ADMIN</span>
-      <div class="auth-pill" id="sp-auth-pill" onclick="toggleLoginBlock()"></div>
-      <span class="t-lbl" id="sp-toggle-on-lbl">API AUTH</span>
-    </div>
-
-    <!-- Metrics -->
-    <div class="sp-divider-v2" style="margin-top:16px;"><span>SYSTEM TELEMETRY</span></div>
-    <div id="sp-metrics">
-      <div class="metric-row">
-        <div class="metric-label">INSTANCE HEALTH</div>
-        <div class="metric-track"><div class="metric-fill" id="spf1" style="background:#d4aa62;"></div></div>
-        <div class="metric-val" id="spv1">0%</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-label">ACCOUNT COMPLIANCE</div>
-        <div class="metric-track"><div class="metric-fill" id="spf2" style="background:#c07038;"></div></div>
-        <div class="metric-val" id="spv2">0%</div>
-      </div>
-      <div class="metric-row">
-        <div class="metric-label">SYNC INTEGRITY</div>
-        <div class="metric-track"><div class="metric-fill" id="spf3" style="background:#9ebc52;"></div></div>
-        <div class="metric-val" id="spv3">0%</div>
-      </div>
-    </div>
-
-
-  </div>
-
-  <!-- ── BOTTOM BAR ── -->
-
-  <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
-    <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
-  </button>
-  <div id="demo-pick" role="dialog" aria-label="Choose a demo">
-    <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
-    <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
-      <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
-      <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
-      <span class="dp-dur">5:52</span>
-    </button>
-    <button class="dp-item" onclick="openDemoPlayer('live/cmdr.html','ie-SRS // CMDR MOBILE HUB · Commander Walkthrough')">
-      <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
-      <span class="dp-txt"><i>02 · CMDR MOBILE HUB</i><em>Commander walkthrough · iPhone view</em><small>Link · SONAR alert · release · map · comms · scenario · bus</small></span>
-      <span class="dp-dur">5:50</span>
-    </button>
-  </div>
-  <div id="sp-bottom-bar">
-    <div class="bb-dot"></div>
-    <span>ie-SRS ADMIN · FOUNDRY ADVANA</span>
-    <div class="bb-sep"></div><span>ADM-01 USER ACCOUNTS</span>
-    <div class="bb-sep"></div><span>ADM-02 MESSAGE CENTER</span>
-    <div class="bb-sep"></div><span>ADM-03 SONAR ALERT ROUTING</span>
-    <div class="bb-sep"></div><span>ADM-04 INSTANCE HEALTH</span>
-    <div class="bb-sep"></div><span>SYS-03 GLOBAL MAP</span>
-    <div class="bb-sep"></div><span>ARIA AI ASSISTANT</span>
-    <div style="margin-left:auto;">ENTERPRISE CONTROL · 70 INSTALLATIONS · OUTAGE VISIBILITY</div>
-  </div>
-
-</div>
-
+<!-- splash removed · authentication is the Foundry gate; ARIA credentials live in ADM-06 → Platform settings -->
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
 <div id="gh-gate" class="open boot" role="dialog" aria-label="Foundry key">
@@ -2815,6 +2661,22 @@ html::after {
     </div>
     <div class="gg-msg" id="gg-msg"></div>
     <button class="gg-skip" id="gg-skip" onclick="GHGATE.skip()">Continue without link</button>
+  <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
+      <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+    </button>
+  </div>
+<div id="demo-pick" role="dialog" aria-label="Choose a demo">
+    <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+    <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
+      <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
+      <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
+      <span class="dp-dur">5:52</span>
+    </button>
+    <button class="dp-item" onclick="openDemoPlayer('live/cmdr.html','ie-SRS // CMDR MOBILE HUB · Commander Walkthrough')">
+      <span class="dp-ico"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span>
+      <span class="dp-txt"><i>02 · CMDR MOBILE HUB</i><em>Commander walkthrough · iPhone view</em><small>Link · SONAR alert · release · map · comms · scenario · bus</small></span>
+      <span class="dp-dur">5:50</span>
+    </button>
   </div>
 <div id="adm-lock" role="dialog" aria-label="Security key">
     <div class="gg-brand"><div class="gg-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="gg-t1">ie-SRS ADMIN</div><div class="gg-t2">System admin platform</div></div></div>
@@ -2963,7 +2825,7 @@ html::after {
     <div class="c-spacer"></div>
     <div class="c-clock" id="wall-clock">--:--:-- ET</div>
 
-    <button id="home-btn" onclick="showSplash()" title="Back to splash" style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s;flex-shrink:0;white-space:nowrap;">⌂ HOME</button>
+    <button id="home-btn" onclick="showSplash()" title="Back to hub" style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s;flex-shrink:0;white-space:nowrap;">⌂ HOME</button>
     <button id="fs-btn" onclick="toggleFullscreen()" title="Full screen view">
       <svg id="fs-ico-in" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="4.4,1 1,1 1,4.4"/><polyline points="7.6,1 11,1 11,4.4"/>
@@ -2983,6 +2845,10 @@ html::after {
       <span>GUIDE</span>
     </button>
     
+    <button id="demo-chrome-btn" onclick="openDemoPicker(true)" title="Play a demo" aria-haspopup="dialog">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M3.5 2v8l6.5-4z"/></svg>
+      <span>DEMO</span>
+    </button>
     <button id="lock-btn" onclick="lockAdmin()" title="Lock · security key required to resume">
       <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="7" height="5" rx="1"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>
       <span>LOCK</span>
@@ -10260,7 +10126,7 @@ bootScan();
 
 function showSplash() {
   var splash = document.getElementById('splash');
-  if (!splash) return;
+  if (!splash) { try { document.querySelectorAll('.app-overlay.visible').forEach(function (o) { closeApp(o.id); }); document.getElementById('launcher-shell').classList.remove('pushed'); } catch (e) {} return; }   /* no splash: HOME returns to the hub grid */
 
   // Reset credentials
   var u = document.getElementById('sp-username');
@@ -10341,7 +10207,8 @@ function logoutAdmin() {
   try { if (typeof closeApp === "function") closeApp(); } catch (e) {}
   try { if (typeof closeDemoPlayer === "function") closeDemoPlayer(); } catch (e) {}
   try { ADMLOCK.hide(); } catch (e) {}
-  showSplash();                                                    /* splash re-armed behind the gate */
+  try { document.querySelectorAll('.app-overlay.visible').forEach(function (o) { closeApp(o.id); }); } catch (e) {}
+  window._inedApiKey = null; window._inedApiEmail = null; try { updateAiStatus(); } catch (e) {}   /* ARIA session key is cleared on log out */
   var g = document.getElementById("gh-gate");
   if (g) { g.classList.add("boot"); g.classList.add("open"); }      /* opaque lock, same as first open */
   try { window.GHGATE && GHGATE.boot(); } catch (e) {}
@@ -10612,7 +10479,7 @@ function launchSim() {
     bgW=bgCanvas.width=window.innerWidth;bgH=bgCanvas.height=window.innerHeight;buildHexGrid();
   }
   window.addEventListener('resize',bgResize);
-  bgResize();bgFrame();
+  if(bgCanvas){bgResize();bgFrame();}
 
   // Resume canvas when returning to splash
   window._splashRestart=function(){cancelAnimationFrame(bgRaf);bgResize();bgFrame();};
@@ -10694,6 +10561,7 @@ function launchSim() {
   // ── CORE SPLASH EXIT ──
   window.enterHub = function() {
     var splash = document.getElementById('splash');
+    if (!splash) { updateAiStatus(); return; }
     splash.classList.add('exiting');
     cancelAnimationFrame(bgRaf);
     // Hide demo button — splash is dismissed
@@ -10753,9 +10621,10 @@ function launchSim() {
 
   // ── DEMO PICKER + PLAYER MODAL ──
   var DEMO_BUILD = '202609071415'; // cache-buster appended to demo URLs; bump on every live/ redeploy
-  window.openDemoPicker = function() {
+  window.openDemoPicker = function(fromChrome) {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (!pk) return;
+    pk.classList.toggle('chrome', !!fromChrome);
     var on = !pk.classList.contains('open');
     pk.classList.toggle('open', on); if (btn) { btn.classList.toggle('open', on); btn.setAttribute('aria-expanded', on ? 'true' : 'false'); }
   };
@@ -10780,8 +10649,8 @@ function launchSim() {
   };
   // Close picker on outside click / Escape; close player on backdrop click
   document.addEventListener('click', function(e) {
-    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
-    if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !(btn && btn.contains(e.target))) window.closeDemoPicker();
+    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn'), cb = document.getElementById('demo-chrome-btn');
+    if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !(btn && btn.contains(e.target)) && !(cb && cb.contains(e.target))) window.closeDemoPicker();
   });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { window.closeDemoPicker(); } });
   var demoModal = document.getElementById('demo-modal');
@@ -10841,7 +10710,7 @@ function launchSim() {
 document.addEventListener('DOMContentLoaded', function() {
   var cards = document.querySelectorAll('.app-card');
   cards.forEach(function(c, i) {
-    setTimeout(function() { c.classList.add('revealed'); }, 300 + i * 180);
+    setTimeout(function() { c.classList.add('revealed'); }, 120 + i * 60);
   });
 });
 
@@ -12157,6 +12026,10 @@ document.addEventListener("DOMContentLoaded",function(){
           <div style="margin-top:10px;">
             <div class="adm-field"><label>Active model</label><select class="adm-sel" id="as-model" onchange="admSetModel(this.value)"><option value="aria">ARIA (Claude direct)</option><option value="gemini">Gemini — Google</option><option value="capra">CAPRA — Classified</option></select></div>
             <div class="adm-field"><label>API key status</label><div id="as-keystatus" style="font-family:'Share Tech Mono',monospace;font-size:11px;">—</div></div>
+            <div class="adm-field"><label>Operator email</label><input class="adm-inp" id="as-email" type="email" autocomplete="off" placeholder="name@navy.mil"></div>
+            <div class="adm-field"><label>API key</label><div style="display:flex;gap:6px"><input class="adm-inp" id="as-apikey" type="password" autocomplete="off" placeholder="sk-… / AIza…" style="flex:1"><button class="adm-b" type="button" onclick="admToggleKeyEye()" id="as-eye">SHOW</button></div></div>
+            <div class="adm-field"><label>Browser-direct mode</label><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="as-direct" onchange="admSetDirect(this.checked)"> <span style="font-size:11px;color:#8fa8c0">Call the model API straight from this browser (no hub relay)</span></label></div>
+            <div class="adm-field"><label></label><div style="display:flex;gap:6px"><button class="adm-b ok" type="button" onclick="admApplyCreds()">APPLY KEY</button><button class="adm-b warn" type="button" onclick="admForgetKey()">FORGET KEY</button></div></div>
             <button class="adm-b" onclick="showAriaKeyModal()">ENTER / ROTATE KEY</button>
             <button class="adm-b" onclick="openApp('overlay-aria')">OPEN ARIA</button>
           </div>
@@ -12608,6 +12481,8 @@ document.addEventListener("DOMContentLoaded",function(){
     var st={};try{st=JSON.parse(localStorage.getItem('adm_settings'))||{};}catch(e){}
     SET_KEYS.forEach(function(k){var el=$(k);if(el&&st[k]!=null)el.value=st[k];});
     var m=$('as-model'); if(m)m.value=window._selectedModel||'aria';
+    var em=$('as-email'); if(em&&!em.value&&window._inedApiEmail)em.value=window._inedApiEmail;
+    var dm=$('as-direct'); if(dm)dm.checked=!!window._directMode;
     $('as-keystatus').innerHTML=window._inedApiKey?'<span style="color:#4db88a">● KEY LOADED</span> <span style="color:#6e90b0">· session memory only · '+esc(me())+'</span>':'<span style="color:#d4a05a">○ NO KEY</span> <span style="color:#6e90b0">· ARIA will prompt on first use</span>';
     var s=C.summary();
     $('as-status').innerHTML=['Installations|'+s.sites,'Instances online|'+s.online+' / '+s.instances,'Users online|'+s.usersOnline,'Open SONAR alerts|'+s.openWO,'Audit events|'+C.listAudit().length,'Messages stored|'+C.listMsgs().length,'Hosting|Foundry ADVANA (enclave)','Build target|v2.4.1'].map(function(r){var p=r.split('|');return '<div class="row"><span>'+p[0]+'</span><span>'+p[1]+'</span></div>';}).join('');
@@ -12615,6 +12490,15 @@ document.addEventListener("DOMContentLoaded",function(){
     secApply($('overlay-adm-settings'));
   };
   window.admSettingsSave=function(){var st={};SET_KEYS.forEach(function(k){var el=$(k);if(el)st[k]=el.value;});try{localStorage.setItem('adm_settings',JSON.stringify(st));}catch(e){}C.audit('SETTINGS_SAVE','platform','channels + hosting');toastOk('Platform settings saved');};
+  window.admApplyCreds=function(){var k=($('as-apikey').value||'').trim(),e=($('as-email').value||'').trim();if(!k){toastWarn&&toastWarn('Enter an API key');return;}
+    window._inedApiKey=k;if(e)window._inedApiEmail=e;if(!window._selectedModel)window._selectedModel=$('as-model')?$('as-model').value:'aria';
+    try{var f=$('frame-analytics');if(f&&f.contentWindow)f.contentWindow.postMessage({type:'SET_CREDENTIALS',apiKey:k,model:window._selectedModel},'*');}catch(x){}
+    try{if(typeof pushBuilderCreds==='function')pushBuilderCreds();}catch(x){}
+    try{updateAiStatus();}catch(x){}C.audit('SETTINGS_API_KEY',e||'admin','API key applied · '+(window._selectedModel||'aria')+' · session memory only');
+    $('as-apikey').value='';admPaintSettings();hubToast('⬡ ARIA activated — API key accepted','ok',3000);};
+  window.admForgetKey=function(){window._inedApiKey=null;try{var f=$('frame-analytics');if(f&&f.contentWindow)f.contentWindow.postMessage({type:'SET_CREDENTIALS',apiKey:'',model:window._selectedModel||'aria'},'*');}catch(x){}try{updateAiStatus();}catch(x){}C.audit('SETTINGS_API_KEY','admin','API key forgotten');admPaintSettings();hubToast('API key forgotten','warn',2200);};
+  window.admSetDirect=function(on){window._directMode=!!on;C.audit('SETTINGS_DIRECT',on?'on':'off','browser-direct mode');};
+  window.admToggleKeyEye=function(){var i=$('as-apikey'),on=i.type==='password';i.type=on?'text':'password';$('as-eye').textContent=on?'HIDE':'SHOW';};
   window.admSetModel=function(v){window._selectedModel=v;var sel=$('sp-model-select');if(sel)sel.value=v;var badge=$('aria-model-badge');if(badge)badge.textContent={aria:'ARIA',gemini:'GEMINI · GOOGLE',capra:'CAPRA · CLASSIFIED'}[v]||'ARIA';C.audit('SETTINGS_MODEL',v,'');toastOk('AI provider set to '+v.toUpperCase());};
   window.admResetDemo=function(){if(!confirm('Reset all admin demo data (accounts overrides, messages, audit, dispatch log, rules, settings)?'))return;['adm_audit','adm_msgs','adm_acct_overrides','adm_wo_log','adm_rules','adm_settings','adm_enroll','adm_strategy_progress','adm_strategy_risks','adm_msg_sections','adm_hub_sections'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});toastWarn('Demo data cleared — reloading');setTimeout(function(){location.reload();},900);};
 
@@ -12983,10 +12867,14 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-cmdr .cm-peer .act button{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 8px;border-radius:4px;border:1px solid rgba(110,144,176,.4);background:#132640;color:#cce0f2;cursor:pointer}
 
 /* ── LOCK / LOGOUT BUTTONS ── */
-#lock-btn,#logout-btn{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s,box-shadow .18s;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+#demo-chrome-btn,#lock-btn,#logout-btn{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s,box-shadow .18s;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent}
 #logout-btn:hover{color:#f2f8ff;border-color:#e05555;box-shadow:0 0 12px rgba(224,85,85,.3)}
 #lock-btn:hover{color:#f2f8ff;border-color:#d4a05a;box-shadow:0 0 12px rgba(212,160,90,.3)}
 #lock-btn svg,#logout-btn svg{stroke:currentColor}
+#demo-chrome-btn:hover{color:#f2f8ff;border-color:#18d4f8;box-shadow:0 0 12px rgba(24,212,248,.3)}
+#gh-gate #demo-btn{z-index:10055}   /* play disc lives on the authentication screen, bottom-right */
+#demo-pick{z-index:10056}
+#demo-pick.chrome{right:16px;bottom:auto;top:44px}
 /* ── GUIDE BUTTON ── */
 #guide-btn {
   display: flex; align-items: center; gap: 4px;
