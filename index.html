@@ -2029,6 +2029,12 @@ updateAiContext();
     <div class="so-foot"><button class="btn danger" style="height:48px;font-size:16px;width:100%" onclick="sendSonar()">Release SONAR</button>
     <div style="font-size:11.5px;color:var(--ink3);text-align:center;margin-top:8px">Logged to ADM-03 routing, ADM-05 audit and ADM-09 comms on release.</div></div>
   </div></div>
+  <div class="sheet" id="guide-sheet" onclick="if(event.target===this)closeCmdrGuide()"><div class="panel full">
+    <div class="grab"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><button class="link homebtn" onclick="closeCmdrGuide();go('home')" aria-label="Home"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button><h3>CMDR Hub Guide</h3><button style="color:var(--cyan);font-size:16px;font-weight:600" onclick="closeCmdrGuide()">Done</button></div>
+    <div class="so-scroll" style="padding:0;margin:0 -16px;gap:0"><iframe id="guide-frame" title="CMDR Hub Users Guide" style="flex:1;width:100%;min-height:100%;border:0;background:#fff" src="about:blank"></iframe></div>
+    <div class="so-foot" style="display:flex;gap:10px"><a class="btn" id="guide-ext" href="#" target="_blank" rel="noopener" style="flex:1;text-align:center;text-decoration:none">Open in browser</a><button class="btn pri" style="flex:1" onclick="closeCmdrGuide()">Close</button></div>
+  </div></div>
   <div class="sheet" id="sheet" onclick="if(event.target===this)this.classList.remove('on')"><div class="panel"><div class="grab"></div><h3 id="sheet-t"></h3><p id="sheet-b"></p><button class="btn pri" onclick="document.getElementById('sheet').classList.remove('on')">Close</button></div></div>
 </div>
 
@@ -3025,8 +3031,21 @@ window.SRADropZone=(function(){
 /* ── LOCK / LOG OUT TILES ── */
 function lockCmdr(){LOCK.lock();}
 function logoutCmdr(){LOCK.logout();}
-/* ── CMDR HUB USERS GUIDE ── */
-function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-CMDR-Guide');}
+/* ── CMDR HUB USERS GUIDE (in-app viewer · never navigates the hub away) ── */
+var CMDR_GUIDE_URL='https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-CMDR-Hub-Users-Guide.pdf';
+function openCmdrGuide(){
+  var sh=document.getElementById('guide-sheet'),fr=document.getElementById('guide-frame'),ex=document.getElementById('guide-ext');
+  var u=CMDR_GUIDE_URL+'?v='+Date.now();
+  if(ex)ex.href=u;
+  if(fr)fr.src=u;
+  if(sh)sh.classList.add('on');
+}
+function closeCmdrGuide(){
+  var sh=document.getElementById('guide-sheet'),fr=document.getElementById('guide-frame');
+  if(sh)sh.classList.remove('on');
+  if(fr)fr.src='about:blank';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCmdrGuide();});
 </script>
 </body>
 </html>
