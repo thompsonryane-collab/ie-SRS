@@ -9893,6 +9893,7 @@ function submitCreateAccount() {
 // ── PARENT TTS BRIDGE ──
 (function() {
   var ss           = window.speechSynthesis;
+  var vol          = 0.90;  // narration level, driven by the STR-01 volume slider
   var voice        = null;
   var voiceReady   = false;
   var paused       = false;
@@ -9940,7 +9941,7 @@ function submitCreateAccount() {
       return;
     }
     var u = new SpeechSynthesisUtterance(text);
-    u.voice = voice; u.rate = 0.90; u.pitch = 1.10; u.volume = 0.90;
+    u.voice = voice; u.rate = 0.90; u.pitch = 1.10; u.volume = vol;
     utt = u;
     u.onend   = function() { utt=null; paused=false; _done(); };
     u.onerror = function(ev) {
@@ -9956,6 +9957,8 @@ function submitCreateAccount() {
     cancel: function() { _cancel(); activeSrc=null; activeId=null; },
     pause:  function() { if (ss && ss.speaking && !paused) { ss.pause();  paused=true;  } },
     resume: function() { if (ss && paused)                 { ss.resume(); paused=false; } },
+    getVolume: function() { return vol; },
+    setVolume: function(v) { vol = Math.max(0, Math.min(1, v)); return vol; },
   };
 })();
 
@@ -11902,6 +11905,16 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-strategy-mod .overlay-chrome,#overlay-adm-strategy .overlay-chrome{position:sticky;top:0;z-index:60;}
 #str-mod-layout{grid-template-rows:minmax(0,1fr);transition:grid-template-columns .2s;}
 .str-vo-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;}
+.str-vol{display:flex;align-items:center;gap:7px;padding:3px 9px;border:1px solid var(--border);border-radius:5px;background:rgba(14,24,36,.6);flex-shrink:0;}
+.str-vol-lbl{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#8aa4bd;white-space:nowrap;}
+.str-vol-out{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:#3fd6ff;min-width:20px;text-align:right;}
+#str-vol-range{-webkit-appearance:none;appearance:none;width:78px;height:3px;border-radius:2px;background:var(--border);cursor:pointer;outline:none;}
+#str-vol-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:#3fd6ff;border:none;cursor:pointer;box-shadow:0 0 7px rgba(63,214,255,.55);}
+#str-vol-range::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#3fd6ff;border:none;cursor:pointer;}
+#str-vol-range:focus-visible{outline:2px solid #3fd6ff;outline-offset:2px;}
+.str-vol.muted #str-vol-range{opacity:.4;}
+.str-vol.muted .str-vol-out,.str-vol.muted .str-vol-lbl{color:#e8a33d;}
+#str-mute-btn.muted{border-color:rgba(232,163,61,.5);color:#e8a33d;}
 .str-vo{display:flex;align-items:center;gap:7px;padding:3px 9px;border:1px solid rgba(77,184,138,.35);border-radius:5px;background:rgba(77,184,138,.06);flex-shrink:0;}
 .str-vo-lbl{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#4db88a;white-space:nowrap;}
 .str-vo-bars{display:flex;align-items:flex-end;gap:2px;height:12px;width:15px;}
@@ -12200,7 +12213,7 @@ document.addEventListener("DOMContentLoaded",function(){
     <button class="adm-b sm" id="str-prev" onclick="strStep(-1)" style="margin-left:auto;">&#9664; PREV</button><button class="adm-b sm" id="str-next" onclick="strStep(1)">NEXT &#9654;</button>
     <div class="str-vo-sep"></div>
     <div class="str-vo" id="str-vo-wrap" title="Slide narration"><div class="str-vo-bars idle" id="str-vo-bars"><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span></div><span class="str-vo-lbl" id="str-vo-lbl">VOICEOVER</span></div>
-    <button class="adm-b sm ok" id="str-replay-btn" onclick="strVoReplay()" title="Replay narration for this slide">&#8635; REPLAY</button><button class="adm-b sm warn" id="str-pause-btn" onclick="strVoPause()" title="Pause / resume narration">&#9208; PAUSE</button>
+    <button class="adm-b sm ok" id="str-replay-btn" onclick="strVoReplay()" title="Replay narration for this slide">&#8635; REPLAY</button><button class="adm-b sm warn" id="str-pause-btn" onclick="strVoPause()" title="Pause / resume narration">&#9208; PAUSE</button><button class="adm-b sm" id="str-mute-btn" onclick="strVoMute()" title="Mute narration (M)">&#128264;</button><div class="str-vol" id="str-vol-wrap" title="Narration volume (&#8593; / &#8595;)"><span class="str-vol-lbl">VOL</span><input id="str-vol-range" type="range" min="0" max="100" step="5" value="90" aria-label="Narration volume"><output class="str-vol-out" id="str-vol-out">90</output></div>
     <span id="str-mod-tag" style="margin-left:6px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#d8c8a4;border:1px solid rgba(216,200,164,.3);border-radius:3px;padding:2px 8px;white-space:nowrap;">DOC PAGE 1</span>
   </div>
   <div class="adm-body">
@@ -13033,6 +13046,33 @@ document.addEventListener("DOMContentLoaded",function(){
   window.strVoSpeak=function(key){var text=STR_VO[key||CUR];if(!text)return;
     if(VO.paused){VO.held=key||CUR;VO.queue=[];VO.pendId=null;if(window._tts)window._tts.cancel();voBars('paused');return;}
     strVoStop();VO.queue=voChunks(text);voNext();};
+  var VOL={v:90,premute:90};
+  function volPaint(){var r=$('str-vol-range'),o=$('str-vol-out'),w=$('str-vol-wrap'),b=$('str-mute-btn');
+    if(r)r.value=VOL.v;if(o)o.value=VOL.v;
+    var m=VOL.v===0;
+    if(w)w.classList.toggle('muted',m);
+    if(b){b.innerHTML=m?'&#128263;':'&#128264;';b.classList.toggle('muted',m);b.title=(m?'Unmute':'Mute')+' narration (M)';}}
+  window.strVoSetVol=function(v,fromUser){
+    v=Math.max(0,Math.min(100,Math.round(v/5)*5));VOL.v=v;
+    if(v>0)VOL.premute=v;
+    if(window._tts&&window._tts.setVolume)window._tts.setVolume(v/100);
+    try{localStorage.setItem('ie-srs-vo-vol',String(v));}catch(e){}
+    volPaint();
+    /* muting mid-sentence should go quiet now, not at the next chunk boundary */
+    if(fromUser&&v===0&&VO.speaking&&window._tts)window._tts.cancel();
+  };
+  window.strVoMute=function(){
+    var m=VOL.v===0;
+    strVoSetVol(m?(VOL.premute||90):0,true);
+    if(!m){VO.queue=[];VO.pendId=null;VO.speaking=false;voBars('idle');}
+    else{strVoSpeak(CUR);}
+    try{if(C&&C.audit)C.audit('STRATEGY_VO_MUTE',CUR,m?'narration unmuted':'narration muted');}catch(e){}
+  };
+  window.strVoNudge=function(d){strVoSetVol(VOL.v+d,true);};
+  (function initVol(){var v=90;try{var q=localStorage.getItem('ie-srs-vo-vol');if(q!==null&&q!=='')v=parseInt(q,10);}catch(e){}
+    if(!isFinite(v))v=90;
+    var r=$('str-vol-range');if(r)r.addEventListener('input',function(){strVoSetVol(+r.value,true);});
+    strVoSetVol(v,false);})();
   window.strVoReplay=function(){VO.paused=false;voPauseBtn(false);strVoStop();strVoSpeak(CUR);try{if(C&&C.audit)C.audit('STRATEGY_VO_REPLAY',CUR,'slide narration replayed');}catch(e){}};
   window.strVoPause=function(){VO.paused=!VO.paused;voPauseBtn(VO.paused);
     if(VO.paused){if(window._tts)window._tts.pause();voBars('paused');return;}
@@ -13041,7 +13081,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(VO.queue.length){voNext();return;}
     voBars('idle');};
   var _close=window.closeApp; window.closeApp=function(id){_close(id);if(id==='overlay-adm-strategy-mod'){try{VO.paused=false;voPauseBtn(false);strVoStop();}catch(e){}}};
-  document.addEventListener('keydown',function(e){var ov=$('overlay-adm-strategy-mod');if(!ov||!ov.classList.contains('visible'))return;if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown')strStep(1);else if(e.key==='ArrowLeft'||e.key==='PageUp')strStep(-1);else if(e.key===' '){e.preventDefault();strVoPause();}});
+  document.addEventListener('keydown',function(e){var ov=$('overlay-adm-strategy-mod');if(!ov||!ov.classList.contains('visible'))return;if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown')strStep(1);else if(e.key==='ArrowLeft'||e.key==='PageUp')strStep(-1);else if(e.key===' '){e.preventDefault();strVoPause();}else if(e.key==='ArrowUp'){e.preventDefault();strVoNudge(5);}else if(e.key==='ArrowDown'){e.preventDefault();strVoNudge(-5);}else if(e.key==='m'||e.key==='M'){e.preventDefault();strVoMute();}});
   var _open=window.openApp; window.openApp=function(id){_open(id);try{if(id==='overlay-adm-strategy')strPaintGrid();}catch(e){console.warn('strategy',e);}};
 })();
 
