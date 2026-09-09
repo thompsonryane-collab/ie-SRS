@@ -10193,6 +10193,7 @@ window.ADMLOCK = (function () {
   function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
   /* show() always re-arms the lock: the admin surface is hidden again until a key is accepted. */
   function show() { digits = ''; busy = false; unlocked = false; dots(); msg('');
+    try { if (window.admSessionEnd) admSessionEnd(); } catch (e) {}
     try { var bd = $l('al-mode');
       if (bd) { var on = (typeof ADMLOCK_OPEN_KEY !== 'undefined') && ADMLOCK_OPEN_KEY;
         bd.textContent = on ? '⚠ test mode · any active security key' : '';
@@ -10204,6 +10205,7 @@ window.ADMLOCK = (function () {
   function hide() { if (!unlocked) return; close(); }
   /* reset() drops the pad but keeps the surface locked (log out hands control back to STEP 1). */
   function reset() { unlocked = false; digits = ''; busy = false; dots(); msg('');
+    try { if (window.admSessionEnd) admSessionEnd(); } catch (e) {}
     try { document.body.classList.add('adm-locked'); } catch (e) {} close(); }
   function submit() {
     busy = true; var key = digits;
@@ -10216,6 +10218,7 @@ window.ADMLOCK = (function () {
         var rl  = a ? (roleOf(a) || 'no role on file') : 'master backup key';
         msg('✓ ' + who + ' · ' + rl + ' · unlocked', 'ok');
         try { document.body.classList.remove('adm-locked'); } catch (e) {}
+        try { if (a && window.admSessionStart) admSessionStart(a); } catch (e) {}
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · ' + rl + ' · key ends ' + key.slice(-2) + (a && open && !isAdmin(a) ? ' · OPEN-KEY MODE' : '')); } catch (e) {}
         setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
       else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg((a && !open) ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
@@ -12295,9 +12298,9 @@ document.addEventListener("DOMContentLoaded",function(){
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
       rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
-        status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
+        status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:(isLive(em)&&(live[em]||{}).via!=='admin-web')?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||'',via:(live[em]||{}).via||''});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);if(st.removed)return;var lv=isLive(u.email);
-      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
+      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||''});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12318,7 +12321,11 @@ document.addEventListener("DOMContentLoaded",function(){
     $('au-body').innerHTML=rows.length?rows.map(function(r){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
       var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
-      var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
+      var web=r.via==='admin-web';
+    if(keyLive&&web)c='#18d4f8';
+    var stLbl=keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+
+      (web&&window.ADMIN_SESSION&&ADMIN_SESSION.email===r.email?' · YOU':'')+
+      (r.github?' · '+esc(r.github):'')):r.status;
       return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
         '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
@@ -12484,7 +12491,11 @@ document.addEventListener("DOMContentLoaded",function(){
     /* live sessions · email → {name,site,ts,github,via} */
     live:function(){return lsJ(SEC_LIVE,{});},
     markLive:function(acct,extra){var l=SRASec.live();l[acct.email]=Object.assign({name:acct.name,first:acct.first||'',last:acct.last||'',email:acct.email,site:acct.site,siteId:acct.siteId,who:acct.who,kind:acct.kind,ts:Date.now(),github:'',via:'keypad'},extra||{});lsW(SEC_LIVE,l);
-      try{C.audit('CMDR_KEY_AUTH',acct.email,acct.name+' · '+(acct.site||'')+' · github:'+((extra&&extra.github)||'—'));}catch(e){}
+      try{ if(!(extra&&extra.quiet)){                         /* heartbeats must not spam the ledger */
+        var via=(extra&&extra.via)||'keypad';
+        if(via==='admin-web')C.audit('ADMIN_SESSION_START',acct.email,acct.name+' · '+(acct.site||'')+' · web console');
+        else C.audit('CMDR_KEY_AUTH',acct.email,acct.name+' · '+(acct.site||'')+' · github:'+((extra&&extra.github)||'—'));
+      } }catch(e){}
       try{window.dispatchEvent(new CustomEvent('security-authenticated',{detail:l[acct.email]}));}catch(e){}
       SRASec.repaint(); return l[acct.email];},
     endLive:function(email){var l=SRASec.live();var e=l[email]||{};l[email]={email:email,name:e.name||'',site:e.site||'',off:true,ts:Date.now()};lsW(SEC_LIVE,l);SRASec.repaint();},
@@ -12492,6 +12503,30 @@ document.addEventListener("DOMContentLoaded",function(){
     liveList:function(){var l=SRASec.live();return Object.keys(l).filter(function(k){return !l[k].off;}).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
     repaint:function(){['admPaintUsers','admPaintStrip','admPaintPresence','admPaintCmdr'].forEach(function(f){try{if(typeof window[f]==='function'){if(f==='admPaintUsers'&&!($('overlay-adm-users')&&$('overlay-adm-users').classList.contains('visible')))return;if(f==='admPaintPresence'&&!($('overlay-adm-msg')&&$('overlay-adm-msg').classList.contains('visible')))return;if(f==='admPaintCmdr'&&!($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible')))return;window[f]();}}catch(e){}});}
   };
+  /* ── ADMIN web-console presence ──
+     The operator who clears STEP 2 is a live user like any commander, so they get a
+     real record in ie-srs-live. A heartbeat keeps it inside the 6-minute TTL for as
+     long as the console stays unlocked; lock / log out ends it immediately. */
+  var ADM_HB=null, ADM_HB_MS=2*60*1000;
+  window.admSessionStart=function(acct){
+    if(!acct||!acct.email)return null;                       /* master-key unlock has no account to attribute */
+    window.ADMIN_SESSION={email:acct.email,name:acct.name,site:acct.site,siteId:acct.siteId,who:acct.who,kind:acct.kind,ts:Date.now()};
+    var rec=SRASec.markLive(acct,{via:'admin-web'});
+    if(ADM_HB)clearInterval(ADM_HB);
+    ADM_HB=setInterval(function(){
+      try{ if(!window.ADMIN_SESSION||(window.ADMLOCK&&ADMLOCK.isLocked())){admSessionEnd();return;}
+        SRASec.markLive(acct,{via:'admin-web',quiet:true}); }catch(e){}
+    },ADM_HB_MS);
+    return rec;
+  };
+  window.admSessionEnd=function(){
+    if(ADM_HB){clearInterval(ADM_HB);ADM_HB=null;}
+    var se=window.ADMIN_SESSION; window.ADMIN_SESSION=null;
+    if(!se||!se.email)return;
+    try{SRASec.endLive(se.email);}catch(e){}
+    try{C.audit('ADMIN_SESSION_END',se.email,(se.name||'')+' · web console');}catch(e){}
+  };
+  try{window.addEventListener('pagehide',function(){try{admSessionEnd();}catch(e){}});}catch(e){}
   window.storeSecurityKeys=SRASec.storeKeys;
   window.admSetSecurityKey=function(siteId,who){
     var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
@@ -13588,7 +13623,9 @@ window.SRABus=(function(){
   function ago(ts){var m=Math.round((Date.now()-ts)/60000);return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' hr ago';}
   function me(){return window._inedApiEmail||'sysadmin@example.mil';}
   function peers(){var p=(window.CMDR_LINK&&CMDR_LINK.peers())||{};return Object.keys(p).map(function(k){var s=C.SITE[k];return {site:k,siteName:s?s.name:k,name:p[k].name||'Base Commander',app:p[k].app||'ie-SRS CMDR',ts:p[k].ts||0,online:(Date.now()-(p[k].ts||0))<ONLINE_MS};}).sort(function(a,b){return b.ts-a.ts;});}
-  function keyPeers(){if(!window.SRASec)return [];return SRASec.liveList().map(function(e){return {site:'key:'+e.email,siteName:e.site||'—',name:e.name,app:'CMDR hub · key auth'+(e.github?' · gh:'+e.github:''),ts:e.ts,online:e.online,email:e.email,key:true};});}
+  function keyPeers(){if(!window.SRASec)return [];return SRASec.liveList()
+    .filter(function(e){return e.via!=='admin-web';})   /* the web admin is already the 'you' row */
+    .map(function(e){return {site:'key:'+e.email,siteName:e.site||'—',name:e.name,app:'CMDR hub · key auth'+(e.github?' · gh:'+e.github:''),ts:e.ts,online:e.online,email:e.email,key:true};});}
   window.admLivePresence=function(){var ps=peers().concat(keyPeers()).sort(function(a,b){return b.ts-a.ts;});return {admins:1,mobile:ps.filter(function(x){return x.online;}).length,peers:ps,total:1+ps.filter(function(x){return x.online;}).length};};
   window.admPaintPresence=function(){
     var q=($('am-uq')&&$('am-uq').value||'').toLowerCase();
