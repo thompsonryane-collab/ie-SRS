@@ -1936,6 +1936,9 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 @keyframes alshake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 #adm-lock .al-msg { min-height: 20px; font-size: 13px; text-align: center; color: rgba(255,255,255,.45); }
 #adm-lock .al-msg.ok { color: #6fe3a1; } #adm-lock .al-msg.bad { color: #ef9a9a; }
+#adm-lock #al-mode { display: none; margin-top: 2px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: #d4a05a; border: 1px solid rgba(212,160,90,.45); border-radius: 3px; padding: 3px 9px; }
+#adm-lock #al-mode.on { display: block; }
 #adm-lock .al-pad { display: grid; grid-template-columns: repeat(3, 78px); gap: 14px 16px; margin-top: 6px; justify-content: center; }
 #adm-lock .al-pad button { height: 62px; border-radius: 16px; cursor: pointer; font-family: inherit; font-size: 24px; font-weight: 600; color: #fff; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 0 rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.45); transition: transform .06s, box-shadow .06s; }
 #adm-lock .al-pad button:active { transform: translateY(2px); box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
@@ -2693,6 +2696,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     <div class="gg-step"><b class="done">✓</b><span>Foundry key</span><i></i><b>2</b><span>Security key</span></div>
     <div class="al-dots" id="al-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="al-msg" id="al-msg"></div>
+    <div id="al-mode"></div>
     <div class="al-pad" id="al-pad">
       <button onclick="ADMLOCK.press(1)">1</button><button onclick="ADMLOCK.press(2)">2</button><button onclick="ADMLOCK.press(3)">3</button>
       <button onclick="ADMLOCK.press(4)">4</button><button onclick="ADMLOCK.press(5)">5</button><button onclick="ADMLOCK.press(6)">6</button>
@@ -10173,8 +10177,13 @@ function showSplash() {
 }
 
 /* ── STEP 2 · SECURITY KEY LOCK (admin) ──
-   Unlocks with any active System Administrator security key, or the master backup key. */
+   Unlocks with the master backup key, plus — per ADMLOCK_OPEN_KEY — either any active
+   security key (test mode, current) or System Administrator keys only (production). */
 var ADMIN_MASTER_KEY = '201219';
+/* TEST MODE. true  = STEP 2 admits any ACTIVE account holding a valid security key.
+                false = STEP 2 admits System Administrator keys only (production posture).
+   Disabled and deleted accounts are refused in BOTH modes — SRASec.validate() filters them. */
+var ADMLOCK_OPEN_KEY = true;
 window.ADMLOCK = (function () {
   var digits = '', busy = false, unlocked = false;
   function $l(id) { return document.getElementById(id); }
@@ -10184,6 +10193,10 @@ window.ADMLOCK = (function () {
   function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
   /* show() always re-arms the lock: the admin surface is hidden again until a key is accepted. */
   function show() { digits = ''; busy = false; unlocked = false; dots(); msg('');
+    try { var bd = $l('al-mode');
+      if (bd) { var on = (typeof ADMLOCK_OPEN_KEY !== 'undefined') && ADMLOCK_OPEN_KEY;
+        bd.textContent = on ? '⚠ test mode · any active security key' : '';
+        bd.classList.toggle('on', on); } } catch (e) {}
     try { document.body.classList.add('adm-locked'); } catch (e) {}
     var el = $l('adm-lock'); if (el) el.classList.add('open'); }
   function close() { var el = $l('adm-lock'); if (el) el.classList.remove('open'); }
@@ -10195,13 +10208,17 @@ window.ADMLOCK = (function () {
   function submit() {
     busy = true; var key = digits;
     var a = null; try { a = window.SRASec ? SRASec.validate(key) : null; } catch (e) {}
-    var ok = key === ADMIN_MASTER_KEY || isAdmin(a);
+    var open = (typeof ADMLOCK_OPEN_KEY !== 'undefined') && ADMLOCK_OPEN_KEY;
+    var ok = key === ADMIN_MASTER_KEY || (open ? !!a : isAdmin(a));
     setTimeout(function () {
-      if (ok) { unlocked = true; msg('✓ ' + (a && a.name ? a.name : 'Master key') + ' · unlocked', 'ok');
+      if (ok) { unlocked = true;
+        var who = a && a.name ? a.name : 'Master key';
+        var rl  = a ? (roleOf(a) || 'no role on file') : 'master backup key';
+        msg('✓ ' + who + ' · ' + rl + ' · unlocked', 'ok');
         try { document.body.classList.remove('adm-locked'); } catch (e) {}
-        try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · key ends ' + key.slice(-2)); } catch (e) {}
+        try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · ' + rl + ' · key ends ' + key.slice(-2) + (a && open && !isAdmin(a) ? ' · OPEN-KEY MODE' : '')); } catch (e) {}
         setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
-      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg(a ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
+      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg((a && !open) ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
         try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK_FAIL', 'admin', 'key ends ' + key.slice(-2)); } catch (e) {} }
     }, 150);
   }
@@ -12458,8 +12475,8 @@ document.addEventListener("DOMContentLoaded",function(){
     storeKeys:function(){
       var m={};
       C.SITES.forEach(function(site){['fm','backup'].forEach(function(who){var u=site[who];if(!u)return;var st=C.acctState(site.id,who);var sec=st.security||'';
-        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',disabled:!!st.disabled};});});
-      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',disabled:!!a.disabled,installations:a.installations||[]};});
+        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',role:u.role||'',disabled:!!st.disabled};});});
+      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[]};});
       lsW(SEC_KEYS,m); return m;
     },
     keys:function(){return SRASec.storeKeys();},
