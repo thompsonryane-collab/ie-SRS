@@ -1911,7 +1911,7 @@ html::after {
   linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.07) 50%, rgba(255,255,255,0) 60%),
   radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%),
   linear-gradient(180deg, #3a3f47 0%, #2b2f36 45%, #22262c 100%); }   /* locked on open: glossy dark gray, matches CMDR */
-#adm-lock { display: none; position: fixed; inset: 0; z-index: 10060; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; user-select: none; background:
+#adm-lock { display: none; position: fixed; inset: 0; z-index: 20050; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; user-select: none; background:
   radial-gradient(140% 70% at 50% -10%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.06) 35%, rgba(255,255,255,0) 60%),
   linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.07) 50%, rgba(255,255,255,0) 60%),
   radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%),
@@ -1922,8 +1922,11 @@ html::after {
    Nothing but the two authentication gates is allowed to paint until then.
    visibility (not display) so layout/measurement inside the shell stays valid. */
 body.adm-locked { overflow: hidden; }
-body.adm-locked > *:not(#adm-lock):not(#gh-gate):not(script):not(style) { visibility: hidden !important; }
-body.adm-locked > #adm-lock, body.adm-locked > #gh-gate { visibility: visible !important; }
+body.adm-locked > *:not(#adm-lock):not(#gh-gate):not(#demo-pick):not(#demo-modal):not(script):not(style) { visibility: hidden !important; }
+body.adm-locked > #adm-lock, body.adm-locked > #gh-gate,
+body.adm-locked > #demo-pick, body.adm-locked > #demo-modal { visibility: visible !important; }
+/* demo picker + player ride above the gate on the auth screen (gate 10050 / lock 10060) */
+body.adm-locked > #demo-modal { z-index: 20000; }
 #adm-lock .gg-step i { width: 26px; height: 1px; background: rgba(255,255,255,.18); }
 #adm-lock .gg-step b.done { background: #4fd98a; border-color: #4fd98a; color: #03121f; }
 #adm-lock .al-dots { display: flex; gap: 14px; margin: 6px 0 4px; }
@@ -3174,7 +3177,7 @@ body.adm-locked > #adm-lock, body.adm-locked > #gh-gate { visibility: visible !i
         </div>
 
         <!-- ── CARD: ie-SRS Core Hub ── -->
-        <div class="app-card card-hub" id="card-ie-srs-hub" onclick="window.location.href='ie-srs.html';" style="cursor:pointer;">
+        <div class="app-card card-hub" id="card-ie-srs-hub" onclick="window.location.href='ie-SRS.html';" style="cursor:pointer;">
           <div class="card-head">
             <div style="position:relative;width:52px;height:52px;border:2px solid #18d4f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(24,212,248,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #18d4f8,0 0 18px rgba(24,212,248,.35);">
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3203,7 +3206,7 @@ body.adm-locked > #adm-lock, body.adm-locked > #gh-gate { visibility: visible !i
             <span class="meta-pill">Cross-Site</span>
             <span class="meta-pill">Live Data</span>
           </div>
-          <button class="launch-btn" onclick="event.stopPropagation();window.location.href='ie-srs.html';">&#x2B21; &nbsp;ENTER</button>
+          <button class="launch-btn" onclick="event.stopPropagation();window.location.href='ie-SRS.html';">&#x2B21; &nbsp;ENTER</button>
         </div>
 
 </div><!-- #card-grid -->
@@ -10592,6 +10595,9 @@ function launchSim() {
   // ── GITHUB KEY GATE (opens on load when no token is configured) ──
   window.GHGATE = (function() {
     var busy = false, tmr = null;
+    /* Instrument trace for the STEP 1 → STEP 2 handoff. Read with: window.__ADMSTEP */
+    window.__ADMSTEP = window.__ADMSTEP || [];
+    function STEP(t) { try { window.__ADMSTEP.push(new Date().toISOString().slice(11, 23) + ' ' + t); } catch (e) {} }
     function $g(id) { return document.getElementById(id); }
     function msg(t, c) { var e = $g('gg-msg'); if (e) { e.textContent = t || ''; e.className = 'gg-msg ' + (c || ''); } }
     function netErr(e) { return /network|no route|failed to fetch|timeout/i.test(String(e || '')); }
@@ -10607,11 +10613,25 @@ function launchSim() {
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
     /* STEP 1 never releases the surface on its own: STEP 2 is raised first (z 10060 over 10050),
        so there is no frame in which the admin screen is visible without a security key. */
-    function hide() { try { if (window.ADMLOCK && ADMLOCK.isLocked()) ADMLOCK.show(); } catch (e) {}
+    function hide() {
+      /* A demo player left open sits at z 20000 and would bury the keypad. */
+      try { if (typeof closeDemoPlayer === 'function') closeDemoPlayer(); } catch (e) {}
+      var raised = false;
+      try {
+        if (window.ADMLOCK && ADMLOCK.isLocked()) ADMLOCK.show();
+        var al = $g('adm-lock');
+        /* ADMLOCK must EXIST. A missing module is a failure, not an unlocked state. */
+        raised = !!window.ADMLOCK && (!ADMLOCK.isLocked()
+              || !!(al && al.classList.contains('open') && getComputedStyle(al).display !== 'none'));
+      } catch (e) { raised = false; STEP('lock-error: ' + e); }
+      STEP('hide · step2 raised=' + raised);
+      /* Fail closed: STEP 1 never releases the surface unless STEP 2 is on screen. */
+      if (!raised) { msg('Security keypad did not load. Reload the console before continuing.', 'bad');
+        clearTimeout(tmr); busy = false; btn(false); return; }
       $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
       if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a Foundry key.', 'bad'); return; }
-      busy = true; btn(true); msg('Checking the link…', 'wait');
+      busy = true; btn(true); msg('Checking the link…', 'wait'); STEP('connect pressed');
       SRABus.configure({ transport: 'github', token: tok });
       setTimeout(function() { try { SRABus.publish('HELLO', { node: 'admin', app: 'ie-SRS ADMIN', linkCheck: true }); } catch (e) {} }, 400);  /* forces a write so a read-only key is caught here, not later */
       var t0 = Date.now(), armed = false; clearTimeout(tmr);
@@ -10623,7 +10643,7 @@ function launchSim() {
           if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry rejected the key'), 'bad'); return; } }
         if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from Foundry. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
-    function skip() { hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
+    function skip() { STEP('skip pressed'); hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
     /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
     function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
       var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
@@ -10652,15 +10672,29 @@ function launchSim() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (pk) pk.classList.remove('open'); if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
   };
+  /* The demos live in ./live/ beside this file on GitHub Pages. When the console is opened
+     from a download (file://) or from any origin where live/ is not deployed, play the
+     published copy instead of leaving a dead iframe. */
+  var DEMO_REMOTE_BASE = 'https://thompsonryane-collab.github.io/ie-SRS/';
   window.openDemoPlayer = function(src, title) {
     src = src || 'live/';
-    src += (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
+    var qs = (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
+    var local = src + qs, remote = DEMO_REMOTE_BASE + src + qs;
     window.closeDemoPicker();
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame'),
         t = document.getElementById('demo-modal-title');
     if (t && title) t.innerHTML = title;
-    if (fr) fr.setAttribute('src', src);
     if (modal) modal.classList.add('open');
+    if (!fr) return;
+    fr.dataset.demoSrc = src;
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') { fr.setAttribute('src', remote); return; }
+    fr.setAttribute('src', local);
+    /* Confirm live/ really exists at this origin; otherwise fall over to the published copy. */
+    try {
+      fetch(src, { method: 'HEAD', cache: 'no-store' })
+        .then(function(r) { if (!r.ok && fr.dataset.demoSrc === src) fr.setAttribute('src', remote); })
+        .catch(function()  { if (fr.dataset.demoSrc === src) fr.setAttribute('src', remote); });
+    } catch (e) { fr.setAttribute('src', remote); }
   };
   window.closeDemoPlayer = function() {
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame');
@@ -11713,6 +11747,22 @@ document.addEventListener("DOMContentLoaded",function(){
 .adm-tbl th{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.2px;color:#6e90b0;text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#0d1520;cursor:pointer;text-transform:uppercase;}
 .adm-tbl td{padding:7px 8px;border-bottom:1px solid rgba(26,45,66,.6);vertical-align:middle;white-space:nowrap;}
 .adm-tbl tr:hover td{background:rgba(24,212,248,.04);}
+.adm-tbl th.au-chk-h,.adm-tbl td.au-chk-c{width:26px;padding:7px 4px 7px 10px;cursor:default;}
+.au-chk{accent-color:#18d4f8;width:13px;height:13px;margin:0;cursor:pointer;vertical-align:middle;}
+.adm-tbl tr.au-selrow td{background:rgba(224,85,85,.10)!important;}
+.adm-tbl tr.au-selrow td:first-child{box-shadow:inset 2px 0 0 #e05555;}
+.au-selcount{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#6e90b0;border:1px solid var(--border);border-radius:3px;padding:3px 8px;white-space:nowrap;}
+.au-selcount.on{color:#e05555;border-color:rgba(224,85,85,.45);}
+#au-del-btn[disabled]{opacity:.35;pointer-events:none;}
+#au-wipe{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(3,8,14,.78);backdrop-filter:blur(3px);}
+#au-wipe .w-box{width:min(520px,92vw);background:#0e1824;border:1px solid rgba(224,85,85,.45);border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.75);padding:18px 20px;font-family:'Rajdhani',sans-serif;color:#cce0f2;}
+#au-wipe h4{margin:0 0 4px;font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:#e05555;}
+#au-wipe .w-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:#6e90b0;margin-bottom:10px;}
+#au-wipe .w-list{max-height:170px;overflow:auto;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9.5px;color:#8fb0d0;line-height:1.6;margin-bottom:12px;}
+#au-wipe .w-list b{color:#f2f8ff;font-weight:600;}
+#au-wipe .w-note{font-size:12px;color:#d4a05a;margin-bottom:10px;line-height:1.45;}
+#au-wipe input{width:100%;box-sizing:border-box;background:#0a121c;border:1px solid rgba(224,85,85,.45);border-radius:4px;padding:8px 10px;color:#f2f8ff;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;outline:none;}
+#au-wipe .w-act{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
 .adm-pill{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;border-radius:3px;border:1px solid;text-transform:uppercase;}
 .adm-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle;}
 .adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
@@ -11868,6 +11918,10 @@ document.addEventListener("DOMContentLoaded",function(){
     <div class="adm-toolbar">
       <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;">140 SEATS · 70 INSTALLATIONS · sort and filter from the column carets</span>
       <span class="sp"></span>
+      <span class="au-selcount" id="au-selcount">0 SELECTED</span>
+      <button class="adm-b sm" onclick="admUsersSelectAll(true)">SELECT ALL SHOWN</button>
+      <button class="adm-b sm" onclick="admUsersSelectAll(false)">CLEAR SELECTION</button>
+      <button class="adm-b warn" id="au-del-btn" onclick="admUsersDeleteSelected()" disabled>&#10005; DELETE SELECTED</button>
       <button class="adm-b sm" onclick="cmReset('users')">CLEAR FILTERS</button>
       <button class="adm-b ok" onclick="openCreateAccount()">+ NEW ACCOUNT</button>
       <button class="adm-b" onclick="admExportUsers()">EXPORT CSV</button>
@@ -12225,7 +12279,7 @@ document.addEventListener("DOMContentLoaded",function(){
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
       rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
         status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:isLive(em)?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||''});});
-    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);var lv=isLive(u.email);
+    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);if(st.removed)return;var lv=isLive(u.email);
       rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:lv?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||''});});});
     return rows;
   }
@@ -12236,7 +12290,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
       if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
     if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
-    rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users);
+    rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users).replace('<tr>','<tr>'+auHeadCell(rows));auPrune();
     var all=userRows();
     $('au-strip').innerHTML=
       mini('Total seats',all.length,'#ffffff')+mini('Online',all.filter(function(r){return r.status==='online';}).length,'#4db88a')+
@@ -12248,7 +12302,7 @@ document.addEventListener("DOMContentLoaded",function(){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
       var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
       var stLbl=keyLive?'<span class="sec-live-dot"></span>LIVE'+(r.github?' · '+esc(r.github):''):r.status;
-      return '<tr'+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
+      return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
         '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
@@ -12265,8 +12319,113 @@ document.addEventListener("DOMContentLoaded",function(){
         '<button class="adm-b sm" onclick="admUserReset(\''+r.siteId+'\',\''+r.who+'\')">RESET</button> '+
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="11" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="12" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
+
+  /* ══ ADM-01 MULTI-SELECT · BATCH DELETE ══
+     Selection lives in AUSEL (survives repaints); rows are keyed by identity,
+     not by DOM position, so sorting/filtering never scrambles the set. */
+  var AUSEL={};
+  function auKey(r){return r.kind==='custom'?('custom|'+r.email):(r.siteId+'|'+r.who);}
+  function auSel(r){return !!AUSEL[auKey(r)];}
+  function auMeta(r){return {kind:r.kind,email:r.email,siteId:r.siteId,who:r.who,site:r.site,name:(r.last?r.last+', ':'')+(r.first||''),role:r.roleLbl||''};}
+  function auCount(){return Object.keys(AUSEL).length;}
+  function auPrune(){ /* drop selections whose row no longer exists */
+    var live={}; userRows().forEach(function(r){live[auKey(r)]=1;});
+    Object.keys(AUSEL).forEach(function(k){if(!live[k])delete AUSEL[k];});
+  }
+  function auSpan(html){return String(html).replace(/colspan="\d+"/,'colspan="12"');}
+  function auHeadCell(shown){
+    var n=(shown||[]).length, sel=(shown||[]).filter(auSel).length;
+    var state=n&&sel===n?' checked':''; var ind=(sel>0&&sel<n)?' data-ind="1"':'';
+    return '<th class="au-chk-h" title="Select every row currently shown"><input type="checkbox" class="au-chk" id="au-head-chk"'+state+ind+
+           ' onclick="event.stopPropagation();admUsersSelectAll(this.checked)"></th>';
+  }
+  function auChkCell(r){
+    return '<td class="au-chk-c"><input type="checkbox" class="au-chk"'+(auSel(r)?' checked':'')+
+           ' onclick="event.stopPropagation();admUsersToggle(\''+esc(auKey(r))+'\',this)"></td>';
+  }
+  function auShown(){ /* rows the operator can actually see right now */
+    if(!CFGS.users)return userRows();
+    var rows=cmApply(CFGS.users,userRows());
+    return rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';}));
+  }
+  function auSync(){
+    var n=auCount(), lbl=$('au-selcount'), btn=$('au-del-btn');
+    if(lbl){lbl.textContent=n+' SELECTED';lbl.classList.toggle('on',n>0);}
+    if(btn){if(n>0)btn.removeAttribute('disabled');else btn.setAttribute('disabled','');}
+    var hc=$('au-head-chk');
+    if(hc){var shown=auShown(),sel=shown.filter(auSel).length;hc.checked=shown.length>0&&sel===shown.length;hc.indeterminate=sel>0&&sel<shown.length;}
+  }
+  window.admUsersToggle=function(k,el){
+    var hit=null; auShown().forEach(function(r){if(auKey(r)===k)hit=r;});
+    if(!hit){if(el)el.checked=false;return;}
+    if(AUSEL[k])delete AUSEL[k]; else AUSEL[k]=auMeta(hit);
+    var tr=el&&el.closest?el.closest('tr'):null;
+    if(tr)tr.classList.toggle('au-selrow',!!AUSEL[k]);
+    auSync();
+  };
+  window.admUsersSelectAll=function(on){
+    if(on){auShown().forEach(function(r){AUSEL[auKey(r)]=auMeta(r);});}
+    else {AUSEL={};}
+    admPaintUsers(); auSync();
+  };
+  window.admUsersDeleteSelected=function(){
+    var keys=Object.keys(AUSEL); if(!keys.length){toastWarn('Nothing selected');return;}
+    var seats=keys.filter(function(k){return AUSEL[k].kind!=='custom';}).length;
+    var prov=keys.length-seats;
+    var rowsHtml=keys.slice(0,60).map(function(k){var m=AUSEL[k];
+      return '<div><b>'+esc(m.name||m.email)+'</b> &middot; '+esc(m.role)+' &middot; '+esc(m.site||'')+' &middot; '+esc(m.email)+'</div>';}).join('')+
+      (keys.length>60?'<div style="color:#d4a05a">…and '+(keys.length-60)+' more</div>':'');
+    var w=document.getElementById('au-wipe'); if(w)w.remove();
+    w=document.createElement('div'); w.id='au-wipe';
+    w.innerHTML='<div class="w-box" role="dialog" aria-modal="true">'+
+      '<h4>&#9888; DELETE '+keys.length+' ACCOUNT'+(keys.length>1?'S':'')+'</h4>'+
+      '<div class="w-sub">'+prov+' PROVISIONED &middot; '+seats+' INSTALLATION SEAT'+(seats===1?'':'S')+'</div>'+
+      '<div class="w-list">'+rowsHtml+'</div>'+
+      '<div class="w-note">Security keys are revoked, live sessions are terminated and the accounts drop off the CMDR keyring immediately. Every removal is written to the audit log.</div>'+
+      '<div class="w-sub">TYPE <b style="color:#e05555">DELETE</b> TO CONFIRM</div>'+
+      '<input id="au-wipe-in" autocomplete="off" spellcheck="false" placeholder="DELETE">'+
+      '<div class="w-act"><button class="adm-b sm" onclick="admUsersWipeClose()">CANCEL</button>'+
+      '<button class="adm-b warn" id="au-wipe-go" onclick="admUsersWipeConfirm()" disabled>CONFIRM DELETE</button></div></div>';
+    document.body.appendChild(w);
+    var inp=document.getElementById('au-wipe-in'), go=document.getElementById('au-wipe-go');
+    inp.addEventListener('input',function(){
+      var ok=inp.value.trim().toUpperCase()==='DELETE';
+      if(ok)go.removeAttribute('disabled');else go.setAttribute('disabled','');});
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!go.hasAttribute('disabled'))admUsersWipeConfirm();
+      if(e.key==='Escape')admUsersWipeClose();});
+    setTimeout(function(){inp.focus();},40);
+  };
+  window.admUsersWipeClose=function(){var w=document.getElementById('au-wipe');if(w)w.remove();};
+  window.admUsersWipeConfirm=function(){
+    var keys=Object.keys(AUSEL); if(!keys.length){admUsersWipeClose();return;}
+    var snap=keys.map(function(k){return AUSEL[k];});   /* endLive() repaints mid-loop; work off a snapshot */
+    var cu=SRASec.custom(), nProv=0, nSeat=0;
+    snap.forEach(function(m){
+      if(m.kind==='custom'){
+        if(cu[m.email])delete cu[m.email];
+        try{SRASec.endLive(m.email);}catch(e){}
+        C.audit('DELETE_ACCOUNT',m.email,'batch delete \u00b7 '+(m.site||''));
+        nProv++;
+      } else {
+        var st=C.acctState(m.siteId,m.who);
+        st.removed=true; st.security=''; st.active=false; st.disabled=true;
+        C.setOverride(m.siteId+'|'+m.who,st);
+        try{SRASec.endLive(m.email);}catch(e){}
+        C.audit('DELETE_ACCOUNT',m.email,'batch delete \u00b7 seat removed \u00b7 '+(m.site||''));
+        nSeat++;
+      }
+    });
+    SRASec.saveCustom(cu);          /* persists + republishes the keyring */
+    try{SRASec.storeKeys();}catch(e){}
+    AUSEL={};
+    admUsersWipeClose();
+    toastWarn((nProv+nSeat)+' account'+((nProv+nSeat)>1?'s':'')+' deleted \u00b7 keys revoked');
+    admPaintUsers(); if(typeof admPaintStrip==='function')admPaintStrip();
+    auSync();
+  };
+
   window.admUserToggle=function(sid,who){var st=C.acctState(sid,who);st.disabled=!st.disabled;C.setOverride(sid+'|'+who,st);var s=C.SITE[sid];C.audit(st.disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',s[who].email,s.name);toastOk(s[who].name+' '+(st.disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
   window.admUserReset=function(sid,who){var s=C.SITE[sid];C.audit('RESET_API_KEY',s[who].email,s.name);toastOk('Reset link sent to '+s[who].email);};
   window.admUserEnroll=function(sid,who){var s=C.SITE[sid];s[who].device='enrolled';C.audit('ENROLL_DEVICE',s[who].email,s.name);toastOk(s[who].name+': government device enrolled');admPaintUsers();admPaintStrip();};
@@ -12527,7 +12686,7 @@ document.addEventListener("DOMContentLoaded",function(){
   window.openApp=function(id){
     _open(id);
     try{
-      if(id==='overlay-adm-users')admPaintUsers();
+      if(id==='overlay-adm-users'){admPaintUsers();try{auSync();}catch(e){}}
       else if(id==='overlay-adm-msg')admPaintMsgs();
       else if(id==='overlay-adm-routing')admPaintRouting();
       else if(id==='overlay-adm-health')admPaintHealth();
