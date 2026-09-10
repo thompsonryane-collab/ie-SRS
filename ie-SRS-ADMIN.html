@@ -2447,6 +2447,26 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 #fs-btn.blocked { color: #c07050; border-color: rgba(192,112,80,.5); }
 #fs-btn svg { display: block; }
 .sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c0c8d0;box-shadow:0 0 6px #c0c8d0;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ══ SIPR ACCESS REQUEST POPUP (ADM-01) ══ */
+#sipr-req{position:fixed;inset:0;z-index:19900;display:none;align-items:center;justify-content:center;background:rgba(2,6,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#sipr-req.on{display:flex}
+#sipr-req .sr-card{width:min(520px,92vw);background:linear-gradient(180deg,#160607,#0d1520 55%);border:1px solid rgba(224,85,85,.55);border-radius:10px;box-shadow:0 0 0 1px rgba(224,85,85,.15),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(224,85,85,.18);overflow:hidden;animation:srpop .18s ease-out}
+@keyframes srpop{from{transform:translateY(10px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+#sipr-req .sr-h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(224,85,85,.14);border-bottom:1px solid rgba(224,85,85,.35);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#ff8a7a;text-transform:uppercase}
+#sipr-req .sr-h i{width:9px;height:9px;border-radius:50%;background:#ff5a4e;box-shadow:0 0 10px #ff5a4e;animation:secpulse 1.1s infinite}
+#sipr-req .sr-h .n{margin-left:auto;font-size:9px;color:#e08a45;letter-spacing:1.5px}
+#sipr-req .sr-b{padding:16px 18px 6px;display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:12.5px;color:#cce0f2}
+#sipr-req .sr-b .k{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase;align-self:center}
+#sipr-req .sr-b .v{color:#f2f8ff}
+#sipr-req .sr-b .v.big{font-size:16px;font-weight:700}
+#sipr-req .sr-b .v.mono{font-family:'Share Tech Mono',monospace;letter-spacing:2px;color:#18d4f8}
+#sipr-req .sr-note{padding:8px 18px 4px;font-size:11px;color:#8fb0d0;line-height:1.5}
+#sipr-req .sr-f{display:flex;gap:10px;justify-content:flex-end;padding:14px 18px 16px;border-top:1px solid rgba(255,255,255,.06);margin-top:8px}
+#sipr-req .sr-f .adm-b{padding:10px 18px;font-size:11px}
+#sipr-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
+#sipr-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
+#sipr-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
 </style>
 </head>
 <body class="adm-locked">
@@ -13852,7 +13872,7 @@ window.SRADropZone=(function(){
 (function(){
   window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!d.key||!window.SRASec)return;
     var a=SRASec.validate(d.key);
-    if(a){try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview window · not marked LIVE');}catch(e){}try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' signed in on the preview (not LIVE)','ok',2600);}catch(e){}if(d.sipr){try{SRASec.markSipr(a,{via:'preview-window'});ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_AUTH',a.email,a.name+' · SIPR granted · preview window');hubToast('⬡ '+a.name+' · SIPR granted','ok',2600);}catch(e){}}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,sipr:!!d.sipr},'*');}catch(e){}if(!d.sipr)autoConnect(a,d.site||'*',d);}
+    if(a){try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview window · not marked LIVE');}catch(e){}try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' signed in on the preview (not LIVE)','ok',2600);}catch(e){}if(d.sipr){var src=ev.source;SIPRREQ.open({authId:d.authId||('pm'+Date.now()),acct:a,site:d.site||'*',real:false,key:d.key,ts:Date.now(),reply:function(ok,reason){try{src&&src.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,sipr:true}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',sipr:true,reason:reason||''},'*');}catch(e){}}});return;}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
     else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
   /* ── KEYRING: publish SHA-256 hashes of every enabled security key (never the key itself) so CMDR can reject a
         non-matching key instantly, even before ADMIN answers. Re-published when User Accounts change or a phone says HELLO. */
@@ -13895,12 +13915,11 @@ window.SRADropZone=(function(){
     if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · logged out');}catch(e){}return;}
     /* ── SIPR two-step request: same key check, then ADMIN accepts and lights the SIPR field green ── */
     if(p.sipr&&p.authId){
-      if(a){try{if(real)SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});}catch(e){}
-        try{SRASec.markSipr(a,{via:real?'cmdr-mobile':'preview'});}catch(e){}
-        try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_AUTH',a.email,a.name+' · SIPR granted · '+(real?'mobile':'preview'));}catch(e){}
-        try{hubToast('⬡ '+a.name+' · SIPR granted','ok',2600);}catch(e){}
-        var sp={node:'admin',app:'ie-SRS ADMIN',auth:'ok',sipr:true,authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:real?'admin-bus':'admin-bus-preview'};
-        SRABus.publish('HELLO',sp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},sp,{resend:true}),{site:site});}catch(e){}},6000);
+      if(a){if(age>10*60*1000)return;                                             /* stale replayed request: never pop for history */
+        SIPRREQ.open({authId:p.authId,acct:a,site:site,real:real,github:p.github||'',key:p.key,ts:env.ts||Date.now(),reply:function(ok,reason){
+          var sp=ok?{node:'admin',app:'ie-SRS ADMIN',auth:'ok',sipr:true,authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:real?'admin-bus':'admin-bus-preview'}
+                   :{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:true,authId:p.authId,reason:reason||'SIPR request declined by ADMIN'};
+          SRABus.publish('HELLO',sp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},sp,{resend:true}),{site:site});}catch(e){}},6000);}});
       }else{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:true,authId:p.authId,reason:'SIPR denied · key not recognized in User Accounts'},{site:site});
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
       return;}
@@ -13920,5 +13939,74 @@ window.SRADropZone=(function(){
   document.addEventListener('DOMContentLoaded',function(){try{localStorage.removeItem('ie-srs-live');}catch(e){}hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
 })();
 </script>
+<script>
+/* ══ SIPRREQ · SIPR access request broker (ADM-01) ══
+   The phone's red two-step keypad sends HELLO{key,authId,sipr:true} (bus) or postMessage CMDR_KEY_AUTH{sipr:true} (preview).
+   ADMIN validates the key exactly as for NIPR, then HOLDS the request in a popup for the operator to ACCEPT or DECLINE.
+   Resends (12 s / 30 s) with the same authId never open a second popup; a decision already made is simply replayed. */
+window.SIPRREQ=(function(){
+  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000;
+  function $(i){return document.getElementById(i);}
+  function open(r){                                            /* r = {authId, acct, site, real, github, key, ts, reply(ok,reason)} */
+    if(decided[r.authId]){var d=decided[r.authId];if(Date.now()-d.ts<10*60*1000){try{r.reply(d.ok,d.reason);}catch(e){}}return;}   /* replay a made decision */
+    for(var i=0;i<q.length;i++)if(q[i].authId===r.authId){q[i].reply=r.reply;return;}                                             /* resend → keep the newest reply channel */
+    if(cur&&cur.authId===r.authId){cur.reply=r.reply;return;}
+    r.at=Date.now();q.push(r);
+    try{hubToast('⬡ '+r.acct.name+' is requesting SIPR access','warn',3200);}catch(e){}
+    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_REQUEST',r.acct.email,r.acct.name+' · '+(r.acct.site||'')+' · awaiting ADMIN decision');}catch(e){}
+    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
+    show();
+  }
+  function show(){
+    if(cur||!q.length){paintCount();return;}
+    cur=q.shift();
+    $('sr-name').textContent=cur.acct.name||cur.acct.email;
+    $('sr-site').textContent=cur.acct.site||cur.site||'—';
+    $('sr-email').textContent=cur.acct.email||'—';
+    $('sr-key').textContent='•••• '+String(cur.key||'').slice(-2);
+    $('sr-via').textContent=cur.real?'SONARmobile · cross-device link':'Preview / same browser';
+    $('sr-when').textContent=new Date(cur.at||Date.now()).toLocaleTimeString();
+    paintCount();$('sipr-req').classList.add('on');
+    clearInterval(tick);tick=setInterval(function(){var left=Math.max(0,Math.round((cur.at+EXPIRE-Date.now())/1000));$('sr-timer').textContent='EXPIRES IN '+left+' S';if(left<=0)expire();},500);
+    $('sr-timer').textContent='';
+  }
+  function paintCount(){var e=$('sr-count');if(e)e.textContent=q.length?('+'+q.length+' MORE QUEUED'):'';}
+  function close(){clearInterval(tick);cur=null;$('sipr-req').classList.remove('on');show();}
+  function expire(){if(!cur)return;try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_EXPIRED',cur.acct.email,cur.acct.name+' · no decision · request expired');}catch(e){}decided[cur.authId]={ok:false,reason:'SIPR request expired · ask again',ts:Date.now()};close();}
+  function decide(ok){if(!cur)return;var r=cur;
+    if(ok){
+      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',via:'cmdr-mobile',quiet:true});}catch(e){}
+      try{SRASec.markSipr(r.acct,{via:r.real?'cmdr-mobile':'preview'});}catch(e){}
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_AUTH',r.acct.email,r.acct.name+' · SIPR granted by ADMIN · '+(r.real?'mobile':'preview'));}catch(e){}
+      try{hubToast('⬡ '+r.acct.name+' · SIPR granted','ok',2600);}catch(e){}
+      decided[r.authId]={ok:true,ts:Date.now()};
+    }else{
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_DECLINE',r.acct.email,r.acct.name+' · SIPR declined by ADMIN');}catch(e){}
+      try{hubToast('⬡ '+r.acct.name+' · SIPR declined','warn',2600);}catch(e){}
+      decided[r.authId]={ok:false,reason:'SIPR request declined by ADMIN',ts:Date.now()};
+    }
+    try{r.reply(ok,decided[r.authId].reason);}catch(e){}
+    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
+    close();
+  }
+  return {open:open,decide:decide,pending:function(){return (cur?1:0)+q.length;},current:function(){return cur;}};
+})();
+</script>
+<!-- ══ SIPR ACCESS REQUEST POPUP · shown when a commander's phone asks for SIPR; ADMIN accepts or declines ══ -->
+<div id="sipr-req" role="dialog" aria-modal="true" aria-label="SIPR access request">
+  <div class="sr-card">
+    <div class="sr-h"><i></i>SIPR access request<span class="n" id="sr-count"></span></div>
+    <div class="sr-b">
+      <div class="k">Commander</div><div class="v big" id="sr-name">—</div>
+      <div class="k">Installation</div><div class="v" id="sr-site">—</div>
+      <div class="k">Account</div><div class="v mono" id="sr-email" style="letter-spacing:.5px;font-size:11px">—</div>
+      <div class="k">Security key</div><div class="v mono" id="sr-key">••••••</div>
+      <div class="k">Channel</div><div class="v" id="sr-via">—</div>
+      <div class="k">Requested</div><div class="v" id="sr-when">—</div>
+    </div>
+    <div class="sr-note">Accepting unlocks the SIPR side of SONARmobile for this commander and lights the <b style="color:#4db88a">SIPR</b> field green in User Accounts. The grant stays until log out, END SESSION or END SIPR. Declining returns the phone to NIPR.</div>
+    <div class="sr-f"><span class="sr-t" id="sr-timer"></span><button class="adm-b warn" id="sr-decline" onclick="SIPRREQ.decide(false)">DECLINE</button><button class="adm-b ok" id="sr-accept" onclick="SIPRREQ.decide(true)">ACCEPT · UNLOCK SIPR</button></div>
+  </div>
+</div>
 </body>
 </html>
