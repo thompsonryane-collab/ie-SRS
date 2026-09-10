@@ -6,13 +6,13 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0c1a2c">
-<title>ie-SRS CMDR</title>
+<title>SONARmobile</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=20260908">
-<meta name="apple-mobile-web-app-title" content="CMDR">
+<meta name="apple-mobile-web-app-title" content="SONARmobile">
 <style>
 :root{
   --bg:#07111f; --bg2:#0c1a2c; --card:rgba(255,255,255,.07); --card2:rgba(255,255,255,.11); --line:rgba(255,255,255,.12);
@@ -430,28 +430,89 @@ body.onhome .homebtn{display:none}
 #lock .lk-foot b,#gate .lk-foot b{color:var(--ink2);font-weight:600}
 #lock .lk-alt{display:flex;gap:8px;margin-top:4px}
 #lock .lk-alt button{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
+
+/* ── NIPR / SIPR classification dropdown ── */
+.classify-wrap{position:relative;display:inline-flex;margin-left:8px;flex:none}
+.classify-btn{display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;letter-spacing:.4px;color:var(--ink2);padding:3px 7px 3px 9px;border-radius:20px;background:var(--card);border:1px solid var(--line);text-transform:uppercase}
+.classify-btn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s ease}
+.classify-wrap.open .classify-btn svg{transform:rotate(180deg)}
+body.sipr .classify-btn{color:#ffd7d2;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22)}
+.classify-menu{position:absolute;top:calc(100% + 6px);left:0;min-width:140px;background:#0f1c2e;border:1px solid var(--line);border-radius:12px;padding:5px;box-shadow:0 12px 28px rgba(0,0,0,.5);display:none;z-index:50}
+body.sipr .classify-menu{background:#2a0907}
+.classify-wrap.open .classify-menu{display:block}
+.classify-item{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;color:#fff;text-align:left}
+.classify-item:active{background:rgba(255,255,255,.08)}
+.classify-item b{font-size:9.5px;color:var(--ink3);font-weight:600}
+.classify-item.sel{background:rgba(255,255,255,.08)}
+.classify-item.on-nipr svg{color:var(--cyan)}
+.classify-item.on-sipr svg{color:#ff6a5c}
+.classify-item svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;display:none}
+.classify-item.sel svg{display:block}
+.classify-item .lk{display:none;width:12px;height:12px;fill:none;stroke:var(--ink3);stroke-width:2.2}
+.classify-item.locked .lk{display:block}
+.classify-item.locked svg.ck{display:none}
+
+/* ── SIPR mode: same screen, red background; only Log out is live ── */
+body.sipr #app{background:linear-gradient(180deg,#3a0e0c 0%,#1c0605 40%)}
+body.sipr .nav{background:linear-gradient(180deg,#3a0e0c,rgba(28,6,5,.9))}
+body.sipr .mark{background:linear-gradient(160deg,#ff8a7a,#c22a1c)}
+body.sipr .mark svg{stroke:#2c0402}
+body.sipr .link{background:rgba(255,255,255,.08)}
+body.sipr .qabar{background:rgba(28,6,5,.96)}
+body.sipr #p-home .hgrid button:not(#tile-logout){pointer-events:none}
+body.sipr #p-home .hgrid button:not(#tile-logout) .ic,body.sipr #p-home .hgrid button:not(#tile-logout) .l,body.sipr #p-home .hgrid button:not(#tile-logout) .nl{opacity:.32;filter:saturate(.35)}
+/* Message tile: network pill (NIPR cyan · SIPR red) */
+#p-home .hgrid .netpill{position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:2;font-size:9px;font-weight:800;letter-spacing:1.4px;padding:3px 8px;border-radius:9px;background:var(--cyan);color:#03121f;box-shadow:0 0 0 2px var(--bg),0 4px 10px rgba(0,0,0,.45);white-space:nowrap}
+body.sipr #p-home .hgrid .netpill{background:#ff3b30;color:#fff;box-shadow:0 0 0 2px #1c0605,0 0 12px rgba(255,59,48,.7)}
+body.sipr #p-home .hgrid #tile-logout .ic{box-shadow:0 0 0 2px #ff6a5c,0 10px 22px rgba(0,0,0,.4)}
+body.sipr .nav .link:not(.homebtn){pointer-events:none;opacity:.5}
+.sipr-banner{display:none;margin:-2px 0 2px;padding:8px 12px;border-radius:12px;background:rgba(255,90,78,.18);border:1px solid rgba(255,90,78,.45);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#ffd7d2;text-align:center;font-weight:700}
+body.sipr .sipr-banner{display:block}
+
+/* ── SIPR two-step authentication: identical screens, red ── */
+.sipr-tag{display:none;color:#ff8a7a}
+body.sipr-auth .sipr-tag{display:inline}
+body.sipr-auth #gate{background:radial-gradient(140% 70% at 50% -10%,rgba(255,120,110,.28) 0%,rgba(255,90,78,.08) 35%,rgba(255,255,255,0) 60%),radial-gradient(120% 100% at 50% 100%,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 60%),linear-gradient(180deg,#4a1210 0%,#33100d 45%,#220706 100%)}
+body.sipr-auth #lock{background:radial-gradient(120% 80% at 50% 0%,#5a1512 0%,#1c0605 60%)}
+body.sipr-auth #lock .lk-brand .mark,body.sipr-auth #gate .lk-brand .mark{background:linear-gradient(160deg,#ff8a7a,#c22a1c)}
+body.sipr-auth #lock .lk-brand .mark svg,body.sipr-auth #gate .lk-brand .mark svg{stroke:#2c0402}
+body.sipr-auth #lock .tsa,body.sipr-auth #gate .tsa,body.sipr-auth #lock .lk-h{color:#ff8a7a}
+body.sipr-auth #gate .gt-step b,body.sipr-auth #lock .lk-step b{border-color:#ff8a7a;color:#ff8a7a}
+body.sipr-auth #lock .lk-step b.done{background:#ff8a7a;border-color:#ff8a7a;color:#2c0402}
+body.sipr-auth #gate .gt-card input:focus{border-color:#ff8a7a;box-shadow:0 0 0 3px rgba(255,138,122,.18)}
+body.sipr-auth #gate .gt-eye{color:#ff8a7a;border-color:rgba(255,138,122,.45)}
+body.sipr-auth #gate .gt-go{background:linear-gradient(180deg,#ffb0a6 0%,#ff6a5c 48%,#e8493a 52%,#c22a1c 100%);color:#2c0402;border-color:rgba(80,10,5,.6)}
+body.sipr-auth #gate .gt-go.busy{background:var(--card2);color:#ff8a7a;border:1px solid #ff8a7a}
+body.sipr-auth #gate .gt-msg.wait,body.sipr-auth #lock .lk-msg.wait{color:#ff8a7a}
+body.sipr-auth #lock .lk-dots i{border-color:#ff8a7a}
+body.sipr-auth #lock .lk-dots i.f{background:#ff8a7a;box-shadow:0 0 12px #ff8a7a}
+body.sipr-auth #lock .lk-pad button{background:rgba(255,255,255,.08)}
+.sipr-cancel{display:none;font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid rgba(255,138,122,.4);background:transparent;color:#ffd7d2}
+body.sipr-auth .sipr-cancel{display:inline-block}
+body.sipr-auth #gate .gt-alt{display:none!important}
 </style>
 </head>
 <body class="locked">
-<!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the CMDR link; shown once per device ══ -->
+<!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the SONARmobile link; shown once per device ══ -->
 <div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · Foundry key">
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
-  <div class="lk-t2 tsa">Two-step authentication</div>
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="gt-step"><b>1</b><span>Foundry key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
   <div class="gt-card">
-    <input id="gt-token" type="text" name="cmdr-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="" enterkeyhint="go" style="-webkit-text-security:disc">
+    <input id="gt-token" type="text" name="sonarmobile-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="" enterkeyhint="go" style="-webkit-text-security:disc">
     <button type="button" class="gt-eye" id="gt-eye" onclick="GATE.eye()">Show key</button>
     <button class="gt-go" id="gt-go" onclick="GATE.connect()">Connect</button>
   </div>
   <div class="gt-msg" id="gt-msg"></div>
   <button class="gt-alt" id="gt-alt" style="display:none" onclick="GATE.offline()">Continue offline</button>
+  <button class="sipr-cancel" id="gt-cancel" onclick="SIPR.cancel()">Cancel · back to NIPR</button>
   <pre class="gt-diag" id="gt-diag" hidden></pre>
-  <div class="lk-foot">Stored on this device only · used to read and write the CMDR bus file</div>
+  <div class="lk-foot">Stored on this device only · used to read and write the SONARmobile bus file</div>
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 2 · SECURITY KEY LOCK — verified by ADMIN over the link; auto-login re-uses a valid session ══ -->
 <div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">ie-SRS CMDR</div><div class="lk-t2">Commander mobile</div></div></div>
-  <div class="lk-t2 tsa">Two-step authentication</div>
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="lk-step"><b class="done" role="button" title="Change Foundry key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">Foundry key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
   <div class="lk-s" id="lk-sub">Enter the 6-digit key issued to you in ADMIN · User Accounts</div>
@@ -463,14 +524,32 @@ body.onhome .homebtn{display:none}
     <button onclick="LOCK.press(7)">7</button><button onclick="LOCK.press(8)">8</button><button onclick="LOCK.press(9)">9</button>
     <button class="sec" onclick="LOCK.clear()">Clear</button><button onclick="LOCK.press(0)">0</button><button class="sec bk" onclick="LOCK.back()" aria-label="Backspace">⌫</button>
   </div>
+  <button class="sipr-cancel" id="lk-cancel" onclick="SIPR.cancel()">Cancel · back to NIPR</button>
   <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change Foundry key</button><button onclick="LOCK.offline()">Continue offline</button></div>
-  <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the CMDR link · keys never leave this device</div>
+  <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the SONARmobile link · keys never leave this device</div>
 </div>
 <div id="app">
   <div class="nav">
     <div class="brand" onclick="go('home')" role="button" aria-label="Dashboard" style="cursor:pointer">
       <div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-      <div style="min-width:0"><div class="t1">ie-SRS CMDR</div><div class="t2" id="nav-sub">Naval Base San Diego · CO view</div></div>
+      <div style="min-width:0"><div class="t1">SONARmobile</div><div class="t2" id="nav-sub">Naval Base San Diego · CO view</div></div>
+      <div class="classify-wrap" id="classifyWrap" onclick="event.stopPropagation()">
+        <button class="classify-btn" id="classifyBtn" onclick="SIPR.toggle(event)" aria-label="Network classification">
+          <span id="classifyLabel">NIPR</span>
+          <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="classify-menu" id="classifyMenu">
+          <button class="classify-item on-nipr sel" id="item-nipr" onclick="SIPR.select('NIPR',event)">
+            <span>NIPR<br><b>Non-secure</b></span>
+            <svg class="ck" viewBox="0 0 24 24"><path d="M5 13l4 4 10-10"/></svg>
+          </button>
+          <button class="classify-item on-sipr locked" id="item-sipr" onclick="SIPR.select('SIPR',event)">
+            <span>SIPR<br><b id="item-sipr-sub">Secure · verify with ADMIN</b></span>
+            <svg class="ck" viewBox="0 0 24 24"><path d="M5 13l4 4 10-10"/></svg>
+            <svg class="lk" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
     <div style="display:flex;gap:6px;align-items:center">
       <button class="link homebtn" id="homebtn" onclick="go('home')" aria-label="Home"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
@@ -481,6 +560,7 @@ body.onhome .homebtn{display:none}
 
   <!-- HOME (full-screen tiles) -->
   <div class="page home" id="p-home">
+    <div class="sipr-banner">SIPR · secure session · only Log out is live</div>
     <div class="hgrid"><div class="qa">
         <button onclick="go('health')"><div class="ic c-green"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3 10 2-7 1.5 2H21"/></svg></div><div class="l">Sys health</div></button>
         <button onclick="openImpact()"><div class="ic c-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div><div class="l">Mission impact</div></button>
@@ -488,17 +568,17 @@ body.onhome .homebtn{display:none}
         <button onclick="stub('Black start')"><div class="ic c-ink"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.5a8 8 0 1 0 10 0"/></svg></div><div class="l">Black start</div></button>
         <button onclick="openMap()" id="tile-map"><span class="nl" id="hl-map"></span><div class="ic c-green" style="background:linear-gradient(160deg,#5fd98a,#1f7a4c)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></div><div class="l">Live map</div></button>
         <button onclick="callEOC()"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div><div class="l">Call EOC</div></button>
-        <button onclick="go('msgs')"><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
+        <button onclick="go('msgs')" id="tile-msg"><span class="netpill" id="msg-net">NIPR</span><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
         <button onclick="go('outages')"><span class="nl" id="hl-out"></span><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/><path d="M3 3l18 18"/></svg></div><div class="l">Outages</div></button>
         <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
         <button onclick="openBuilder()" id="tile-builder"><div class="ic" style="background:linear-gradient(160deg,#e8a33d,#8a5a12)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3.5"/><path d="M18 12.5v1M18 18.5v1M14.5 16h1M20.5 16h1"/></svg></div><div class="l">Scenario</div></button>
         <button onclick="go('drop')" id="tile-drop"><span class="nl" id="hl-drop"></span><div class="ic" style="background:linear-gradient(160deg,#b0b8c4,#4f5a68)"><svg viewBox="0 0 24 24"><path d="M12 3v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="l">Drop Zone</div></button>
-        <button onclick="openCmdrGuide()" id="tile-guide"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2z"/></svg></div><div class="l">Guide</div></button>
+        <button onclick="openSonarMobileGuide()" id="tile-guide"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2z"/></svg></div><div class="l">Guide</div></button>
         <button onclick="go('link')"><span class="nl amber" id="hl-link"></span><div class="ic c-amber"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></div><div class="l">Link</div></button>
       </div>
       <button onclick="go('dash')"><span class="nl" id="hl-status"></span><div class="ic c-slate"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg></div><div class="l">Status</div></button>
-      <button onclick="lockCmdr()" id="tile-lock"><div class="ic c-amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/></svg></div><div class="l">Lock</div></button>
-      <button onclick="logoutCmdr()" id="tile-logout"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M14 8l4 4-4 4M18 12H9"/></svg></div><div class="l">Log out</div></button>
+      <button onclick="lockSonarMobile()" id="tile-lock"><div class="ic c-amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/></svg></div><div class="l">Lock</div></button>
+      <button onclick="logoutSonarMobile()" id="tile-logout"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M14 8l4 4-4 4M18 12H9"/></svg></div><div class="l">Log out</div></button>
     </div>
   </div>
 
@@ -518,7 +598,7 @@ body.onhome .homebtn{display:none}
   </div>
 
   <!-- DATA DROP ZONE (SYS-04 sync) -->
-  <div class="page" id="p-drop"><div id="dz-cmdr"></div></div>
+  <div class="page" id="p-drop"><div id="dz-sonarmobile"></div></div>
 
   <!-- HEALTH (ADM-04 sync) -->
   <div class="page" id="p-health">
@@ -552,7 +632,7 @@ body.onhome .homebtn{display:none}
 &lt;head&gt;
 &lt;meta charset=&quot;UTF-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-&lt;title&gt;ie-SRS CMDR // SONAR Scenario Builder&lt;/title&gt;
+&lt;title&gt;SONARmobile // SONAR Scenario Builder&lt;/title&gt;
 &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Orbitron:wght@400;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
 &lt;style&gt;
 :root{
@@ -867,7 +947,7 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 #ai-send-btn:disabled{opacity:.4;cursor:default}
 #ai-sidecar.collapsed #ai-collapse-btn{left:50%;transform:translate(-50%,-50%)}
 
-/* ── CMDR mobile: landscape-first ── */
+/* ── SONARmobile: landscape-first ── */
 #canvas{border-right:none}
 .step-i{display:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .c-step{display:none}
@@ -922,9 +1002,9 @@ body::after{content:&#x27;&#x27;;position:absolute;inset:0;background:repeating-
 
 &lt;!-- CHROME --&gt;
 &lt;div id=&quot;chrome&quot;&gt;
-  &lt;button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:&#x27;CLOSE_BUILDER&#x27;},&#x27;*&#x27;)&quot; title=&quot;Back to CMDR&quot; aria-label=&quot;Back to CMDR&quot;&gt;← &lt;span class=&quot;c-lbl&quot;&gt;CMDR&lt;/span&gt;&lt;/button&gt;
+  &lt;button class=&quot;c-back&quot; onclick=&quot;window.parent.postMessage({type:&#x27;CLOSE_BUILDER&#x27;},&#x27;*&#x27;)&quot; title=&quot;Back to SONARmobile&quot; aria-label=&quot;Back to SONARmobile&quot;&gt;← &lt;span class=&quot;c-lbl&quot;&gt;SONARmobile&lt;/span&gt;&lt;/button&gt;
   &lt;span class=&quot;c-title&quot;&gt;⬡ SONAR&lt;/span&gt;
-  &lt;span class=&quot;c-sub&quot; id=&quot;c-sub&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;CMDR · Scenario Builder · Shore Outage Notification, Analysis &amp;amp; Response&lt;/span&gt;&lt;span class=&quot;c-step&quot; id=&quot;c-step&quot;&gt;1 · ORDERS&lt;/span&gt;&lt;/span&gt;
+  &lt;span class=&quot;c-sub&quot; id=&quot;c-sub&quot;&gt;&lt;span class=&quot;c-lbl&quot;&gt;SONARmobile · Scenario Builder · Shore Outage Notification, Analysis &amp;amp; Response&lt;/span&gt;&lt;span class=&quot;c-step&quot; id=&quot;c-step&quot;&gt;1 · ORDERS&lt;/span&gt;&lt;/span&gt;
   &lt;button class=&quot;c-clear-btn&quot; onclick=&quot;confirmClear()&quot; title=&quot;Clear scenario&quot; aria-label=&quot;Clear scenario&quot;&gt;✕ &lt;span class=&quot;c-lbl&quot;&gt;CLEAR&lt;/span&gt;&lt;/button&gt;
   &lt;button class=&quot;c-clear-btn c-drop&quot; onclick=&quot;sendToDropZone()&quot; title=&quot;Send to Data Drop Zone&quot; aria-label=&quot;Send to Data Drop Zone&quot;&gt;⤓ &lt;span class=&quot;c-lbl&quot;&gt;DROP&lt;/span&gt;&lt;/button&gt;
   &lt;button class=&quot;c-run-btn&quot; id=&quot;run-btn&quot; onclick=&quot;launchScenario()&quot; disabled title=&quot;Run scenario&quot; aria-label=&quot;Run scenario&quot;&gt;▶ &lt;span class=&quot;c-lbl&quot;&gt;RUN&lt;/span&gt;&lt;/button&gt;
@@ -1645,7 +1725,7 @@ function buildSummary(){
 // ═══ LAUNCH ═══
 function launchScenario(){
   document.getElementById(&#x27;launch-banner&#x27;).classList.add(&#x27;show&#x27;);
-  const msgs=[&#x27;Building digital twin…&#x27;,&#x27;Loading installation data…&#x27;,&#x27;Configuring assets…&#x27;,&#x27;Calculating power requirements…&#x27;,&#x27;Packaging SONAR alerts…&#x27;,&#x27;Scenario ready — release queues each alert on the CMDR bus as an exercise.&#x27;];
+  const msgs=[&#x27;Building digital twin…&#x27;,&#x27;Loading installation data…&#x27;,&#x27;Configuring assets…&#x27;,&#x27;Calculating power requirements…&#x27;,&#x27;Packaging SONAR alerts…&#x27;,&#x27;Scenario ready — release queues each alert on the SONARmobile bus as an exercise.&#x27;];
   let i=0;
   const sub=document.getElementById(&#x27;banner-sub&#x27;),title=document.getElementById(&#x27;banner-title&#x27;);
   const iv=setInterval(()=&gt;{
@@ -1999,7 +2079,7 @@ updateAiContext();
       <button class="btn" onclick="resetLocal()" style="color:var(--red)">Clear local data</button>
     </div>
     <div class="logbox" id="logbox" style="display:none"></div>
-    <div class="note">ie-SRS CMDR · v0.5 · mobile companion to ie-SRS ADMIN (ADM-03 SONAR alert routing). SONAR: Shore Outage Notification, Analysis &amp; Response. Same envelope on every transport; the ADMIN hub logs acknowledgments to the ADM-05 audit trail.</div>
+    <div class="note">SONARmobile · v0.5 · mobile companion to ie-SRS ADMIN (ADM-03 SONAR alert routing). SONAR: Shore Outage Notification, Analysis &amp; Response. Same envelope on every transport; the ADMIN hub logs acknowledgments to the ADM-05 audit trail.</div>
   </div>
 
 
@@ -2184,7 +2264,7 @@ window.SRABus=(function(){
 
 
 /* SYS-04 DATA DROP ZONE (shared) */
-/* ie-SRS SYS-04 · DATA DROP ZONE — shared module (ADMIN · ie-SRS hub · CMDR mobile)
+/* ie-SRS SYS-04 · DATA DROP ZONE — shared module (ADMIN · ie-SRS hub · SONARmobile)
    Store: localStorage 'sra_dropzone' (shared on-origin) · Sync: SRABus envelopes DROP / DROP_DEL (GitHub transport = cross-device)
    Drop: {id, ts, kind:'scenario'|'xlsx'|'csv'|'json'|'file', name, size, site, siteName, from, by, role, meta:{}, data:(scenario object | text ≤ 200 KB) } */
 window.SRADropZone=(function(){
@@ -2264,7 +2344,7 @@ window.SRADropZone=(function(){
   /* ── UI ── */
   function render(m){var el=m.el,o=m.opts,l=list();injectCss(el.ownerDocument);var st=bus()?bus().status():null;
     var h='<div class="dz-head"><div class="dz-title">SYS-04 · <b>DATA DROP ZONE</b> · '+l.length+' item'+(l.length===1?'':'s')+'</div><div class="dz-st'+(st&&st.connected?' ok':'')+'"><i></i>'+(st?(st.transport||'bus').toUpperCase()+(st.connected?' · SYNCED':st.error?' · '+esc(st.error).slice(0,28):' · LOCAL'):'NO BUS')+' · NODE '+esc((o.node||'').toUpperCase())+'</div></div>';
-    h+='<div class="dz-drop" id="'+m.id+'-drop"><div class="dz-ico">⤓</div><div class="dz-h">DROP FILES OR TAP TO UPLOAD</div><div class="dz-s">XLSX · CSV · JSON · scenario packages<br>synced to '+esc(o.peers||'ADMIN · ie-SRS · CMDR')+' over the ie-SRS bus</div><input type="file" multiple accept=".xlsx,.xls,.csv,.json,application/json,text/csv" id="'+m.id+'-file"></div>';
+    h+='<div class="dz-drop" id="'+m.id+'-drop"><div class="dz-ico">⤓</div><div class="dz-h">DROP FILES OR TAP TO UPLOAD</div><div class="dz-s">XLSX · CSV · JSON · scenario packages<br>synced to '+esc(o.peers||'ADMIN · ie-SRS · SONARmobile')+' over the ie-SRS bus</div><input type="file" multiple accept=".xlsx,.xls,.csv,.json,application/json,text/csv" id="'+m.id+'-file"></div>';
     if(o.onOpenBuilder)h+='<div class="dz-acts"><button class="dz-b pri" id="'+m.id+'-bld">⬡ Build &amp; send scenario</button></div>';
     if(!l.length)h+='<div class="dz-empty">NO DROPS YET — SEND A SCENARIO FROM THE BUILDER OR UPLOAD A FILE</div>';
     else{h+='<div class="dz-list">'+l.map(function(d){var isNew=Date.now()-d.ts<6*3600e3&&d.from&&d.from!==o.node;
@@ -2300,7 +2380,7 @@ window.SRADropZone=(function(){
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var STATE_KEY='cmdr_state';
+  var STATE_KEY='sonarmobile_state';
   function ls(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
   function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -2330,8 +2410,8 @@ window.SRADropZone=(function(){
     if(p==='drop'){S.unreadDrop=0;save();renderBadges();dzMount();}
     renderBadges();
   };
-  window.stub=function(n){sheet(n,'This module opens the '+n+' view. In this build it is a placeholder; the live data path is the ADMIN hub → CMDR bus.');};
-  window.callEOC=function(){sheet('Call EOC','Dials the installation Emergency Operations Center. On a phone this uses tel:; in the browser it is logged to the bus as a MSG.');bus.publish('MSG',{text:'[CMDR initiated call to EOC]',ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});};
+  window.stub=function(n){sheet(n,'This module opens the '+n+' view. In this build it is a placeholder; the live data path is the ADMIN hub → SONARmobile bus.');};
+  window.callEOC=function(){sheet('Call EOC','Dials the installation Emergency Operations Center. On a phone this uses tel:; in the browser it is logged to the bus as a MSG.');bus.publish('MSG',{text:'[SONARmobile initiated call to EOC]',ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});};
   function sheet(t,b){$('sheet-t').textContent=t;$('sheet-b').textContent=b;$('sheet').classList.add('on');}
   var toastT=null;
   function toast(t,b,color){var e=$('toast');e.className='toast on '+(color||'');$('toast-t').textContent=t;$('toast-b').textContent=b||'';clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('on');},4200);}
@@ -2463,22 +2543,22 @@ window.SRADropZone=(function(){
     $('linktxt').textContent=st.transport==='off'?'Off':st.connected?(gh?'GitHub':'Linked'):gh&&st.read==='ok'?'Write '+(String(st.error).match(/\d{3}/)||['failed'])[0]:(st.error?'Error':'Offline');
   }
   window.onTransport=function(){var gh=$('f-transport').value==='github';document.querySelectorAll('.field.gh').forEach(function(e){e.style.display=gh?'':'none';});
-    $('transport-note').textContent=gh?'Cross-device demo: both ADMIN and CMDR read/write data/bus.json through api.github.com. Use a fine-grained PAT scoped to this repo with Contents read/write. Demo-only — the token lives in this browser.':$('f-transport').value==='off'?'Bus disabled.':'Zero-infra: works between tabs of the same browser (e.g. ADMIN in one tab, CMDR in another, or this app inside the ADMIN iframe preview).';};
+    $('transport-note').textContent=gh?'Cross-device demo: both ADMIN and SONARmobile read/write data/bus.json through api.github.com. Use a fine-grained PAT scoped to this repo with Contents read/write. Demo-only — the token lives in this browser.':$('f-transport').value==='off'?'Bus disabled.':'Zero-infra: works between tabs of the same browser (e.g. ADMIN in one tab, SONARmobile in another, or this app inside the ADMIN iframe preview).';};
   window.saveSettings=function(){
     S.name=$('f-name').value.trim()||S.name;S.siteName=$('f-sitename').value.trim()||S.siteName;S.demo=$('f-demo').classList.contains('on');S.notify=$('f-notify').classList.contains('on');save();
     bus.configure({transport:$('f-transport').value,repo:$('f-repo').value.trim(),branch:$('f-branch').value.trim()||'main',path:$('f-path').value.trim()||'data/bus.json',token:$('f-token').value.trim(),poll:parseInt($('f-poll').value,10)||5,site:$('f-site').value.trim()||'nb-sd',node:'cmdr'});
     cfg=bus.cfg();toast('Settings saved','Reconnecting on '+cfg.transport,'green');hello();renderAll();
   };
-  window.hello=function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));toast('HELLO sent','Waiting for ADMIN status snapshot');};
+  window.hello=function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5'}));toast('HELLO sent','Waiting for ADMIN status snapshot');};
   window.toggleLog=function(){var b=$('logbox');b.style.display=b.style.display==='none'?'':'none';b.textContent=bus.log().slice(-40).reverse().map(function(e){return hhmm(e.ts)+' '+e.from+' → '+e.type+' '+JSON.stringify(e.payload).slice(0,110);}).join('\n')||'(empty)';};
-  window.resetLocal=function(){if(!confirm('Clear all CMDR data on this device?'))return;S.warnords={};S.msgs=[];S.status=null;S.unreadMsg=S.unreadWO=0;save();bus.reset();renderAll();toast('Local data cleared','','amber');};
+  window.resetLocal=function(){if(!confirm('Clear all SONARmobile data on this device?'))return;S.warnords={};S.msgs=[];S.status=null;S.unreadMsg=S.unreadWO=0;save();bus.reset();renderAll();toast('Local data cleared','','amber');};
   function renderAll(){renderHero();renderOutages();renderMsgs();renderHealth();renderBadges();renderStat(bus.status());}
 
   /* ── actions ── */
   window.ack=function(code){
     var w=S.warnords[code];if(!w||w.ack)return;
     w.ack={by:S.name,ts:Date.now()};S.lastEvent=Date.now();save();
-    bus.publish('ACK',{code:code,woId:w.id,site:cfg.site,siteName:w.siteName||S.siteName,by:S.name,role:'Base Commander',via:'ie-SRS CMDR'});
+    bus.publish('ACK',{code:code,woId:w.id,site:cfg.site,siteName:w.siteName||S.siteName,by:S.name,role:'Base Commander',via:'SONARmobile'});
     toast('Acknowledged '+code,'Sent to ADMIN · logged to audit trail','green');buzz();renderAll();
   };
   window.sendMsg=function(){
@@ -2699,7 +2779,7 @@ window.SRADropZone=(function(){
   /* ── SONAR Scenario Builder (ADM-08 port, no ARIA) ── */
   /* ── SYS-04 Data Drop Zone (synced with ADMIN + ie-SRS hub) ── */
   window.SRADropZone.configure({node:'cmdr',site:cfg.site,siteName:S.siteName,by:S.name,role:'Base Commander'});
-  var DZM=null;function dzMount(){var el=$('dz-cmdr');if(!el)return;if(DZM){DZM.refresh();return;}
+  var DZM=null;function dzMount(){var el=$('dz-sonarmobile');if(!el)return;if(DZM){DZM.refresh();return;}
     DZM=window.SRADropZone.mount(el,{node:'cmdr',site:cfg.site,siteName:S.siteName,by:S.name,role:'Base Commander',peers:'ADMIN · ie-SRS hub',onOpenBuilder:function(){openBuilder();},
       onAdded:function(d){toast('Dropped '+d.name,'copy pushed to ADMIN + ie-SRS drop zones','amber');},
       onIncoming:function(d,env){if(!$('p-drop').classList.contains('on')){S.unreadDrop=(S.unreadDrop||0)+1;save();renderBadges();}toast('Drop zone · '+d.name,'from '+(d.from||env.from||'peer').toUpperCase(),'amber');buzz();}});}
@@ -2718,7 +2798,7 @@ window.SRADropZone=(function(){
     toast('Scenario released',n+' SONAR alert'+(n===1?'':'s')+' queued as exercise · '+(pl.installation||S.siteName),'amber');buzz();if(n)go('outages');}
   window.addEventListener('message',function(e){var d=e.data||{};if(d.type==='CLOSE_BUILDER')closeBuilder();else if(d.type==='BUILDER_DROP'){try{var dd=dzScenario(d.payload,'cmdr-builder');closeBuilder();toast('Scenario sent to Drop Zone',dd.name+' · copied to ADMIN + ie-SRS','amber');buzz();go('drop');}catch(x){console.warn('BUILDER_DROP',x);}}else if(d.type==='BUILDER_SCENARIO'){try{builderRelease(d.payload);}catch(x){console.warn('BUILDER_SCENARIO',x);}}});
   /* ── collapsible sections: caret / title tap toggles, state persisted ── */
-  var SEC_KEY='cmdr_sec_closed';
+  var SEC_KEY='sonarmobile_sec_closed';
   function secLoad(){try{return JSON.parse(localStorage.getItem(SEC_KEY)||'{}');}catch(e){return {};}}
   window.secToggle=function(e,h){if(e&&e.target.closest('button')&&!e.target.closest('.caret'))return;var sec=h.closest('.sec');var closed=sec.classList.toggle('closed');
     var c=sec.querySelector('.caret');if(c){c.setAttribute('aria-label',closed?'Expand section':'Collapse section');c.setAttribute('aria-expanded',closed?'false':'true');}
@@ -2854,15 +2934,15 @@ window.SRADropZone=(function(){
   function fitQa(){}
   window.addEventListener('resize',fitQa);
   /* ══ SECURITY KEY · LOCK / AUTO-LOGIN ══
-     session: localStorage 'cmdr_auth' = {key,email,name,first,last,site,ts,via}
+     session: localStorage 'sonarmobile_auth' = {key,email,name,first,last,site,ts,via}
      flow: 6 digits → HELLO{key,authId} over SRABus (+ postMessage to opener/parent if embedded)
            → ADMIN validates → HELLO{auth:'ok'|'fail',authId,name,email,…} → unlock / error
      auto-login: a session younger than AUTH_TTL unlocks immediately and re-announces on HELLO. */
-  var AUTH_KEY='cmdr_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=60000, AUTH_RESEND=12000, AUTH_RESEND2=30000;
+  var AUTH_KEY='sonarmobile_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=60000, AUTH_RESEND=12000, AUTH_RESEND2=30000;
   var GATE_EACH_LAUNCH=true;   /* true: step 1 GitHub-key screen on every launch, field empty · false: once per device */
   var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
   window.LOCK=(function(){
-    var digits='', pending=null, waitT=null, resendT=null, busy=false, sess=ls(AUTH_KEY,null);
+    var digits='', pending=null, waitT=null, resendT=null, busy=false, sess=ls(AUTH_KEY,null), siprMode=false;
     function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
     function dots(){var el=$('lk-dots');if(!el)return;el.classList.remove('err');var is=el.querySelectorAll('i');for(var i=0;i<6;i++)is[i].classList.toggle('f',i<digits.length);}
     function msg(t,c){var e=$('lk-msg');if(!e)return;e.textContent=t||'';e.className='lk-msg '+(c||'');}
@@ -2875,11 +2955,12 @@ window.SRADropZone=(function(){
       if(need){bus.configure({transport:'github',repo:pr.repo,branch:pr.branch,path:pr.path,poll:pr.poll,token:c.token||pr.token,node:'cmdr'});cfg=bus.cfg();toast('Linked to ADMIN','GitHub link · '+pr.repo,'green');}
       else{bus.configure({});}
       if(typeof renderAll==='function')renderAll();}catch(e){}}
-    function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'},extra||{})));}catch(e){}}
+    function announce(extra){try{bus.publish('HELLO',hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5'},extra||{})));}catch(e){}}
     function hello(p){if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}
+      try{if(window.SIPR&&SIPR.session()&&!p.authId&&!p.bye)p.siprLive=true;}catch(e){}
       if(S.away&&!p.authId&&!p.bye)p.away=true;   /* away rides on heartbeats only — never on an auth request or a bye */
       try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
-    var RING_KEY='cmdr_keyring';
+    var RING_KEY='sonarmobile_keyring';
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
     function reject(t){pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(t,'bad');padOn(true);}
     function submit(){
@@ -2898,30 +2979,35 @@ window.SRADropZone=(function(){
     }
     function ask(key,hit){
       if(!busy)return;
-      pending={authId:uid(),key:key,ts:Date.now(),hit:hit||null};
-      msg(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…','wait');
+      pending={authId:uid(),key:key,ts:Date.now(),hit:hit||null,sipr:!!siprMode};
+      msg((siprMode?'SIPR · ':'')+(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…'),'wait');
       digits=key;
       /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
-      try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true}));}catch(e){}
+      try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode}));}catch(e){}
       /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
-      try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site},'*');}catch(e){}
+      try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site,sipr:!!siprMode},'*');}catch(e){}
       clearTimeout(waitT);clearTimeout(resendT);
       /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
       function resend(){if(!pending)return;msg((pending.hit?'Key matches '+pending.hit.n+' · ':'')+'still waiting for ADMIN\u2026 re-sending','wait');
-        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',key:digits,authId:pending.authId,keyAuth:true,resend:true}));}catch(e){}}
+        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode,resend:true}));}catch(e){}}
       resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
       waitT=setTimeout(function(){if(!pending)return;
-        if(pending.hit){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
+        if(pending.hit&&!pending.sipr){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
           var h=pending.hit;sess={key:pending.key,email:'',name:h.n||S.name,first:'',last:'',site:h.s||S.siteName,ts:Date.now(),via:'keyring'};lsSet(AUTH_KEY,sess);S.away=false;
           pending=null;busy=false;msg('\u2713 '+sess.name+' \u00b7 verified by keyring \u00b7 ADMIN confirmation pending','ok');
           try{ADMIN_CORE&&0;}catch(e){}
           setTimeout(function(){hide();renderAll();autoLink();announce();toast('Signed in via keyring',sess.name+' \u00b7 ADMIN has not confirmed yet \u2014 LIVE status will update when it does','amber');},650);return;}
-        busy=false;msg('ADMIN did not answer. Is ADMIN open and the CMDR link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
+        busy=false;msg((pending.sipr?'SIPR not granted · ':'')+'ADMIN did not answer. Is ADMIN open and the SONARmobile link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
     }
     function lateConfirm(p){ if(pending||!sess||sess.via!=='keyring'||p.auth!=='ok'||!p.name)return; sess=Object.assign({},sess,{email:p.email||sess.email,name:p.name,first:p.first||'',last:p.last||'',site:p.site||sess.site,via:p.via||'admin'});lsSet(AUTH_KEY,sess);toast('ADMIN confirmed',sess.name+' \u00b7 LIVE','green');renderAll(); }
     function result(p){
       if(!pending)return; if(p.authId&&p.authId!==pending.authId)return;
       clearTimeout(waitT);clearTimeout(resendT);
+      if(p.auth==='ok'&&pending.sipr){
+        var ss={key:pending.key,email:p.email||(sess&&sess.email)||'',name:p.name||(sess&&sess.name)||S.name,site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
+        pending=null;busy=false;siprMode=false;msg('✓ '+ss.name+' · SIPR granted by ADMIN','ok');
+        setTimeout(function(){hide();SIPR.grant(ss);},650);return;
+      }
       if(p.auth==='ok'){
         sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
         lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;save();}
@@ -2935,6 +3021,8 @@ window.SRADropZone=(function(){
     return {
       hello:hello,
       hideForRelink:function(){pending=null;busy=false;clearTimeout(waitT);$('lock').classList.remove('on');},
+      showSipr:function(){siprMode=true;show();msg('SIPR · enter your 6-digit security key · ADMIN must accept','wait');padOn(true);},
+      cancelSipr:function(){siprMode=false;pending=null;busy=false;clearTimeout(waitT);clearTimeout(resendT);hide();},
       show:show,
       wait:function(t){msg(t||'','wait');padOn(false);},
       keyring:function(ring,ts){lsSet(RING_KEY,{ring:ring,ts:ts||Date.now()});},
@@ -2944,19 +3032,56 @@ window.SRADropZone=(function(){
       clear:function(){if(busy)return;digits='';dots();msg('');},
       retry:function(){$('lk-alt').style.display='none';digits='';dots();msg('');},
       lateConfirm:lateConfirm,
-      drop:function(){sess=null;pending=null;busy=false;clearTimeout(waitT);clearTimeout(resendT);localStorage.removeItem(AUTH_KEY);},
+      drop:function(){sess=null;pending=null;busy=false;siprMode=false;clearTimeout(waitT);clearTimeout(resendT);localStorage.removeItem(AUTH_KEY);try{SIPR.drop();}catch(e){}},
       offline:function(){$('lk-alt').style.display='none';hide();toast('Offline mode','Not verified — ADMIN will not show you as LIVE','amber');},
       result:result,
       session:function(){return valid(sess)?sess:null;},
       signout:function(){sess=null;localStorage.removeItem(AUTH_KEY);show();toast('Signed out','Enter a security key to go LIVE again','amber');},
-      lock:function(){S.away=true;save();try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',away:true}));}catch(e){}
+      lock:function(){S.away=true;save();try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',away:true}));}catch(e){}
         show();msg('Locked \u00b7 status AWAY \u00b7 enter your security key to resume','wait');},
-      logout:function(){S.away=false;try{if(sess&&sess.key)bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}
-        sess=null;save();localStorage.removeItem(AUTH_KEY);hide();toast('Logged out','Status OFFLINE \u00b7 sign in again to go LIVE','red');
+      logout:function(){S.away=false;try{if(sess&&sess.key)bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',bye:true}));}catch(e){}
+        sess=null;siprMode=false;save();localStorage.removeItem(AUTH_KEY);hide();try{SIPR.drop();}catch(e){}toast('Logged out','Status OFFLINE \u00b7 sign in again to go LIVE','red');
         GATE.show();try{$('gt-msg').textContent='Logged out. Enter the Foundry key issued for this device, then your security key.';}catch(e){}},
       boot:function(){var el=$('lk-session');if(valid(sess)&&!LOCK_EACH_LAUNCH){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
     };
   })();
+
+
+  /* ══ SIPR · classification switch + secure session ══
+     NIPR ⇄ SIPR via the caret beside the app name. First SIPR entry runs the same two-step
+     authentication as NIPR (Foundry key → 6-digit security key), themed red; the keypad request
+     carries sipr:true and ADMIN must accept it (no keyring shortcut). ADMIN marks the account's
+     SIPR light green. The grant is kept on this device until log out / app close, so the commander
+     can move between NIPR and SIPR without re-authenticating. In SIPR only Log out is live. */
+  var SIPR_KEY='sonarmobile_sipr';
+  window.SIPR=(function(){
+    var ss=ls(SIPR_KEY,null), mode='nipr';
+    function valid(x){return !!(x&&x.key&&(Date.now()-(x.ts||0))<AUTH_TTL);}
+    function paint(){var on=mode==='sipr';document.body.classList.toggle('sipr',on);
+      var l=$('classifyLabel');if(l)l.textContent=on?'SIPR':'NIPR';var mp=$('msg-net');if(mp)mp.textContent=on?'SIPR':'NIPR';
+      var a=$('item-nipr'),b=$('item-sipr'),sub=$('item-sipr-sub');
+      if(a)a.classList.toggle('sel',!on);if(b){b.classList.toggle('sel',on);b.classList.toggle('locked',!valid(ss));}
+      if(sub)sub.textContent=valid(ss)?'Secure · granted by ADMIN':'Secure · verify with ADMIN';}
+    function close(){var w=$('classifyWrap');if(w)w.classList.remove('open');}
+    function enter(){mode='sipr';close();try{if(typeof go==='function')go('home');}catch(e){}paint();toast('SIPR','Secure session · Log out is the only live tile','red');}
+    function exit(){mode='nipr';close();paint();}
+    function start(){close();document.body.classList.add('sipr-auth');GATE.sipr();}
+    function cancel(){document.body.classList.remove('sipr-auth');try{LOCK.cancelSipr();}catch(e){}try{GATE.cancelSipr();}catch(e){}document.body.classList.remove('locked');mode='nipr';paint();toast('SIPR cancelled','Back on NIPR','amber');}
+    function grant(x){ss=x;lsSet(SIPR_KEY,ss);document.body.classList.remove('sipr-auth');document.body.classList.remove('locked');enter();
+      try{bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',siprLive:true}));}catch(e){}}
+    function drop(){ss=null;try{localStorage.removeItem(SIPR_KEY);}catch(e){}document.body.classList.remove('sipr-auth');if(mode==='sipr'){mode='nipr';}paint();}
+    document.addEventListener('click',close);
+    return {
+      toggle:function(e){if(e)e.stopPropagation();var w=$('classifyWrap');if(w)w.classList.toggle('open');},
+      select:function(m,e){if(e)e.stopPropagation();if(m==='NIPR'){exit();return;}
+        if(!LOCK.session()){close();toast('Sign in first','Complete NIPR authentication before requesting SIPR','amber');return;}
+        if(valid(ss))enter();else start();},
+      session:function(){return valid(ss)?ss:null;},
+      mode:function(){return mode;},
+      grant:grant, cancel:cancel, drop:drop, paint:paint
+    };
+  })();
+  SIPR.paint();
 
   /* ── boot ── */
   bus.onStatus(renderStat);
@@ -2966,11 +3091,11 @@ window.SRADropZone=(function(){
   fitQa();go('home');renderAll();
   /* -- TWO-STEP AUTHENTICATION: step 1 GitHub key -> link up ; step 2 security keypad -> ADMIN verifies -- */
   window.GATE=(function(){
-    var unsub=null, tmr=null, busy=false;
+    var unsub=null, tmr=null, busy=false, siprMode=false;
     function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
     function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
-    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
+    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();if(siprMode){siprMode=false;toast('Foundry key verified','SIPR · step 2 · security key','green');LOCK.showSipr();return;}toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
     var NO_ROUTE='No route to the Foundry link \u2014 this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again. Or continue without link.';
     function netErr(e){return /network|no route|failed to fetch|timeout/i.test(String(e||''));}
     /* boot probe: test the route with the saved key so the no-route text shows before Connect is pressed (matches ADMIN) */
@@ -2984,7 +3109,7 @@ window.SRADropZone=(function(){
       if(/404/.test(e))return 'The link target was not found. Check the link settings under Link.';
       if(/409|422|conflict/i.test(e))return 'The link is busy. Press Connect again.';
       return e.replace(/^GitHub\s+/i,'Foundry ').replace(/api\.github\.com/gi,'the Foundry link').replace(/\bread read\b/,'read');}
-    function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('cmdr_auth',null),ring=ls('cmdr_keyring',null);
+    function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('sonarmobile_auth',null),ring=ls('sonarmobile_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
         'key sent    : '+d.tokenFp+' · '+d.tokenLen+' chars · '+d.tokenShape+(rawLen&&rawLen!==d.tokenLen?' (field had '+rawLen+', cleaned)':''),
         'target      : '+d.repo+' @ '+d.branch+' · '+d.path,
@@ -2999,7 +3124,7 @@ window.SRADropZone=(function(){
       if(!net){try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}}                /* never keep a key the link rejected \u2014 a network failure did not test the key */
       if(silent){show();msg(net?hint(bus.status().error):'The saved Foundry key no longer works. Enter a new key from ADMIN.',net?'bad':'');if(net)$('gt-alt').style.display='';}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
-    var REJ_KEY='cmdr_gt_rejected';
+    var REJ_KEY='sonarmobile_gt_rejected';
     function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
     function clean(v){v=String(v||'').replace(/[\s\u200B-\u200D\uFEFF]/g,'');var i=Math.max(v.lastIndexOf('github_pat_'),v.lastIndexOf('ghp_'));return i>0?v.slice(i):v;}
     function connect(recheck){if(busy)return;var raw=$('gt-token').value,tok=recheck?(bus.cfg().token||''):clean(raw);
@@ -3019,7 +3144,7 @@ window.SRADropZone=(function(){
           if(st.read==='error'||st.write==='error'){fail(hint(st.error||'GitHub rejected the key'),recheck);return;}}
         if(Date.now()-t0>20000){fail(NO_ROUTE,recheck);return;}
         tmr=setTimeout(tick,300);})();}
-    function offline(){bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
+    function offline(){if(siprMode){SIPR.cancel();return;}bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github'){hide();return true;}   /* gate is pre-locked in markup; release only here, done() or offline() */
       if(!c.token){show();return false;}
       if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');probe();return false;}
@@ -3028,30 +3153,33 @@ window.SRADropZone=(function(){
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
     function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();msg('Enter the new Foundry key.','');}
     try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
-    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye};
+    function sipr(){siprMode=true;show();msg('SIPR · enter the Foundry key issued for this device, then your security key.','');}
+    function cancelSipr(){siprMode=false;hide();}
+    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye,sipr:sipr,cancelSipr:cancelSipr};
   })();
   if(GATE.boot())LOCK.boot();
-  setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5'}));},400);
+  setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5'}));},400);
   setInterval(function(){renderHero();renderStat(bus.status());},30000);
   var HB=4*60*1000,lastHB=Date.now();
-  function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',heartbeat:true}));}
+  function heartbeat(){if(document.hidden)return;lastHB=Date.now();bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',heartbeat:true}));}
   setInterval(heartbeat,HB);
   /* BYE when the page is closed / backgrounded for good, so ADMIN drops the LIVE marker instead of waiting for the TTL */
   /* app closed (swipe up / tab discarded): tell ADMIN, drop the session, and leave the phone on the authenticator so any restored snapshot is the auth screen */
-  window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'ie-SRS CMDR v0.5',bye:true}));}catch(e){}
+  window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',bye:true}));}catch(e){}
     try{LOCK.drop();S.away=false;save();}catch(e){}
+    try{SIPR.drop();}catch(e){}
     try{LOCK.hideForRelink();GATE.show();document.body.classList.add('locked');}catch(e){}});
   /* restored from the back-forward cache instead of reloaded: force a real launch so both steps run */
   window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastHB>HB/2)heartbeat();});
-  window.CMDR={state:function(){return S;},handle:handle,bus:bus};
+  window.SONARMOBILE={state:function(){return S;},handle:handle,bus:bus};window.CMDR=window.SONARMOBILE;/* legacy alias */
 })();
 
 /* ── LOCK / LOG OUT TILES ── */
-function lockCmdr(){LOCK.lock();}
-function logoutCmdr(){LOCK.logout();}
-/* ── CMDR HUB USERS GUIDE ── */
-function openCmdrGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-CMDR-Guide');}
+function lockSonarMobile(){LOCK.lock();}
+function logoutSonarMobile(){LOCK.logout();}
+/* ── SONARMOBILE HUB USERS GUIDE ── */
+function openSonarMobileGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-SONARmobile-Guide');}
 </script>
 </body>
 </html>
