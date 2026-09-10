@@ -2689,10 +2689,10 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 <script>
 (function(){function p(){var C=window.ADMIN_CORE;if(!C)return;var s=C.summary();function t(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}t("sp-t-inst",s.online);t("sp-t-users",s.usersOnline);t("sp-t-wo",s.openWO);t("sp-t-wo-sub",s.outages+" SITES IN OUTAGE");t("sp-t-pend",s.pendingAccounts);t("sp-t-dev",s.devicesPending+" DEVICES NOT ENROLLED");}document.addEventListener("DOMContentLoaded",p);setInterval(p,10000);})();
 </script>
-<!-- splash removed · authentication is the Foundry gate; ARIA credentials live in ADM-06 → Platform settings -->
+<!-- splash removed · authentication is the PASS gate; ARIA credentials live in ADM-06 → Platform settings -->
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
-<div id="gh-gate" class="open boot" role="dialog" aria-label="Foundry key">
+<div id="gh-gate" class="open boot" role="dialog" aria-label="PASS key">
     <div class="gg-brand"><div class="gg-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="gg-t1">ie-SRS ADMIN</div><div class="gg-t2">System admin platform</div></div></div>
     <div class="gg">
       <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="">
@@ -2721,7 +2721,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
   </div>
 <div id="adm-lock" role="dialog" aria-label="Security key">
     <div class="gg-brand"><div class="gg-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="gg-t1">ie-SRS ADMIN</div><div class="gg-t2">System admin platform</div></div></div>
-    <div class="gg-step"><b class="done">✓</b><span>Foundry key</span><i></i><b>2</b><span>Security key</span></div>
+    <div class="gg-step"><b class="done">✓</b><span>PASS key</span><i></i><b>2</b><span>Security key</span></div>
     <div class="al-dots" id="al-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="al-msg" id="al-msg"></div>
     <div id="al-mode"></div>
@@ -10653,12 +10653,12 @@ function launchSim() {
     function msg(t, c) { var e = $g('gg-msg'); if (e) { e.textContent = t || ''; e.className = 'gg-msg ' + (c || ''); } }
     function netErr(e) { return /network|no route|failed to fetch|timeout/i.test(String(e || '')); }
     function hint(e) { e = String(e || '');
-      if (netErr(e)) return 'No route to the Foundry link — this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again.';
-      if (/401/.test(e)) return 'The Foundry key is invalid or expired.';
-      if (/403/.test(e)) return 'The Foundry key was refused — it does not have read/write access to the link.';
+      if (netErr(e)) return 'No route to the PASS link — this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again.';
+      if (/401/.test(e)) return 'The PASS key is invalid or expired.';
+      if (/403/.test(e)) return 'The PASS key was refused — it does not have read/write access to the link.';
       if (/404/.test(e)) return 'The link target was not found. Check the link settings under ADM-10.';
       if (/409|422|conflict/i.test(e)) return 'The link is busy. Press CONNECT again.';
-      return e.replace(/^GitHub\s+/i, 'Foundry ').replace(/api\.github\.com/gi, 'the Foundry link').replace(/\bread read\b/, 'read'); }
+      return e.replace(/^GitHub\s+/i, 'PASS ').replace(/api\.github\.com/gi, 'the PASS link').replace(/\bread read\b/, 'read'); }
     function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
     function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg();
       $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
@@ -10681,7 +10681,7 @@ function launchSim() {
         clearTimeout(tmr); busy = false; btn(false); return; }
       $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
     function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
-      if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a Foundry key.', 'bad'); return; }
+      if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a PASS key.', 'bad'); return; }
       busy = true; btn(true); msg('Checking the link…', 'wait'); STEP('connect pressed');
       SRABus.configure({ transport: 'github', token: tok });
       setTimeout(function() { try { SRABus.publish('HELLO', { node: 'admin', app: 'ie-SRS ADMIN', linkCheck: true }); } catch (e) {} }, 400);  /* forces a write so a read-only key is caught here, not later */
@@ -10689,12 +10689,12 @@ function launchSim() {
       (function tick() { if (!busy) return; var st = SRABus.status();
         if (st.read === '' || st.read === undefined) armed = true;
         if (armed || Date.now() - t0 > 1500) {
-          if (st.read === 'ok' && st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry refused the write'), 'bad'); return; }
+          if (st.read === 'ok' && st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'PASS refused the write'), 'bad'); return; }
           if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
-          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'Foundry rejected the key'), 'bad'); return; } }
-        if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from Foundry. Check the connection and try again.', 'bad'); return; }
+          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'PASS rejected the key'), 'bad'); return; } }
+        if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from PASS. Check the connection and try again.', 'bad'); return; }
         tmr = setTimeout(tick, 300); })(); }
-    function skip() { STEP('skip pressed'); hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a Foundry key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
+    function skip() { STEP('skip pressed'); hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a PASS key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
     /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
     function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
       var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
