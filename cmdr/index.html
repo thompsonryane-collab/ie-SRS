@@ -499,10 +499,10 @@ body.sipr-auth #gate .gt-alt{display:none!important}
 </head>
 <body class="locked">
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the SONARmobile link; shown once per device ══ -->
-<div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · Foundry key">
+<div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · PASS key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
-  <div class="gt-step"><b>1</b><span>Foundry key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
+  <div class="gt-step"><b>1</b><span>PASS key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
   <div class="gt-card">
     <input id="gt-token" type="text" name="sonarmobile-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="" enterkeyhint="go" style="-webkit-text-security:disc">
     <button type="button" class="gt-eye" id="gt-eye" onclick="GATE.eye()">Show key</button>
@@ -518,7 +518,7 @@ body.sipr-auth #gate .gt-alt{display:none!important}
 <div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
-  <div class="lk-step"><b class="done" role="button" title="Change Foundry key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">Foundry key</span><i></i><b>2</b><span>Security key</span></div>
+  <div class="lk-step"><b class="done" role="button" title="Change PASS key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">PASS key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
   <div class="lk-s" id="lk-sub">Enter the 6-digit key issued to you in ADMIN · User Accounts</div>
   <div class="lk-dots" id="lk-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -530,7 +530,7 @@ body.sipr-auth #gate .gt-alt{display:none!important}
     <button class="sec" onclick="LOCK.clear()">Clear</button><button onclick="LOCK.press(0)">0</button><button class="sec bk" onclick="LOCK.back()" aria-label="Backspace">⌫</button>
   </div>
   <button class="sipr-cancel" id="lk-cancel" onclick="SIPR.cancel()">Cancel · back to NIPR</button>
-  <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change Foundry key</button><button onclick="LOCK.offline()">Continue offline</button></div>
+  <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change PASS key</button><button onclick="LOCK.offline()">Continue offline</button></div>
   <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the SONARmobile link · keys never leave this device</div>
 </div>
 <div id="app">
@@ -3047,7 +3047,7 @@ window.SRADropZone=(function(){
         show();msg('Locked \u00b7 status AWAY \u00b7 enter your security key to resume','wait');},
       logout:function(){S.away=false;try{if(sess&&sess.key)bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',bye:true}));}catch(e){}
         sess=null;siprMode=false;save();localStorage.removeItem(AUTH_KEY);hide();try{SIPR.drop();}catch(e){}toast('Logged out','Status OFFLINE \u00b7 sign in again to go LIVE','red');
-        GATE.show();try{$('gt-msg').textContent='Logged out. Enter the Foundry key issued for this device, then your security key.';}catch(e){}},
+        GATE.show();try{$('gt-msg').textContent='Logged out. Enter the PASS key issued for this device, then your security key.';}catch(e){}},
       boot:function(){var el=$('lk-session');if(valid(sess)&&!LOCK_EACH_LAUNCH){if(el)el.textContent='Signed in as '+(sess.name||sess.email)+' · key ends '+sess.key.slice(-2)+' · '+new Date(sess.ts).toLocaleTimeString();hide();return true;}if(el)el.textContent='Not signed in';show();return false;}
     };
   })();
@@ -3055,7 +3055,7 @@ window.SRADropZone=(function(){
 
   /* ══ SIPR · classification switch + secure session ══
      NIPR ⇄ SIPR via the caret beside the app name. First SIPR entry runs the same two-step
-     authentication as NIPR (Foundry key → 6-digit security key), themed red; the keypad request
+     authentication as NIPR (PASS key → 6-digit security key), themed red; the keypad request
      carries sipr:true and ADMIN must accept it (no keyring shortcut). ADMIN marks the account's
      SIPR light green. The grant is kept on this device until log out / app close, so the commander
      can move between NIPR and SIPR without re-authenticating. In SIPR only Log out is live. */
@@ -3101,8 +3101,8 @@ window.SRADropZone=(function(){
     function msg(t,c){var e=$('gt-msg');if(e){e.textContent=t||'';e.className='gt-msg '+(c||'');}}
     function show(){$('gt-token').value='';try{$('gt-token').style.webkitTextSecurity='disc';$('gt-eye').textContent='Show key';}catch(e){}var c=bus.cfg();$('gate').classList.add('on');document.body.classList.add('locked');$('gt-alt').style.display='none';msg('');setTimeout(function(){try{$('gt-token').focus();}catch(e){}},300);}
     function hide(){$('gate').classList.remove('on');if(unsub){unsub();unsub=null;}clearTimeout(tmr);busy=false;$('gt-go').disabled=false;$('gt-go').classList.remove('busy');$('gt-go').textContent='Connect';}
-    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();if(siprMode){siprMode=false;toast('Foundry key verified','SIPR · step 2 · security key','green');LOCK.showSipr();return;}toast('Linked to ADMIN','Foundry link','green');LOCK.boot();}
-    var NO_ROUTE='No route to the Foundry link \u2014 this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again. Or continue without link.';
+    function done(){try{localStorage.removeItem(REJ_KEY);}catch(e){}hide();if(siprMode){siprMode=false;toast('PASS key verified','SIPR · step 2 · security key','green');LOCK.showSipr();return;}toast('Linked to ADMIN','PASS link','green');LOCK.boot();}
+    var NO_ROUTE='No route to the PASS link \u2014 this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again. Or continue without link.';
     function netErr(e){return /network|no route|failed to fetch|timeout/i.test(String(e||''));}
     /* boot probe: test the route with the saved key so the no-route text shows before Connect is pressed (matches ADMIN) */
     function probe(){var c=bus.cfg();if(!c.token)return;var u='https://api.github.com/repos/'+c.repo+'/contents/'+c.path+'?ref='+encodeURIComponent(c.branch||'main')+'&t='+Date.now();
@@ -3110,11 +3110,11 @@ window.SRADropZone=(function(){
       .catch(function(){msg(NO_ROUTE,'bad');$('gt-alt').style.display='';});}
     function hint(e){e=String(e||'');
       if(netErr(e))return NO_ROUTE;
-      if(/401/.test(e))return 'The Foundry key is invalid or expired.';
-      if(/403/.test(e))return 'The Foundry key was refused \u2014 it does not have read/write access to the link.';
+      if(/401/.test(e))return 'The PASS key is invalid or expired.';
+      if(/403/.test(e))return 'The PASS key was refused \u2014 it does not have read/write access to the link.';
       if(/404/.test(e))return 'The link target was not found. Check the link settings under Link.';
       if(/409|422|conflict/i.test(e))return 'The link is busy. Press Connect again.';
-      return e.replace(/^GitHub\s+/i,'Foundry ').replace(/api\.github\.com/gi,'the Foundry link').replace(/\bread read\b/,'read');}
+      return e.replace(/^GitHub\s+/i,'PASS ').replace(/api\.github\.com/gi,'the PASS link').replace(/\bread read\b/,'read');}
     function diag(rawLen){try{var d=bus.diag(),L=d.last||{},sess=ls('sonarmobile_auth',null),ring=ls('sonarmobile_keyring',null);
       var lines=['INSTRUMENT CHECK · '+new Date().toLocaleTimeString(),
         'key sent    : '+d.tokenFp+' · '+d.tokenLen+' chars · '+d.tokenShape+(rawLen&&rawLen!==d.tokenLen?' (field had '+rawLen+', cleaned)':''),
@@ -3128,7 +3128,7 @@ window.SRADropZone=(function(){
       diag(fail.rawLen);fail.rawLen=0;if(fail.note&&!silent)t=t+' '+fail.note;
       var net=false;try{net=netErr(bus.status().error);}catch(e){}
       if(!net){try{bus.configure({token:''});cfg=bus.cfg();}catch(e){}}                /* never keep a key the link rejected \u2014 a network failure did not test the key */
-      if(silent){show();msg(net?hint(bus.status().error):'The saved Foundry key no longer works. Enter a new key from ADMIN.',net?'bad':'');if(net)$('gt-alt').style.display='';}
+      if(silent){show();msg(net?hint(bus.status().error):'The saved PASS key no longer works. Enter a new key from ADMIN.',net?'bad':'');if(net)$('gt-alt').style.display='';}
       else{msg(t,'bad');$('gt-alt').style.display='';}}
     var REJ_KEY='sonarmobile_gt_rejected';
     function fp(t){t=String(t||'');return t.length+':'+t.slice(-6);}
@@ -3138,7 +3138,7 @@ window.SRADropZone=(function(){
       fail.note='';if(!recheck){var rj=ls(REJ_KEY,null),n=(raw.match(/github_pat_|ghp_/g)||[]).length;
         if(n>1)fail.note='Paste held '+n+' keys (a truncated head + a full key); the full one was sent. ';
         if(rj&&rj.fp===fp(tok))fail.note+='This is the SAME key GitHub already rejected at '+new Date(rj.ts).toLocaleTimeString()+'. The phone is pasting an old clipboard entry — copy the new key again from ADMIN.';}
-      if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete Foundry key.','bad');return;}
+      if(!recheck&&!/^(github_pat_[A-Za-z0-9]{22}_[A-Za-z0-9]{59}|ghp_[A-Za-z0-9]{36})$/.test(tok)){msg(/github_pat_.*github_pat_|ghp_.*ghp_/.test(raw)?'The key was pasted twice — cleaned it, tap Connect again.':'That does not look like a complete PASS key.','bad');return;}
       busy=true;if(!recheck){$('gt-go').disabled=true;$('gt-go').classList.add('busy');$('gt-go').textContent='Connecting…';msg('Checking the link…','wait');}
       bus.configure({transport:'github',token:tok,node:'cmdr'});cfg=bus.cfg();
       /* poll the bus status until this attempt produces a fresh read result (stale results from a previous attempt are ignored) */
@@ -3153,13 +3153,13 @@ window.SRADropZone=(function(){
     function offline(){if(siprMode){SIPR.cancel();return;}bus.configure({transport:'broadcast',node:'cmdr'});cfg=bus.cfg();hide();toast('Offline','Same-browser link only — enter a GitHub key on the Link tab to go cross-device','amber');LOCK.boot();}
     function boot(){var c=bus.cfg();if(c.transport!=='github'){hide();return true;}   /* gate is pre-locked in markup; release only here, done() or offline() */
       if(!c.token){show();return false;}
-      if(GATE_EACH_LAUNCH){show();msg('Enter the Foundry key issued for this device, then your security key.','');probe();return false;}
+      if(GATE_EACH_LAUNCH){show();msg('Enter the PASS key issued for this device, then your security key.','');probe();return false;}
       if(LOCK_EACH_LAUNCH||!LOCK.session()){LOCK.show();LOCK.wait('Verifying GitHub link\u2026');}   /* cover the hub while the saved key is rechecked */
       connect(true);return false;}                                               /* saved key: check silently; keypad follows if it still works */
     function eye(){var i=$('gt-token'),on=i.style.webkitTextSecurity!=='none';i.style.webkitTextSecurity=on?'none':'disc';$('gt-eye').textContent=on?'Hide key':'Show key';}
-    function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();msg('Enter the new Foundry key.','');}
+    function change(){LOCK.hideForRelink&&LOCK.hideForRelink();show();msg('Enter the new PASS key.','');}
     try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
-    function sipr(){siprMode=true;show();msg('SIPR · enter the Foundry key issued for this device, then your security key.','');}
+    function sipr(){siprMode=true;show();msg('SIPR · enter the PASS key issued for this device, then your security key.','');}
     function cancelSipr(){siprMode=false;hide();}
     return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye,sipr:sipr,cancelSipr:cancelSipr};
   })();
