@@ -460,7 +460,12 @@ body.sipr .mark svg{stroke:#2c0402}
 body.sipr .link{background:rgba(255,255,255,.08)}
 body.sipr .qabar{background:rgba(28,6,5,.96)}
 body.sipr #p-home .hgrid button:not(#tile-logout){pointer-events:none}
-body.sipr #p-home .hgrid button:not(#tile-logout) .ic,body.sipr #p-home .hgrid button:not(#tile-logout) .l,body.sipr #p-home .hgrid button:not(#tile-logout) .nl{opacity:.32;filter:saturate(.35)}
+body.sipr #p-home .hgrid button:not(#tile-logout) .ic{opacity:.92;filter:saturate(.85);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 0 0 1.5px rgba(255,106,92,.55),0 0 18px rgba(255,90,78,.35),0 10px 22px rgba(0,0,0,.5)}
+body.sipr #p-home .hgrid button:not(#tile-logout) .ic svg{stroke:#fff;opacity:.95}
+body.sipr #p-home .hgrid button:not(#tile-logout) .l{color:#ffd7d2;opacity:.95}
+body.sipr #p-home .hgrid button:not(#tile-logout) .nl{opacity:.9}
+body.sipr #p-home .hgrid #tile-logout .ic{box-shadow:0 0 0 3px #ff6a5c,0 0 22px rgba(255,90,78,.75),0 10px 22px rgba(0,0,0,.5)}
+body.sipr #p-home .hgrid #tile-logout .l{color:#fff;font-weight:700}
 /* Message tile: network pill (NIPR cyan · SIPR red) */
 #p-home .hgrid .netpill{position:absolute;top:-9px;left:50%;transform:translateX(-50%);z-index:2;font-size:9px;font-weight:800;letter-spacing:1.4px;padding:3px 8px;border-radius:9px;background:var(--cyan);color:#03121f;box-shadow:0 0 0 2px var(--bg),0 4px 10px rgba(0,0,0,.45);white-space:nowrap}
 body.sipr #p-home .hgrid .netpill{background:#ff3b30;color:#fff;box-shadow:0 0 0 2px #1c0605,0 0 12px rgba(255,59,48,.7)}
@@ -2980,7 +2985,7 @@ window.SRADropZone=(function(){
     function ask(key,hit){
       if(!busy)return;
       pending={authId:uid(),key:key,ts:Date.now(),hit:hit||null,sipr:!!siprMode};
-      msg((siprMode?'SIPR · ':'')+(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…'),'wait');
+      msg(siprMode?('SIPR · '+(hit?'key matches '+hit.n+' · ':'')+'waiting for ADMIN to accept…'):(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…'),'wait');
       digits=key;
       /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
       try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode}));}catch(e){}
@@ -2988,7 +2993,7 @@ window.SRADropZone=(function(){
       try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site,sipr:!!siprMode},'*');}catch(e){}
       clearTimeout(waitT);clearTimeout(resendT);
       /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
-      function resend(){if(!pending)return;msg((pending.hit?'Key matches '+pending.hit.n+' · ':'')+'still waiting for ADMIN\u2026 re-sending','wait');
+      function resend(){if(!pending)return;msg((pending.sipr?'SIPR · ':'')+(pending.hit?'Key matches '+pending.hit.n+' · ':'')+(pending.sipr?'still waiting for ADMIN to accept\u2026 re-sending':'still waiting for ADMIN\u2026 re-sending'),'wait');
         try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode,resend:true}));}catch(e){}}
       resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
       waitT=setTimeout(function(){if(!pending)return;
@@ -2997,7 +3002,7 @@ window.SRADropZone=(function(){
           pending=null;busy=false;msg('\u2713 '+sess.name+' \u00b7 verified by keyring \u00b7 ADMIN confirmation pending','ok');
           try{ADMIN_CORE&&0;}catch(e){}
           setTimeout(function(){hide();renderAll();autoLink();announce();toast('Signed in via keyring',sess.name+' \u00b7 ADMIN has not confirmed yet \u2014 LIVE status will update when it does','amber');},650);return;}
-        busy=false;msg((pending.sipr?'SIPR not granted · ':'')+'ADMIN did not answer. Is ADMIN open and the SONARmobile link on?','bad');$('lk-alt').style.display='flex';padOn(true);},AUTH_WAIT);
+        busy=false;msg((pending.sipr?'SIPR not granted · ':'')+'ADMIN did not answer. Is ADMIN open and the SONARmobile link on?','bad');$('lk-alt').style.display='flex';padOn(true);},pending.sipr?AUTH_WAIT*2:AUTH_WAIT);
     }
     function lateConfirm(p){ if(pending||!sess||sess.via!=='keyring'||p.auth!=='ok'||!p.name)return; sess=Object.assign({},sess,{email:p.email||sess.email,name:p.name,first:p.first||'',last:p.last||'',site:p.site||sess.site,via:p.via||'admin'});lsSet(AUTH_KEY,sess);toast('ADMIN confirmed',sess.name+' \u00b7 LIVE','green');renderAll(); }
     function result(p){
@@ -3015,6 +3020,7 @@ window.SRADropZone=(function(){
         setTimeout(function(){hide();renderAll();autoLink();announce();},650);
       }else{
         reject(p.reason||'Key not recognized · no match in ADMIN · User Accounts');
+        if(pending===null&&siprMode&&/declined|expired/i.test(p.reason||'')){setTimeout(function(){try{SIPR.cancel();}catch(e){}},2200);}
       }
     }
     window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH_OK')result(Object.assign({auth:'ok',via:'admin-window'},d));else if(d.type==='CMDR_KEY_AUTH_FAIL')result({auth:'fail',authId:d.authId});});
