@@ -64,7 +64,7 @@ a{color:var(--cyan);text-decoration:none}
 #p-home .hgrid .ic{width:min(24vw,96px);height:min(24vw,96px);border-radius:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 10px 22px rgba(0,0,0,.4)}
 #p-home .hgrid .ic svg{width:44%;height:44%;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 #p-home .hgrid .l{font-size:13px;font-weight:500;white-space:nowrap}
-#p-home .hgrid .nl{position:absolute;top:-5px;right:calc(50% - min(12vw,48px) - 6px);min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#ff3b30;color:#fff;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,59,48,.6)}
+#p-home .hgrid .nl{position:absolute;z-index:3;top:-5px;right:calc(50% - min(12vw,48px) - 6px);min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#ff3b30;color:#fff;font-size:12px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,59,48,.6)}
 #p-home .hgrid .nl.on{display:flex;animation:blink 1.4s ease-in-out infinite}
 #p-home .hgrid .nl.amber{background:var(--amber);color:#111}
 .homebtn{padding:6px 9px;color:var(--cyan);border-color:rgba(63,214,255,.4)}
@@ -463,7 +463,7 @@ body.sipr #p-home .hgrid button:not(#tile-logout){pointer-events:none}
 body.sipr #p-home .hgrid button:not(#tile-logout) .ic{opacity:.92;filter:saturate(.85);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 0 0 1.5px rgba(255,106,92,.55),0 0 18px rgba(255,90,78,.35),0 10px 22px rgba(0,0,0,.5)}
 body.sipr #p-home .hgrid button:not(#tile-logout) .ic svg{stroke:#fff;opacity:.95}
 body.sipr #p-home .hgrid button:not(#tile-logout) .l{color:#ffd7d2;opacity:.95}
-body.sipr #p-home .hgrid button:not(#tile-logout) .nl{opacity:.9}
+body.sipr #p-home .hgrid .nl{opacity:1;filter:none;box-shadow:0 0 0 2px #1c0605,0 0 10px rgba(255,59,48,.65)}
 body.sipr #p-home .hgrid #tile-logout .ic{box-shadow:0 0 0 3px #ff6a5c,0 0 22px rgba(255,90,78,.75),0 10px 22px rgba(0,0,0,.5)}
 body.sipr #p-home .hgrid #tile-logout .l{color:#fff;font-weight:700}
 /* Message tile: network pill (NIPR cyan · SIPR red) */
@@ -519,7 +519,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the SONARmobile link; shown once per device ══ -->
 <div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · PASS key">
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="gt-step"><b>1</b><span>PASS key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
   <div class="gt-card">
@@ -535,7 +535,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 2 · SECURITY KEY LOCK — verified by ADMIN over the link; auto-login re-uses a valid session ══ -->
 <div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
+  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="lk-step"><b class="done" role="button" title="Change PASS key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">PASS key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
