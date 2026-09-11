@@ -495,9 +495,28 @@ body.sipr-auth #lock .lk-pad button{background:rgba(255,255,255,.08)}
 .sipr-cancel{display:none;font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid rgba(255,138,122,.4);background:transparent;color:#ffd7d2}
 body.sipr-auth .sipr-cancel{display:inline-block}
 body.sipr-auth #gate .gt-alt{display:none!important}
+
+/* ══ DEVICE REVOKED (remote wipe by ADMIN) ══ */
+#wiped{position:fixed;inset:0;z-index:9500;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(var(--sat) + 20px) 26px calc(var(--sab) + 24px);text-align:center;background:radial-gradient(120% 80% at 50% 0%,#6a1410 0%,#1c0605 60%);color:#fff;-webkit-user-select:none;user-select:none}
+#wiped.on{display:flex}
+#wiped .wp-mark{width:72px;height:72px;border-radius:20px;background:linear-gradient(160deg,#ff8a7a,#c22a1c);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(255,90,78,.2),0 18px 40px rgba(0,0,0,.5)}
+#wiped .wp-mark svg{width:38px;height:38px;fill:none;stroke:#2c0402;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#wiped .wp-h{font-size:24px;font-weight:800;letter-spacing:2px;color:#ff8a7a;margin-top:6px}
+#wiped .wp-s{font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.55;max-width:320px}
+#wiped .wp-r{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:rgba(255,215,210,.7);letter-spacing:.5px;margin-top:8px;padding:8px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,138,122,.3);max-width:320px;line-height:1.5}
+#wiped .wp-f{position:absolute;left:22px;right:22px;bottom:calc(var(--sab) + 18px);font-size:11px;color:rgba(255,255,255,.45);line-height:1.5}
+body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
 </style>
 </head>
 <body class="locked">
+<!-- ══ DEVICE REVOKED · shown after ADMIN issues a remote WIPE for this account / device; clears on RESTORE ══ -->
+<div id="wiped" role="alertdialog" aria-label="Device revoked">
+  <div class="wp-mark"><svg viewBox="0 0 24 24"><path d="M12 3l9 4v5c0 5-3.5 8.5-9 10-5.5-1.5-9-5-9-10V7z"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div>
+  <div class="wp-h">DEVICE REVOKED</div>
+  <div class="wp-s">ADMIN has wiped SONARmobile on this device. All keys, sessions and cached data have been removed.<br>Contact ADMIN to be re-issued a PASS key.</div>
+  <div class="wp-r" id="wp-r"></div>
+  <div class="wp-f">SONARmobile · ie-SRS ADMIN remote wipe · this device will stay locked until ADMIN restores it</div>
+</div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the SONARmobile link; shown once per device ══ -->
 <div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · PASS key">
   <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div><div class="lk-t2">Commander mobile</div></div></div>
@@ -2901,6 +2920,7 @@ window.SRADropZone=(function(){
   /* ── inbound ── */
   function handle(env,replay){
     var p=env.payload||{};
+    if(env.from==='admin'&&(env.type==='KILL'||env.type==='RESTORE')){WIPE.onEnvelope(env);return;}
     if(env.from==='cmdr'){                                   /* another commander's device */
       if(env.dev===bus.dev())return;
       if(env.type==='MSG'){
@@ -3015,11 +3035,12 @@ window.SRADropZone=(function(){
       }
       if(p.auth==='ok'){
         sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
-        lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;save();}
+        lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;} if(sess.email)S.lastEmail=sess.email; save();
         pending=null;busy=false;msg('✓ '+sess.name+' · LIVE','ok');
         setTimeout(function(){hide();renderAll();autoLink();announce();},650);
       }else{
         reject(p.reason||'Key not recognized · no match in ADMIN · User Accounts');
+        if(/revoked|wiped/i.test(p.reason||'')){try{WIPE.run(p.reason,Date.now());}catch(e){}return;}
         if(pending===null&&siprMode&&/declined|expired/i.test(p.reason||'')){setTimeout(function(){try{SIPR.cancel();}catch(e){}},2200);}
       }
     }
@@ -3088,6 +3109,55 @@ window.SRADropZone=(function(){
     };
   })();
   SIPR.paint();
+
+
+  /* ══ WIPE · remote self-destruct issued by ADMIN (User Accounts → WIPE) ══
+     ADMIN publishes KILL{email,dev,reason} on the bus (three copies over ~20 s). If it names this device's id or the
+     signed-in account, the phone: sends BYE, clears every localStorage/sessionStorage key, drops caches + service
+     workers, and locks to the red DEVICE REVOKED screen. The revoked flag is the only thing re-written, so a replayed
+     KILL keeps the device locked across relaunches until ADMIN publishes RESTORE with a newer timestamp.
+     ADMIN should ALSO revoke the PASS key (GitHub PAT) — that layer works even if the phone never comes back online. */
+  var WIPE_KEY='sonarmobile_revoked', RESTORED_KEY='sonarmobile_restored';
+  window.WIPE=(function(){
+    var flag=ls(WIPE_KEY,null), restoredAt=(ls(RESTORED_KEY,{})||{}).ts||0;
+    function mine(p){try{var d=bus.dev();if(p.all)return true;if(p.dev&&p.dev===d)return true;
+      var se=null;try{se=LOCK.session();}catch(e){}if(p.email&&se&&se.email&&p.email.toLowerCase()===String(se.email).toLowerCase())return true;
+      if(p.email&&S.lastEmail&&p.email.toLowerCase()===String(S.lastEmail).toLowerCase())return true;
+      if(p.email&&flag&&flag.email&&p.email.toLowerCase()===String(flag.email).toLowerCase())return true;}catch(e){}return false;}
+    function show(){document.body.classList.add('wiped');document.body.classList.remove('sipr','sipr-auth','locked');
+      try{$('gate').classList.remove('on');$('lock').classList.remove('on');}catch(e){}
+      var r=$('wp-r');if(r&&flag)r.textContent=(flag.reason||'Remote wipe')+' · '+new Date(flag.ts||Date.now()).toLocaleString();
+      $('wiped').classList.add('on');}
+    function run(reason,ts){
+      try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',bye:true,wiped:true}));}catch(e){}
+      var em=S.lastEmail||'';
+      try{LOCK.drop();}catch(e){}try{LOCK.hideForRelink();}catch(e){}
+      try{bus.configure({token:'',transport:'github'});}catch(e){}try{bus.reset();}catch(e){}
+      /* wipe every SONARmobile-owned key (sessions, keyring, state, drop-zone flags) — never ADMIN's own store, which shares this origin in the preview */
+      try{Object.keys(localStorage).forEach(function(k){if(/^(sonarmobile_|cmdr_)/.test(k))localStorage.removeItem(k);});}catch(e){}
+      try{sessionStorage.clear();}catch(e){}
+      try{if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k);});});}catch(e){}
+      try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister();});});}catch(e){}
+      flag={ts:ts||Date.now(),reason:reason||'Device wiped by ADMIN',email:em};lsSet(WIPE_KEY,flag);
+      try{S.warnords={};S.msgs=[];S.status=null;S.unreadMsg=S.unreadWO=0;}catch(e){}
+      show();}
+    function restore(ts){flag=null;restoredAt=ts||Date.now();try{localStorage.removeItem(WIPE_KEY);}catch(e){}lsSet(RESTORED_KEY,{ts:restoredAt});document.body.classList.remove('wiped');$('wiped').classList.remove('on');
+      toast('Device restored','ADMIN restored this device · enter a new PASS key','green');try{GATE.show();}catch(e){}}
+    return {
+      onEnvelope:function(env){var p=env.payload||{};if(!mine(p))return;
+        if(env.type==='KILL'){if((env.ts||0)<=restoredAt)return;                       /* older than the last RESTORE = history, not an order */
+          if(flag&&flag.ts>=(env.ts||0))return;run(p.reason,env.ts||Date.now());}
+        else if(env.type==='RESTORE'){if(flag&&(env.ts||0)>flag.ts)restore(env.ts);}},
+      run:run, restore:restore,
+      revoked:function(){return !!flag;},
+      boot:function(){if(flag){show();return true;}return false;}
+    };
+  })();
+  /* ══ DEAD-MAN'S SWITCH · signed in but ADMIN silent for 30 min on the cross-device link → self-lock, drop SIPR ══ */
+  var DEADMAN_MS=30*60*1000, lastAdmin=Date.now();
+  bus.subscribe(function(env){if(env&&env.from==='admin')lastAdmin=Date.now();});
+  setInterval(function(){try{if(WIPE.revoked())return;var se=LOCK.session();if(!se)return;if(bus.cfg().transport!=='github')return;
+    if(Date.now()-lastAdmin>DEADMAN_MS){lastAdmin=Date.now();try{SIPR.drop();}catch(e){}LOCK.lock();toast('Link silent 30 min','Locked for safety · re-enter your security key','amber');}}catch(e){}},60000);
 
   /* ── boot ── */
   bus.onStatus(renderStat);
@@ -3163,7 +3233,7 @@ window.SRADropZone=(function(){
     function cancelSipr(){siprMode=false;hide();}
     return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye,sipr:sipr,cancelSipr:cancelSipr};
   })();
-  if(GATE.boot())LOCK.boot();
+  if(WIPE.boot()){document.body.classList.add('wiped');}else if(GATE.boot())LOCK.boot();
   setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5'}));},400);
   setInterval(function(){renderHero();renderStat(bus.status());},30000);
   var HB=4*60*1000,lastHB=Date.now();
@@ -3174,7 +3244,7 @@ window.SRADropZone=(function(){
   window.addEventListener('pagehide',function(){try{if(LOCK.session())bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',bye:true}));}catch(e){}
     try{LOCK.drop();S.away=false;save();}catch(e){}
     try{SIPR.drop();}catch(e){}
-    try{LOCK.hideForRelink();GATE.show();document.body.classList.add('locked');}catch(e){}});
+    try{if(!WIPE.revoked()){LOCK.hideForRelink();GATE.show();document.body.classList.add('locked');}}catch(e){}});
   /* restored from the back-forward cache instead of reloaded: force a real launch so both steps run */
   window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-lastHB>HB/2)heartbeat();});
