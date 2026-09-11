@@ -12358,14 +12358,15 @@ document.addEventListener("DOMContentLoaded",function(){
       mini('Away',all.filter(function(r){return r.status==='away';}).length,'#f2d24b')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
       mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#c0c8d0')+
-      mini('SIPR unlocked',all.filter(function(r){return r.sipr==='unlocked';}).length,'#4db88a')+
+      mini('SIPR unlocked',all.filter(function(r){return r.sipr==='unlocked';}).length,'#4db88a')+mini('Revoked',all.filter(function(r){return window.SRASec&&SRASec.isRevoked(r.email);}).length,'#ff5a4e')+
       mini('Showing',rows.length,'#18d4f8');
     $('au-body').innerHTML=rows.length?rows.map(function(r){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
       var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
       var web=r.via==='admin-web';
     if(keyLive&&web)c='#18d4f8';
-    var stLbl=keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+
+    var revoked=window.SRASec&&SRASec.isRevoked(r.email);if(revoked)c='#ff5a4e';
+    var stLbl=revoked?'<span class="sec-live-dot" style="background:#ff5a4e;box-shadow:0 0 8px #ff5a4e"></span>REVOKED':keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+
       (web&&window.ADMIN_SESSION&&ADMIN_SESSION.email===r.email?' · YOU':'')+
       (r.github?' · '+esc(r.github):'')):r.status;
       return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
@@ -12380,6 +12381,7 @@ document.addEventListener("DOMContentLoaded",function(){
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
+        (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
         '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></td></tr>'
         :
         '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
@@ -12388,6 +12390,7 @@ document.addEventListener("DOMContentLoaded",function(){
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
+        (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
         '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="13" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
 
@@ -12501,7 +12504,7 @@ document.addEventListener("DOMContentLoaded",function(){
   window.admExportUsers=function(){var rows=userRows();var csv='installation,region,last_name,first_name,role,email,security_key,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.last,r.first,r.role,r.email,r.security||"UNSET",r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
 
   /* ══ SECURITY KEYS · ACCOUNT ACTIVATION · KEY-AUTH LIVE SESSIONS ══ */
-  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=6*60*1000, SEC_SIPR='ie-srs-sipr';
+  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=6*60*1000, SEC_SIPR='ie-srs-sipr', SEC_REVOKED='ie-srs-revoked';
   function lsJ(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
   function lsW(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
   function shortRegion(r){r=String(r||'');if(/Washington/i.test(r))return 'NDW';var m=r.match(/NAVFAC\s+(\w+)/i);return m?('CNR'+m[1].slice(0,2).toUpperCase()):r.slice(0,8).toUpperCase();}
@@ -12549,6 +12552,11 @@ document.addEventListener("DOMContentLoaded",function(){
     markSipr:function(acct,extra){var m=SRASec.sipr();m[acct.email]=Object.assign({email:acct.email,name:acct.name,site:acct.site,siteId:acct.siteId,ts:Date.now(),via:'cmdr-mobile'},extra||{});lsW(SEC_SIPR,m);if(!(extra&&extra.quiet))SRASec.repaint();return m[acct.email];},
     endSipr:function(email,quiet){var m=SRASec.sipr();if(!m[email])return;delete m[email];lsW(SEC_SIPR,m);if(!quiet)SRASec.repaint();},
     isSipr:function(email){var e=SRASec.sipr()[email];return !!(e&&Date.now()-e.ts<LIVE_MS)&&SRASec.isLive(email);},
+    /* ── REVOKED (remote wipe): email → {ts,dev,reason,by}. A revoked account is dropped from the keyring, every HELLO it sends is answered with KILL, and auth requests fail. ── */
+    revoked:function(){return lsJ(SEC_REVOKED,{});},
+    isRevoked:function(email){return !!SRASec.revoked()[email];},
+    revoke:function(acct,extra){var m=SRASec.revoked();var lv=SRASec.live()[acct.email]||{};m[acct.email]=Object.assign({email:acct.email,name:acct.name,site:acct.site,dev:lv.dev||'',ts:Date.now(),reason:'Device wiped by ADMIN'},extra||{});lsW(SEC_REVOKED,m);try{SRASec.endSipr(acct.email,true);}catch(e){}try{SRASec.endLive(acct.email);}catch(e){}SRASec.repaint();return m[acct.email];},
+    unrevoke:function(email){var m=SRASec.revoked();var r=m[email];delete m[email];lsW(SEC_REVOKED,m);SRASec.repaint();return r;},
     isLive:function(email){var e=SRASec.live()[email];return !!(e&&!e.off&&Date.now()-e.ts<LIVE_MS);},
     liveList:function(){var l=SRASec.live();return Object.keys(l).filter(function(k){return !l[k].off;}).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
     repaint:function(){['admPaintUsers','admPaintStrip','admPaintPresence','admPaintCmdr'].forEach(function(f){try{if(typeof window[f]==='function'){if(f==='admPaintUsers'&&!($('overlay-adm-users')&&$('overlay-adm-users').classList.contains('visible')))return;if(f==='admPaintPresence'&&!($('overlay-adm-msg')&&$('overlay-adm-msg').classList.contains('visible')))return;if(f==='admPaintCmdr'&&!($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible')))return;window[f]();}}catch(e){}});}
@@ -12594,6 +12602,24 @@ document.addEventListener("DOMContentLoaded",function(){
   window.admCustomToggle=function(em){var o=SRASec.custom();if(!o[em])return;o[em].disabled=!o[em].disabled;SRASec.saveCustom(o);C.audit(o[em].disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',em,o[em].station);toastOk(o[em].name+' '+(o[em].disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
   window.admCustomDelete=function(em){var o=SRASec.custom();if(!o[em])return;if(!confirm('Delete account '+o[em].name+' <'+em+'>?'))return;delete o[em];SRASec.saveCustom(o);SRASec.endLive(em);C.audit('DELETE_ACCOUNT',em,'');toastOk('Account deleted');admPaintUsers();admPaintStrip();};
   window.admEndLive=function(em){SRASec.endLive(em);C.audit('CMDR_KEY_LOGOUT',em,'');toastOk('Session ended');};
+  /* ══ WIPE DEVICE · remote self-destruct. KILL goes out three times over ~20 s (bus writes can be lost); the account is
+        marked REVOKED so any later contact from that phone is answered with KILL again. The PASS key (GitHub PAT) must be
+        revoked on GitHub separately — that layer works even if the phone never comes back online. ══ */
+  window.admWipeDevice=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em];if(!m){toastWarn('Account not found');return;}
+    if(!confirm('WIPE SONARmobile on '+(m.name||em)+"'s device?\n\nThe phone will erase every key, session and cached record and lock to a DEVICE REVOKED screen. The account stays REVOKED until you press RESTORE.\n\nRemember to also revoke the PASS key (GitHub PAT) on GitHub."))return;
+    var rec=SRASec.revoke(m,{by:(window.ADMIN_SESSION&&ADMIN_SESSION.email)||'admin'});
+    var kill={node:'admin',app:'ie-SRS ADMIN',email:em,dev:rec.dev||'',reason:'Device wiped by ADMIN'};
+    [0,6000,20000].forEach(function(d){setTimeout(function(){try{SRABus.publish('KILL',Object.assign({},kill,{resend:d>0}),{site:'*'});}catch(e){}},d);});
+    C.audit('CMDR_WIPE',em,(m.name||'')+' · remote wipe issued · dev '+(rec.dev||'?'));
+    try{if(typeof publishKeyring==='function')publishKeyring(true);}catch(e){}
+    toastWarn('WIPE sent to '+(m.name||em)+' · now revoke the PASS key on GitHub');
+    admPaintUsers();admPaintStrip();};
+  window.admRestoreDevice=function(em){var rec=SRASec.unrevoke(em);if(!rec)return;
+    var rs={node:'admin',app:'ie-SRS ADMIN',email:em,dev:rec.dev||''};
+    [0,6000].forEach(function(d){setTimeout(function(){try{SRABus.publish('RESTORE',Object.assign({},rs,{resend:d>0}),{site:'*'});}catch(e){}},d);});
+    C.audit('CMDR_RESTORE',em,(rec.name||'')+' · device restored · issue a new PASS key');
+    try{if(typeof publishKeyring==='function')publishKeyring(true);}catch(e){}
+    toastOk('Device restored · issue a new PASS key');admPaintUsers();admPaintStrip();};
   window.admEndSipr=function(em){SRASec.endSipr(em);C.audit('CMDR_SIPR_REVOKE',em,'SIPR grant revoked by ADMIN');toastOk('SIPR revoked');try{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',siprRevoke:true,email:em});}catch(e){}};
 
   /* ══ ADM-02 MESSAGE CENTER ══ */
@@ -13900,7 +13926,7 @@ window.SRADropZone=(function(){
   }catch(e){}}
   var ringDigest='', ringLast=0;
   function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
-  function publishKeyring(force){try{if(!window.SRABus||!window.SRASec||!window.crypto||!crypto.subtle)return;var m=SRASec.keys();var list=Object.keys(m).filter(function(e){return m[e].security&&!m[e].disabled;}).map(function(e){return m[e];});
+  function publishKeyring(force){try{if(!window.SRABus||!window.SRASec||!window.crypto||!crypto.subtle)return;var m=SRASec.keys();var list=Object.keys(m).filter(function(e){return m[e].security&&!m[e].disabled&&!SRASec.isRevoked(e);}).map(function(e){return m[e];});
     var digest=list.map(function(a){return a.email+':'+a.security;}).sort().join('|');
     if(!force&&digest===ringDigest&&Date.now()-ringLast<60000)return;
     Promise.all(list.map(function(a){return sha(a.security);})).then(function(hs){var ring=[];hs.forEach(function(h,i){if(h)ring.push({h:h,n:list[i].name,s:list[i].site||''});});
@@ -13911,12 +13937,17 @@ window.SRADropZone=(function(){
     if(!p.key||!window.SRASec)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     var real=!p.embedded&&(p.transport||'github')==='github';
+    if(a&&SRASec.isRevoked(a.email)&&!p.wiped){var rv=SRASec.revoked()[a.email]||{};
+      try{SRABus.publish('KILL',{node:'admin',app:'ie-SRS ADMIN',email:a.email,dev:env.dev||p.dev||rv.dev||'',reason:rv.reason||'Device wiped by ADMIN'},{site:'*'});}catch(e){}
+      if(p.authId){try{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:!!p.sipr,authId:p.authId,reason:'Device revoked by ADMIN · contact ADMIN'},{site:site});}catch(e){}}
+      try{if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_REVOKED_CONTACT',a.email,a.name+' · revoked device reached the link · KILL re-sent');}catch(e){}
+      return;}
     var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
     if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · logged out');}catch(e){}return;}
     /* ── SIPR two-step request: same key check, then ADMIN accepts and lights the SIPR field green ── */
     if(p.sipr&&p.authId){
       if(a){if(age>10*60*1000)return;                                             /* stale replayed request: never pop for history */
-        SIPRREQ.open({authId:p.authId,acct:a,site:site,real:real,github:p.github||'',key:p.key,ts:env.ts||Date.now(),reply:function(ok,reason){
+        SIPRREQ.open({authId:p.authId,acct:a,site:site,real:real,github:p.github||'',dev:env.dev||p.dev||'',key:p.key,ts:env.ts||Date.now(),reply:function(ok,reason){
           var sp=ok?{node:'admin',app:'ie-SRS ADMIN',auth:'ok',sipr:true,authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:real?'admin-bus':'admin-bus-preview'}
                    :{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:true,authId:p.authId,reason:reason||'SIPR request declined by ADMIN'};
           SRABus.publish('HELLO',sp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},sp,{resend:true}),{site:site});}catch(e){}},6000);}});
@@ -13928,7 +13959,7 @@ window.SRADropZone=(function(){
     if(a&&p.away&&real&&!p.authId){try{SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',away:true,ts:Math.min(env.ts||Date.now(),Date.now())});if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_LOCK',a.email,a.name+' · device locked · AWAY');}catch(e){}return;}
     if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
         try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
-    if(a){SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
+    if(a){SRASec.markLive(a,{github:p.github||'',dev:env.dev||p.dev||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
       if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
         var okp={node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'};
         SRABus.publish('HELLO',okp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},okp,{resend:true}),{site:site});}catch(e){}},6000);   /* second copy survives a lost write */
@@ -13975,7 +14006,7 @@ window.SIPRREQ=(function(){
   function expire(){if(!cur)return;try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_EXPIRED',cur.acct.email,cur.acct.name+' · no decision · request expired');}catch(e){}decided[cur.authId]={ok:false,reason:'SIPR request expired · ask again',ts:Date.now()};close();}
   function decide(ok){if(!cur)return;var r=cur;
     if(ok){
-      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',via:'cmdr-mobile',quiet:true});}catch(e){}
+      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',dev:r.dev||'',via:'cmdr-mobile',quiet:true});}catch(e){}
       try{SRASec.markSipr(r.acct,{via:r.real?'cmdr-mobile':'preview'});}catch(e){}
       try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_AUTH',r.acct.email,r.acct.name+' · SIPR granted by ADMIN · '+(r.real?'mobile':'preview'));}catch(e){}
       try{hubToast('⬡ '+r.acct.name+' · SIPR granted','ok',2600);}catch(e){}
