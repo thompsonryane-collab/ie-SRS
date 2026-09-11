@@ -38,7 +38,7 @@ a{color:var(--cyan);text-decoration:none}
 .mark{flex:none;width:32px;height:32px;border-radius:9px;background:linear-gradient(160deg,#3fe0ff,#0f9ccc);display:flex;align-items:center;justify-content:center}
 .mark svg{width:19px;height:19px;fill:none;stroke:#04202c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .t1{font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.05}
-.wm-sub{font-size:.7em;font-weight:600;letter-spacing:1.2px;margin-left:2px}
+.wm-sub{font-size:.745em;font-weight:600;letter-spacing:1.2px;margin-left:2px}
 .wm-i{font-style:normal;color:#ff4757}
 .t2{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .link{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink2);padding:6px 9px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
@@ -431,7 +431,7 @@ body.onhome .homebtn{display:none}
 #lock .lk-brand,#gate .lk-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;width:100%;text-align:center}
 #lock .lk-brand .mark,#gate .lk-brand .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,var(--cyan),#1f6fb0);display:flex;align-items:center;justify-content:center}
 #lock .lk-brand .mark svg,#gate .lk-brand .mark svg{width:20px;height:20px;fill:none;stroke:#03121f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-#lock .lk-t1,#gate .lk-t1{font-size:17px;font-weight:700;letter-spacing:.5px}
+#lock .lk-t1,#gate .lk-t1{font-size:21.3px;font-weight:700;letter-spacing:.5px}
 #lock .lk-t2,#gate .lk-t2{font-size:12px;color:var(--ink3);letter-spacing:1.5px;text-transform:uppercase}
 #lock .lk-h,#gate .lk-h{font-size:22px;font-weight:700;letter-spacing:1px;color:var(--cyan);text-align:center}
 #lock .lk-s,#gate .lk-s{font-size:12.5px;color:var(--ink2);text-align:center;max-width:300px;line-height:1.5}
@@ -3310,15 +3310,30 @@ function lockSonarMobile(){LOCK.lock();}
 function logoutSonarMobile(){LOCK.logout();}
 /* ── PITCH PLAYER · step-1 badge ── */
 var PITCH=(function(){
-  var PUB='https://thompsonryane-collab.github.io/ie-SRS/pitch/SONARmobile-release.html';
-  function src(){
-    /* served from the repo → sibling pitch/ folder; file:// or anything else → published copy */
-    if(/^https?:$/.test(location.protocol)&&/\/cmdr\//.test(location.pathname)) return location.pathname.replace(/\/cmdr\/.*$/,'/pitch/SONARmobile-release.html')+'?v='+Date.now();
-    return PUB+'?v='+Date.now();
+  var FILE='SONARmobile-release.html';
+  var PUB='https://thompsonryane-collab.github.io/ie-SRS/';
+  function candidates(){
+    var list=[];
+    if(/^https?:$/.test(location.protocol)){
+      var base=location.pathname.replace(/\/cmdr\/.*$/,'/');           /* repo root when served from cmdr/ */
+      list.push(base+'pitch/'+FILE, base+FILE, location.pathname.replace(/[^\/]*$/,'')+FILE);
+    }
+    list.push(PUB+'pitch/'+FILE, PUB+FILE);
+    return list.filter(function(u,k,a){return a.indexOf(u)===k;});
+  }
+  function probe(url){
+    return fetch(url,{method:'HEAD',cache:'no-store'}).then(function(r){return r.ok?url:null;}).catch(function(){return null;});
+  }
+  function resolve(){
+    var c=candidates(), i=0;
+    return new Promise(function(done){
+      (function next(){ if(i>=c.length) return done(c[0]); probe(c[i++]).then(function(u){ u?done(u):next(); }); })();
+    });
   }
   function open(){
-    var f=document.getElementById('pitch-frame');f.src=src();
-    document.getElementById('pitch').classList.add('on');
+    var f=document.getElementById('pitch-frame'), box=document.getElementById('pitch');
+    box.classList.add('on'); f.src='about:blank';
+    resolve().then(function(url){ f.src=url+'?v='+Date.now(); });
     try{ if(screen.orientation&&screen.orientation.lock) screen.orientation.lock('landscape').catch(function(){}); }catch(e){}
   }
   function close(){
@@ -3326,7 +3341,7 @@ var PITCH=(function(){
     document.getElementById('pitch').classList.remove('on');
     try{ if(screen.orientation&&screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
   }
-  return {open:open,close:close};
+  return {open:open,close:close,candidates:candidates};
 })();
 /* ── SONARMOBILE HUB USERS GUIDE ── */
 function openSonarMobileGuide(){window.open('https://thompsonryane-collab.github.io/ie-SRS/docs/cmdr-guide.html','ie-SRS-SONARmobile-Guide');}
