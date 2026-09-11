@@ -36,6 +36,8 @@ a{color:var(--cyan);text-decoration:none}
 .mark{flex:none;width:32px;height:32px;border-radius:9px;background:linear-gradient(160deg,#3fe0ff,#0f9ccc);display:flex;align-items:center;justify-content:center}
 .mark svg{width:19px;height:19px;fill:none;stroke:#04202c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .t1{font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.05}
+.wm-sub{font-size:.7em;font-weight:600;letter-spacing:1.2px;margin-left:2px}
+.wm-i{font-style:normal;color:#ff4757}
 .t2{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .link{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink2);padding:6px 9px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
 .link i{width:8px;height:8px;border-radius:50%;background:var(--red);flex:none}
@@ -376,12 +378,14 @@ body.onhome .homebtn{display:none}
 #gate>.gt-msg{margin-bottom:auto}   /* centre the brand→card→msg group; alt/diag drop below it, footer is pinned */
 #gate.on{display:flex}
 /* ══ PITCH BADGE · red thunderbolt, top-right of step 1 ══ */
-#gt-pitch{position:absolute;top:calc(var(--sat) + 14px);right:16px;width:46px;height:46px;border-radius:14px;border:1px solid rgba(255,110,96,.55);background:linear-gradient(160deg,#ff8a7a 0%,#e8402f 55%,#a5160c 100%);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(60,0,0,.45),0 6px 16px rgba(0,0,0,.5),0 0 18px rgba(255,71,87,.35);z-index:3}
-#gt-pitch svg{width:24px;height:24px;fill:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
-#gt-pitch::after{content:'';position:absolute;inset:-5px;border-radius:18px;border:1.5px solid rgba(255,90,78,.7);animation:gtPitchRing 2.2s ease-out infinite;pointer-events:none}
-@keyframes gtPitchRing{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+#gt-pitch{position:absolute;top:calc(var(--sat) + 14px);right:16px;width:48px;height:48px;border-radius:14px;border:1px solid rgba(0,0,0,.35);background:linear-gradient(180deg,#ffffff 0%,#eef1f5 55%,#d9dee6 100%);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:visible;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(0,0,0,.5),0 0 16px rgba(72,207,255,.18),0 0 16px rgba(255,71,87,.18);z-index:3}
+#gt-pitch::before{content:'';position:absolute;left:3px;right:3px;top:2px;height:46%;border-radius:11px 11px 40% 40%/11px 11px 60% 60%;background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.05));pointer-events:none}
+#gt-pitch svg{position:relative;z-index:1;width:38px;height:38px;overflow:visible;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
+
+
 #gt-pitch:active{transform:translateY(1px);box-shadow:inset 0 2px 4px rgba(60,0,0,.5),0 2px 6px rgba(0,0,0,.5)}
-#gt-pitch b{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:#ff8a7a;font-weight:700;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+#gt-pitch svg{animation:gtBoltPulse 2.2s ease-in-out infinite}
+@keyframes gtBoltPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 /* ══ PITCH PLAYER · full-screen, forced landscape on the phone ══ */
 #pitch{position:fixed;inset:0;z-index:9400;background:#000;display:none}
 #pitch.on{display:block}
@@ -422,7 +426,7 @@ body.onhome .homebtn{display:none}
 /* ══ SECURITY KEY LOCK SCREEN ══ */
 #lock{position:fixed;inset:0;z-index:9000;background:radial-gradient(120% 80% at 50% 0%,#0d1f38 0%,var(--bg) 60%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--sat) + 20px) 22px calc(var(--sab) + 24px);gap:14px;-webkit-user-select:none;user-select:none}
 #lock.on{display:flex}
-#lock .lk-brand,#gate .lk-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+#lock .lk-brand,#gate .lk-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;width:100%;text-align:center}
 #lock .lk-brand .mark,#gate .lk-brand .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(160deg,var(--cyan),#1f6fb0);display:flex;align-items:center;justify-content:center}
 #lock .lk-brand .mark svg,#gate .lk-brand .mark svg{width:20px;height:20px;fill:none;stroke:#03121f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 #lock .lk-t1,#gate .lk-t1{font-size:17px;font-weight:700;letter-spacing:.5px}
@@ -489,6 +493,10 @@ body.sipr #p-home .hgrid #tile-logout .ic{box-shadow:0 0 0 2px #ff6a5c,0 10px 22
 body.sipr .nav .link:not(.homebtn){pointer-events:none;opacity:.5}
 .sipr-banner{display:none;margin:-2px 0 2px;padding:8px 12px;border-radius:12px;background:rgba(255,90,78,.18);border:1px solid rgba(255,90,78,.45);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#ffd7d2;text-align:center;font-weight:700}
 body.sipr .sipr-banner{display:block}
+/* SIPR: the only live tile is Log out — bring it to the first slot and tighten the grid so nothing falls below the fold */
+body.sipr .hgrid{gap:16px 12px;padding-top:4px}
+body.sipr #tile-logout{order:-1}
+body.sipr .sipr-banner{margin-bottom:0}
 
 /* ── SIPR two-step authentication: identical screens, red ── */
 .sipr-tag{display:none;color:#ff8a7a}
@@ -535,8 +543,30 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 1 · GITHUB-KEY GATE — connects the SONARmobile link; shown once per device ══ -->
 <div id="gate" class="on" role="dialog" aria-label="Two-step authentication · step 1 · PASS key">
-  <button type="button" id="gt-pitch" aria-label="Play the SONARmobile pitch" onclick="PITCH.open()"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg><b>Pitch</b></button>
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div></div></div>
+  <button type="button" id="gt-pitch" aria-label="Play the SONARmobile pitch" onclick="PITCH.open()"><svg viewBox="0 0 24 24">
+    <defs>
+      <linearGradient id="gtBoltFill" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7fe6ff"/><stop offset=".25" stop-color="#2fc4ff"/><stop offset=".5" stop-color="#0f7fbf"/>
+        <stop offset=".5" stop-color="#ff6a58"/><stop offset=".75" stop-color="#d9281a"/><stop offset="1" stop-color="#7a0e08"/>
+      </linearGradient>
+      <linearGradient id="gtBoltGloss" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".3" stop-color="#fff" stop-opacity=".06"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset=".52" stop-color="#fff" stop-opacity=".18"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="gtBoltBevel" x="-20%" y="-20%" width="140%" height="140%">
+        <feOffset in="SourceAlpha" dx="0" dy=".9" result="lo"/><feOffset in="SourceAlpha" dx="0" dy="-.9" result="hi"/>
+        <feComposite in="SourceAlpha" in2="lo" operator="out" result="topEdge"/>
+        <feComposite in="SourceAlpha" in2="hi" operator="out" result="botEdge"/>
+        <feGaussianBlur in="topEdge" stdDeviation=".25" result="topS"/><feGaussianBlur in="botEdge" stdDeviation=".25" result="botS"/>
+        <feFlood flood-color="#fff" flood-opacity=".85" result="w"/><feComposite in="w" in2="topS" operator="in" result="edgeHi"/>
+        <feFlood flood-color="#000" flood-opacity=".55" result="k"/><feComposite in="k" in2="botS" operator="in" result="edgeLo"/>
+        <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="edgeLo"/><feMergeNode in="edgeHi"/></feMerge>
+      </filter>
+    </defs>
+    <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="none" stroke="#0b1016" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
+    <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#gtBoltFill)" stroke="#0b1016" stroke-width=".6" stroke-linejoin="round" filter="url(#gtBoltBevel)"/>
+    <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#gtBoltGloss)"/>
+  </svg></button>
+  <div class="lk-brand"><div><div class="lk-t1">SONAR<span class="wm-sub">mob<i class="wm-i">i</i>le</span></div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="gt-step"><b>1</b><span>PASS key</span><i></i><b style="opacity:.45">2</b><span class="dim">Security key</span></div>
   <div class="gt-card">
@@ -557,7 +587,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
 </div>
 <!-- ══ TWO-STEP AUTHENTICATION · STEP 2 · SECURITY KEY LOCK — verified by ADMIN over the link; auto-login re-uses a valid session ══ -->
 <div id="lock" role="dialog" aria-label="Two-step authentication · step 2 · Security key">
-  <div class="lk-brand"><div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="lk-t1">SONARmobile</div></div></div>
+  <div class="lk-brand"><div><div class="lk-t1">SONAR<span class="wm-sub">mob<i class="wm-i">i</i>le</span></div></div></div>
   <div class="lk-t2 tsa"><span class="sipr-tag">SIPR · </span>Two-step authentication</div>
   <div class="lk-step"><b class="done" role="button" title="Change PASS key" onclick="GATE.change()">✓</b><span onclick="GATE.change()">PASS key</span><i></i><b>2</b><span>Security key</span></div>
   <div class="lk-h">SECURITY KEY</div>
@@ -578,7 +608,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
   <div class="nav">
     <div class="brand" onclick="go('home')" role="button" aria-label="Dashboard" style="cursor:pointer">
       <div class="mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-      <div style="min-width:0"><div class="t1">SONARmobile</div><div class="t2" id="nav-sub">Naval Base San Diego · CO view</div></div>
+      <div style="min-width:0"><div class="t1">SONAR<span class="wm-sub">mob<i class="wm-i">i</i>le</span></div><div class="t2" id="nav-sub">Naval Base San Diego · CO view</div></div>
       <div class="classify-wrap" id="classifyWrap" onclick="event.stopPropagation()">
         <button class="classify-btn" id="classifyBtn" onclick="SIPR.toggle(event)" aria-label="Network classification">
           <span id="classifyLabel">NIPR</span>
