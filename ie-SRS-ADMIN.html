@@ -1359,6 +1359,9 @@ html::after {
 /* PROTOTYPE watermark removed */
 .overlay-erecon  .overlay-app-name { color: var(--sage); }
 /* ── OVERLAY CHROME LOGO ── */
+.wm { color: #fff !important; text-shadow: none !important; }
+.wm .wm-s { color: #ff4757 !important; }
+.overlay-logo.wm { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 1px; color: #fff; }
 .overlay-logo {
   display: flex; align-items: center; gap: 3px;
   flex-shrink: 0; text-decoration: none;
@@ -1897,17 +1900,20 @@ html::after {
   position: fixed; bottom: 46px; right: 32px; z-index: 10040;
   width: 72px; height: 72px; padding: 0; margin: 0;
   border-radius: 50%; cursor: pointer;
-  color: #18d4f8;
-  background: radial-gradient(circle at 50% 40%, rgba(24,212,248,.18), rgba(10,18,30,.96) 70%);
-  border: 1.5px solid rgba(24,212,248,.55);
-  box-shadow: 0 0 0 6px rgba(24,212,248,.06), 0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(24,212,248,.25);
+  color: #0b1016;
+  background: linear-gradient(180deg,#ffffff 0%,#eef1f5 55%,#d9dee6 100%);
+  border: 1.5px solid rgba(0,0,0,.35);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.05), 0 18px 40px rgba(0,0,0,.55), 0 0 18px rgba(72,207,255,.18), 0 0 18px rgba(255,71,87,.18), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(0,0,0,.18);
+  overflow: visible;
   display: flex; align-items: center; justify-content: center;
   transition: transform .22s cubic-bezier(.32,.72,0,1), box-shadow .22s, border-color .22s;
 }
-#demo-btn svg { width: 30px; height: 30px; fill: currentColor; margin-left: 4px; filter: drop-shadow(0 0 8px rgba(24,212,248,.55)); }
-#demo-btn .ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid rgba(24,212,248,.5); animation: demoRing 2.6s ease-out infinite; pointer-events: none; }
+#demo-btn svg { width: 44px; height: 44px; margin: 0; overflow: visible; filter: drop-shadow(0 2px 2px rgba(0,0,0,.45)); animation: demoBolt 2.2s ease-in-out infinite; }
+@keyframes demoBolt { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+#demo-btn .gloss { position: absolute; left: 8%; right: 8%; top: 4%; height: 46%; border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%; background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.05)); pointer-events: none; }
+#demo-btn .ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid transparent; border-top-color: rgba(72,207,255,.7); border-right-color: rgba(72,207,255,.7); border-bottom-color: rgba(255,71,87,.7); border-left-color: rgba(255,71,87,.7); animation: demoRing 2.6s ease-out infinite; pointer-events: none; }
 @keyframes demoRing { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(1.65); opacity: 0; } }
-#demo-btn:hover { transform: scale(1.06); border-color: rgba(94,232,255,.9); box-shadow: 0 0 0 8px rgba(24,212,248,.09), 0 0 34px rgba(24,212,248,.35), 0 18px 40px rgba(0,0,0,.55); color: #5ee8ff; }
+#demo-btn:hover { transform: scale(1.06); border-color: rgba(0,0,0,.5); box-shadow: 0 0 0 8px rgba(255,255,255,.08), 0 0 24px rgba(72,207,255,.35), 0 0 24px rgba(255,71,87,.35), 0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(0,0,0,.18); }
 #demo-btn:active { transform: scale(.96); }
 #demo-btn.open .ring { animation: none; opacity: 0; }
 
@@ -1952,11 +1958,12 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 #adm-lock .al-pad button:active { transform: translateY(2px); box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
 #adm-lock .al-pad button.sec { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.7); }
 #adm-lock .al-pad button:disabled { opacity: .5; }
-#gh-gate .gg-brand, #adm-lock .gg-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+#gh-gate .gg-brand, #adm-lock .gg-brand { position: static; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; gap: 0; margin: 0 0 clamp(18px, 6vh, 56px); flex: none; }
 #gh-gate .gg-mark, #adm-lock .gg-mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(160deg, #3fd6ff, #1f6fb0); display: flex; align-items: center; justify-content: center; }
 #gh-gate .gg-mark svg, #adm-lock .gg-mark svg { width: 20px; height: 20px; fill: none; stroke: #03121f; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-#gh-gate .gg-t1, #adm-lock .gg-t1 { font-size: 17px; font-weight: 700; letter-spacing: .5px; color: #fff; }
-#gh-gate .gg-t2, #adm-lock .gg-t2 { font-size: 12px; color: rgba(255,255,255,.45); letter-spacing: 1.5px; text-transform: uppercase; }
+#gh-gate .gg-t1, #adm-lock .gg-t1 { font-size: clamp(30px, 5.5vw, 44px); font-weight: 800; letter-spacing: 1px; color: #fff; line-height: 1.05; text-shadow: 0 2px 10px rgba(0,0,0,.6); }
+#gh-gate .gg-t1 .wm-s, #adm-lock .gg-t1 .wm-s { color: #ff4757; }
+#gh-gate .gg-t2, #adm-lock .gg-t2 { font-size: 13px; color: rgba(255,255,255,.5); letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; }
 #gh-gate .gg-step, #adm-lock .gg-step { display: flex; gap: 8px; align-items: center; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); }
 #gh-gate .gg-step b, #adm-lock .gg-step b { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #3fd6ff; color: #3fd6ff; display: flex; align-items: center; justify-content: center; font-size: 11px; }
 #gh-gate .gg { width: 100%; max-width: 340px; background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04)); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.45), 0 14px 30px rgba(0,0,0,.5); }
@@ -2693,7 +2700,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
 <div id="gh-gate" class="open boot" role="dialog" aria-label="PASS key">
-    <div class="gg-brand"><div class="gg-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="gg-t1">ie-SRS ADMIN</div><div class="gg-t2">System admin platform</div></div></div>
+    <div class="gg-brand"><div><div class="gg-t1">ie-<span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
     <div class="gg">
       <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="">
       <div class="gg-repo" id="gg-repo" hidden></div>
@@ -2703,11 +2710,32 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     <div class="gg-msg" id="gg-msg"></div>
     <button class="gg-skip" id="gg-skip" onclick="GHGATE.skip()">Continue without link</button>
   <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
-      <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+      <span class="ring"></span><span class="gloss"></span><svg viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="dbFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7fe6ff"/><stop offset=".25" stop-color="#2fc4ff"/><stop offset=".5" stop-color="#0f7fbf"/>
+            <stop offset=".5" stop-color="#ff6a58"/><stop offset=".75" stop-color="#d9281a"/><stop offset="1" stop-color="#7a0e08"/>
+          </linearGradient>
+          <linearGradient id="dbGloss" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".3" stop-color="#fff" stop-opacity=".06"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset=".52" stop-color="#fff" stop-opacity=".18"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="dbBevel" x="-20%" y="-20%" width="140%" height="140%">
+            <feOffset in="SourceAlpha" dx="0" dy=".9" result="lo"/><feOffset in="SourceAlpha" dx="0" dy="-.9" result="hi"/>
+            <feComposite in="SourceAlpha" in2="lo" operator="out" result="topEdge"/><feComposite in="SourceAlpha" in2="hi" operator="out" result="botEdge"/>
+            <feGaussianBlur in="topEdge" stdDeviation=".25" result="topS"/><feGaussianBlur in="botEdge" stdDeviation=".25" result="botS"/>
+            <feFlood flood-color="#fff" flood-opacity=".85" result="w"/><feComposite in="w" in2="topS" operator="in" result="edgeHi"/>
+            <feFlood flood-color="#000" flood-opacity=".55" result="k"/><feComposite in="k" in2="botS" operator="in" result="edgeLo"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="edgeLo"/><feMergeNode in="edgeHi"/></feMerge>
+          </filter>
+        </defs>
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="none" stroke="#0b1016" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#dbFill)" stroke="#0b1016" stroke-width=".6" stroke-linejoin="round" filter="url(#dbBevel)"/>
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#dbGloss)"/>
+      </svg>
     </button>
   </div>
 <div id="demo-pick" role="dialog" aria-label="Choose a demo">
-    <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+    <div class="dp-head"><span class="wm">ie-<span class="wm-s">S</span>RS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
     <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
       <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
       <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
@@ -2720,7 +2748,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     </button>
   </div>
 <div id="adm-lock" role="dialog" aria-label="Security key">
-    <div class="gg-brand"><div class="gg-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div><div><div class="gg-t1">ie-SRS ADMIN</div><div class="gg-t2">System admin platform</div></div></div>
+    <div class="gg-brand"><div><div class="gg-t1">ie-<span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
     <div class="gg-step"><b class="done">✓</b><span>PASS key</span><i></i><b>2</b><span>Security key</span></div>
     <div class="al-dots" id="al-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="al-msg" id="al-msg"></div>
@@ -3226,7 +3254,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
             </div>
             <div class="card-head-text">
               <div class="card-badge" style="color:#18d4f8;">HUB</div>
-              <div class="card-title"><span style="color:#18d4f8;">ie-SRS</span> <span style="color:#ffffff;">Core Hub</span></div>
+              <div class="card-title"><span class="wm">ie-<span class="wm-s">S</span>RS</span> <span style="color:#ffffff;">Core Hub</span></div>
             </div>
           </div>
           <div class="card-desc">
@@ -3330,10 +3358,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
      ═══════════════════════════════════════ -->
 <div class="app-overlay" id="overlay-aria" style="flex-direction:column;background:var(--void);">
   <div class="overlay-chrome">
-    <div class="overlay-logo">
-      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
-      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
-    </div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-aria')">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#4db88a;">ARIA // AI ASSISTANT</span>
     <span id="aria-model-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:rgba(0,229,255,.6);border:1px solid rgba(0,229,255,.2);border-radius:3px;padding:2px 8px;white-space:nowrap;">ARIA</span>
@@ -9365,10 +9390,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-dropzone">
   <div class="overlay-chrome">
-    <div class="overlay-logo">
-      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
-      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
-    </div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-dropzone');">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#b0b8c4;">SYS-04 // DATA DROP ZONE</span>
   </div>
@@ -9380,10 +9402,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-saved-scenarios">
   <div class="overlay-chrome">
-    <div class="overlay-logo">
-      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
-      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
-    </div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-saved-scenarios');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-A // SAVED SCENARIOS</span>
   </div>
@@ -9456,10 +9475,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-recon-sites">
   <div class="overlay-chrome">
-    <div class="overlay-logo">
-      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
-      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
-    </div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-recon-sites');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-B // RECON SITES</span>
   </div>
@@ -11971,7 +11987,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-users">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-users')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#18d4f8;">ADM-01 // USER ACCOUNTS</span>
   </div>
@@ -11999,7 +12015,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-msg">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-msg')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-02 // MESSAGE CENTER</span>
     <span id="am-online-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#4db88a;border:1px solid rgba(77,184,138,.35);border-radius:3px;padding:2px 8px;white-space:nowrap;">0 ONLINE</span>
@@ -12043,7 +12059,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-routing">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-routing')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#d4a05a;">ADM-03 // SONAR ALERT ROUTING</span>
   </div>
@@ -12089,7 +12105,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-health">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-health')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#9ebc52;">ADM-04 // INSTANCE HEALTH &amp; DEPLOYMENT</span>
   </div>
@@ -12117,7 +12133,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-audit">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-audit')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#6e90b0;">ADM-05 // AUDIT LOG</span>
   </div>
@@ -12141,7 +12157,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-settings">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-settings')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#c3aaf8;">ADM-06 // PLATFORM SETTINGS</span>
   </div>
@@ -12201,7 +12217,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#e4cc8c;">ADM-07 // DEPLOYMENT STRATEGY</span>
     <button class="adm-b sm" id="str-pdf-dl" onclick="strDownloadPdf()" title="Download the Enterprise Scale-Up document (PDF)" style="margin-left:auto;display:flex;align-items:center;gap:6px;border-color:rgba(228,204,140,.45);color:#e4cc8c;background:rgba(228,204,140,.08);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PDF</button>
@@ -12227,7 +12243,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy-mod">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy-mod');setTimeout(function(){openApp('overlay-adm-strategy');},420);">&#8592; STRATEGY</button>
     <span class="overlay-app-name" style="color:#e4cc8c;" id="str-mod-title">STR-01 // MISSION</span>
     <button class="adm-b sm" id="str-prev" onclick="strStep(-1)" style="margin-left:auto;">&#9664; PREV</button><button class="adm-b sm" id="str-next" onclick="strStep(1)">NEXT &#9654;</button>
@@ -13156,7 +13172,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- ═══ OVERLAY: ADM-09 COMMS LOG ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-comms">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-comms')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#29d3c8;">ADM-09 // COMMS LOG</span>
   </div>
@@ -13241,7 +13257,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- ═══ OVERLAY: ADM-10 CMDR MOBILE ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-cmdr">
   <div class="overlay-chrome">
-    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
+    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-cmdr')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-10 // CMDR MOBILE</span>
   </div>
