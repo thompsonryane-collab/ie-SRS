@@ -1360,6 +1360,8 @@ html::after {
 .overlay-erecon  .overlay-app-name { color: var(--sage); }
 /* ── OVERLAY CHROME LOGO ── */
 .wm { color: #fff !important; text-shadow: none !important; }
+.wm .wm-ie { font-size: .82em; }
+.wm .wm-dash { display: inline-block; transform: scaleX(.5); margin: 0 -.06em; }
 .wm .wm-s { color: #ff4757 !important; }
 .overlay-logo.wm { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 1px; color: #fff; }
 .overlay-logo {
@@ -2700,7 +2702,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 
 <!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
 <div id="gh-gate" class="open boot" role="dialog" aria-label="PASS key">
-    <div class="gg-brand"><div><div class="gg-t1">ie-<span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
+    <div class="gg-brand"><div><div class="gg-t1"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
     <div class="gg">
       <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="">
       <div class="gg-repo" id="gg-repo" hidden></div>
@@ -2735,7 +2737,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     </button>
   </div>
 <div id="demo-pick" role="dialog" aria-label="Choose a demo">
-    <div class="dp-head"><span class="wm">ie-<span class="wm-s">S</span>RS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+    <div class="dp-head"><span class="wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
     <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
       <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
       <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
@@ -2748,7 +2750,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     </button>
   </div>
 <div id="adm-lock" role="dialog" aria-label="Security key">
-    <div class="gg-brand"><div><div class="gg-t1">ie-<span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
+    <div class="gg-brand"><div><div class="gg-t1"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
     <div class="gg-step"><b class="done">✓</b><span>PASS key</span><i></i><b>2</b><span>Security key</span></div>
     <div class="al-dots" id="al-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="al-msg" id="al-msg"></div>
@@ -3254,7 +3256,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
             </div>
             <div class="card-head-text">
               <div class="card-badge" style="color:#18d4f8;">HUB</div>
-              <div class="card-title"><span class="wm">ie-<span class="wm-s">S</span>RS</span> <span style="color:#ffffff;">Core Hub</span></div>
+              <div class="card-title"><span class="wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</span> <span style="color:#ffffff;">Core Hub</span></div>
             </div>
           </div>
           <div class="card-desc">
@@ -3358,7 +3360,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
      ═══════════════════════════════════════ -->
 <div class="app-overlay" id="overlay-aria" style="flex-direction:column;background:var(--void);">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-aria')">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#4db88a;">ARIA // AI ASSISTANT</span>
     <span id="aria-model-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:rgba(0,229,255,.6);border:1px solid rgba(0,229,255,.2);border-radius:3px;padding:2px 8px;white-space:nowrap;">ARIA</span>
@@ -9390,7 +9392,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-dropzone">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-dropzone');">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#b0b8c4;">SYS-04 // DATA DROP ZONE</span>
   </div>
@@ -9402,7 +9404,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-saved-scenarios">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-saved-scenarios');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-A // SAVED SCENARIOS</span>
   </div>
@@ -9475,7 +9477,7 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-recon-sites">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-recon-sites');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-B // RECON SITES</span>
   </div>
@@ -11987,7 +11989,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-users">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-users')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#18d4f8;">ADM-01 // USER ACCOUNTS</span>
   </div>
@@ -12015,7 +12017,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-msg">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-msg')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-02 // MESSAGE CENTER</span>
     <span id="am-online-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#4db88a;border:1px solid rgba(77,184,138,.35);border-radius:3px;padding:2px 8px;white-space:nowrap;">0 ONLINE</span>
@@ -12059,7 +12061,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-routing">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-routing')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#d4a05a;">ADM-03 // SONAR ALERT ROUTING</span>
   </div>
@@ -12105,7 +12107,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-health">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-health')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#9ebc52;">ADM-04 // INSTANCE HEALTH &amp; DEPLOYMENT</span>
   </div>
@@ -12133,7 +12135,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-audit">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-audit')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#6e90b0;">ADM-05 // AUDIT LOG</span>
   </div>
@@ -12157,7 +12159,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-settings">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-settings')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#c3aaf8;">ADM-06 // PLATFORM SETTINGS</span>
   </div>
@@ -12217,7 +12219,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#e4cc8c;">ADM-07 // DEPLOYMENT STRATEGY</span>
     <button class="adm-b sm" id="str-pdf-dl" onclick="strDownloadPdf()" title="Download the Enterprise Scale-Up document (PDF)" style="margin-left:auto;display:flex;align-items:center;gap:6px;border-color:rgba(228,204,140,.45);color:#e4cc8c;background:rgba(228,204,140,.08);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PDF</button>
@@ -12243,7 +12245,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy-mod">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy-mod');setTimeout(function(){openApp('overlay-adm-strategy');},420);">&#8592; STRATEGY</button>
     <span class="overlay-app-name" style="color:#e4cc8c;" id="str-mod-title">STR-01 // MISSION</span>
     <button class="adm-b sm" id="str-prev" onclick="strStep(-1)" style="margin-left:auto;">&#9664; PREV</button><button class="adm-b sm" id="str-next" onclick="strStep(1)">NEXT &#9654;</button>
@@ -13172,7 +13174,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- ═══ OVERLAY: ADM-09 COMMS LOG ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-comms">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-comms')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#29d3c8;">ADM-09 // COMMS LOG</span>
   </div>
@@ -13257,7 +13259,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- ═══ OVERLAY: ADM-10 CMDR MOBILE ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-cmdr">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm">ie-<span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-cmdr')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-10 // CMDR MOBILE</span>
   </div>
