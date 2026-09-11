@@ -12539,9 +12539,11 @@ document.addEventListener("DOMContentLoaded",function(){
       return o[em];
     },
     setKey:function(id,key){ // id = email (custom) or siteId|who (site seat)
+      /* Assigning a live key is an activation: a previously-disabled account must not stay silently
+         disabled underneath an "ACTIVE" key, or STEP 2 will reject it forever while claiming success. */
       key=String(key||'').replace(/\D/g,''); if(key&&!/^\d{6}$/.test(key))return false;
-      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.security=key;st.active=!!key;if(key&&!st.activatedAt)st.activatedAt=Date.now();C.setOverride(id,st);}
-      else{var o=SRASec.custom();if(!o[id])return false;o[id].security=key;o[id].status=key?'active':'pending';if(key&&!o[id].activatedAt)o[id].activatedAt=Date.now();lsW(SEC_CUSTOM,o);}
+      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.security=key;st.active=!!key;if(key)st.disabled=false;if(key&&!st.activatedAt)st.activatedAt=Date.now();C.setOverride(id,st);}
+      else{var o=SRASec.custom();if(!o[id])return false;o[id].security=key;o[id].status=key?'active':'pending';if(key)o[id].disabled=false;if(key&&!o[id].activatedAt)o[id].activatedAt=Date.now();lsW(SEC_CUSTOM,o);}
       SRASec.storeKeys(); return true;
     },
     /* merged key directory · email → account (consumed by keypad + CMDR) */
