@@ -9899,7 +9899,7 @@ function caPortraitPick(input) {
   var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st');
   st.textContent = 'Loading face model…'; st.className = 'st wait'; window.CA_FACE = null;
   FACELIB.enroll(file).then(function (r) {
-    if (!r) { st.textContent = 'No face found · move closer so the face fills most of the frame, good light, no sunglasses'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
+    if (!r) { st.textContent = 'No face found · try a closer, front-facing photo'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
     window.CA_FACE = r; pv.innerHTML = '<img src="' + r.img + '" alt="">';
     st.textContent = 'Face captured · descriptor ready (' + Math.round(r.score * 100) + '% detection)'; st.className = 'st ok';
   }).catch(function (e) { st.textContent = 'Face model unavailable · ' + (e && e.message || e); st.className = 'st bad'; });
@@ -11888,16 +11888,16 @@ document.addEventListener("DOMContentLoaded",function(){
 .adm-tbl th.au-chk-h,.adm-tbl td.au-chk-c{width:26px;padding:7px 4px 7px 10px;cursor:default;}
 .au-chk{accent-color:#18d4f8;width:13px;height:13px;margin:0;cursor:pointer;vertical-align:middle;}
 .adm-tbl tr.au-selrow td{background:rgba(224,85,85,.10)!important;}
-/* ── USER ACCOUNTS · default sizing tuned so all 15 columns fit a 1280px+ viewport without horizontal scroll ── */
-#overlay-adm-users .adm-tbl{font-size:11px;table-layout:auto}
-#overlay-adm-users .adm-tbl th{font-size:8px;letter-spacing:.8px;padding:8px 5px;white-space:normal;line-height:1.25;vertical-align:bottom}
-#overlay-adm-users .adm-tbl td{padding:7px 5px;line-height:1.35;font-size:11px!important}
+/* ── USER ACCOUNTS · taller rows, larger text, actions wrapped onto two lines ── */
+#overlay-adm-users .adm-tbl{font-size:25px}
+#overlay-adm-users .adm-tbl th{font-size:15px;padding:14px 12px}
+#overlay-adm-users .adm-tbl td{padding:16px 12px;line-height:1.4;font-size:25px!important}
 #overlay-adm-users .adm-tbl td:last-child{white-space:normal}
-#overlay-adm-users .au-act{width:170px;display:flex;flex-wrap:wrap;gap:4px 4px;align-items:center}
-#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:8.5px;padding:4px 7px;margin:0}
-#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:8.5px;padding:4px 7px}
-#overlay-adm-users .au-face{width:22px;height:22px;margin-right:6px}
-#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:none;margin-right:5px}
+#overlay-adm-users .au-act{width:400px;display:flex;flex-wrap:wrap;gap:8px 8px;align-items:center}
+#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:17px;padding:8px 16px;margin:0}
+#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:17px;padding:8px 16px}
+#overlay-adm-users .au-face{width:44px;height:44px;margin-right:12px}
+#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:scale(1.8);margin-right:10px}
 .adm-tbl tr.au-selrow td:first-child{box-shadow:inset 2px 0 0 #e05555;}
 .au-selcount{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#6e90b0;border:1px solid var(--border);border-radius:3px;padding:3px 8px;white-space:nowrap;}
 .au-selcount.on{color:#e05555;border-color:rgba(224,85,85,.45);}
@@ -14067,7 +14067,7 @@ window.SRADropZone=(function(){
    ADMIN validates against SRASec.keys() and marks the account LIVE. */
 (function(){
   window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!window.SRASec)return;
-    if(d.face&&!d.key){var fsrc=ev.source;FACEAUTH.handle({desc:d.face,img:d.faceImg||'',authId:d.authId||('pm'+Date.now()),site:d.site||'*',real:false,sipr:!!d.sipr,ts:Date.now(),
+    if(d.face){var fsrc=ev.source;FACEAUTH.handle({desc:d.face,img:d.faceImg||'',authId:d.authId||('pm'+Date.now()),site:d.site||'*',real:false,sipr:!!d.sipr,ts:Date.now(),
       reply:function(ok,a,reason){try{fsrc&&fsrc.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',face:true,sipr:!!d.sipr,key:a.security,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',face:true,sipr:!!d.sipr,reason:reason||'Face not recognized'},'*');}catch(e){}}});return;}
     if(!d.key)return;
     var a=SRASec.validate(d.key);
@@ -14113,7 +14113,7 @@ window.SRADropZone=(function(){
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
     if(!window.SRASec)return;
     /* ── FACE two-step: the phone sends a live face descriptor instead of a key; ADMIN matches it against enrolled portraits, then HOLDS it for the operator ── */
-    if(p.faceAuth&&p.authId&&p.face&&!p.key){
+    if(p.faceAuth&&p.authId&&p.face){   /* face wins even if a stale key rode along */
       var fsite=env.site&&env.site!=='*'?env.site:'*', freal=!p.embedded&&(p.transport||'github')==='github', fage=Date.now()-(env.ts||0);
       if(fage>10*60*1000)return;
       FACEAUTH.handle({desc:p.face,img:p.faceImg||'',authId:p.authId,site:fsite,real:freal,sipr:!!p.sipr,github:p.github||'',dev:env.dev||p.dev||'',ts:env.ts||Date.now(),
@@ -14223,15 +14223,7 @@ window.FACELIB=(function(){
     function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
     if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face-api.min.js not found at '+BASE));};document.head.appendChild(sc);}
   });return ready;}
-  /* Phone captures are 12MP+; at inputSize 416 a face that fills a quarter of the frame shrinks below what the tiny
-     detector can see and enrollment failed with "No face found". describe() now walks a ladder — bigger detector inputs,
-     then a looser score — and takes the largest face if several are present. Box coords are always in `el` pixels. */
-  var LADDER=[{inputSize:416,scoreThreshold:0.5},{inputSize:608,scoreThreshold:0.5},{inputSize:800,scoreThreshold:0.4},{inputSize:1024,scoreThreshold:0.3}];
-  function describe(el){return load().then(function(){
-    var i=0;function step(){if(i>=LADDER.length)return Promise.resolve(null);var o=LADDER[i++];
-      return faceapi.detectAllFaces(el,new faceapi.TinyFaceDetectorOptions(o)).withFaceLandmarks(true).withFaceDescriptors()
-        .then(function(rs){if(!rs||!rs.length)return step();rs.sort(function(a,b){return b.detection.box.area-a.detection.box.area;});return rs[0];},function(){return step();});}
-    return step();})
+  function describe(el){return load().then(function(){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.5})).withFaceLandmarks(true).withFaceDescriptor();})
     .then(function(r){if(!r)return null;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:r.detection.box};});}
   function thumb(el,box,size){size=size||112;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
     var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
