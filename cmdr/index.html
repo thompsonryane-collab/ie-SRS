@@ -462,6 +462,22 @@ body.onhome .homebtn{display:none}
 #lock .lk-foot,#gate .lk-foot{font-size:11px;color:var(--ink3);text-align:center;margin-top:6px;line-height:1.5}
 #lock .lk-foot b,#gate .lk-foot b{color:var(--ink2);font-weight:600}
 #lock .lk-alt{display:flex;gap:8px;margin-top:4px}
+/* ── FACE ID · biometric button on the security-key screen + camera sheet ── */
+#gate .gt-or{display:flex;align-items:center;gap:10px;margin:2px 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink3)}
+#gate .gt-or i{flex:1;height:1px;background:rgba(255,255,255,.14)}
+#gate .gt-face{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border-radius:12px;border:1px solid rgba(63,214,255,.5);background:rgba(63,214,255,.10);color:var(--cyan);font-size:15px;font-weight:700;letter-spacing:.3px}
+#gate .gt-face svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#gate .gt-face:disabled{opacity:.45}
+body.sipr-auth #gate .gt-face{color:#ffd7d2;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.08)}
+#face-cam{position:fixed;inset:0;z-index:9500;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center}
+#face-cam.on{display:flex}
+#face-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#face-cam .fc-ring{position:relative;width:min(68vw,300px);aspect-ratio:3/4;border-radius:50%/40%;border:3px solid rgba(63,214,255,.85);box-shadow:0 0 0 200vmax rgba(0,0,0,.55);transition:border-color .2s}
+#face-cam.hit .fc-ring{border-color:#4fd98a;box-shadow:0 0 0 200vmax rgba(0,0,0,.55),0 0 30px rgba(79,217,138,.6)}
+#face-cam .fc-top{position:absolute;top:calc(var(--sat) + 18px);left:0;right:0;text-align:center;color:#fff;font-size:15px;font-weight:700;letter-spacing:.3px;padding:0 24px;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+#face-cam .fc-msg{position:absolute;bottom:calc(var(--sab) + 96px);left:0;right:0;text-align:center;color:var(--ink2);font-size:13px;padding:0 24px;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+#face-cam .fc-msg.ok{color:#4fd98a}#face-cam .fc-msg.bad{color:#ff8a7a}
+#face-cam .fc-cancel{position:absolute;bottom:calc(var(--sab) + 28px);left:50%;transform:translateX(-50%);padding:12px 26px;border-radius:24px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);color:#fff;font-size:14px;font-weight:600}
 #lock .lk-alt button{font-family:inherit;font-size:12px;padding:9px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink2)}
 
 /* ── NIPR / SIPR classification dropdown ── */
@@ -586,6 +602,8 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
     <input id="gt-token" type="text" name="sonarmobile-link-key" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" data-lpignore="true" inputmode="text" placeholder="" enterkeyhint="go" style="-webkit-text-security:disc">
     <button type="button" class="gt-eye" id="gt-eye" onclick="GATE.eye()">Show key</button>
     <button class="gt-go" id="gt-go" onclick="GATE.connect()">Connect</button>
+    <div class="gt-or"><i></i><span>or</span><i></i></div>
+    <button type="button" class="gt-face" id="gt-face" onclick="GATE.face()" aria-label="Sign in with Face ID"><svg viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M9 9v1M15 9v1M12 9v4h-1"/><path d="M9 15.5c1.5 1.4 4.5 1.4 6 0"/></svg>Sign in with Face ID</button>
   </div>
   <div class="gt-msg" id="gt-msg"></div>
   <button class="gt-alt" id="gt-alt" style="display:none" onclick="GATE.offline()">Continue offline</button>
@@ -616,6 +634,14 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
   <button class="sipr-cancel" id="lk-cancel" onclick="SIPR.cancel()">Cancel · back to NIPR</button>
   <div class="lk-alt" id="lk-alt" style="display:none"><button onclick="LOCK.retry()">Retry</button><button onclick="GATE.change()">Change PASS key</button><button onclick="LOCK.offline()">Continue offline</button></div>
   <div class="lk-foot" id="lk-foot">Verified by <b>ie-SRS ADMIN</b> over the SONARmobile link · keys never leave this device</div>
+</div>
+<!-- ══ FACE ID · front-camera capture sheet · the face is reduced to a 128-number descriptor on this device; only that (and a small thumbnail) goes to ADMIN ══ -->
+<div id="face-cam" role="dialog" aria-label="Face ID">
+  <video id="fc-video" autoplay muted playsinline></video>
+  <div class="fc-top">Face ID · look at the camera</div>
+  <div class="fc-ring"></div>
+  <div class="fc-msg" id="fc-msg">Starting camera…</div>
+  <button class="fc-cancel" onclick="FACE.cancel()">Cancel</button>
 </div>
 <div id="app">
   <div class="nav">
@@ -3031,12 +3057,52 @@ window.SRADropZone=(function(){
   var AUTH_KEY='sonarmobile_auth', AUTH_TTL=12*60*60*1000, AUTH_WAIT=60000, AUTH_RESEND=12000, AUTH_RESEND2=30000;
   var GATE_EACH_LAUNCH=true;   /* true: step 1 GitHub-key screen on every launch, field empty · false: once per device */
   var LOCK_EACH_LAUNCH=true;   /* true: security keypad on every app launch · false: 12h auto-login */
+  /* ══ FACELIB · face-api.js loader + descriptor helpers (same shape as ADMIN) · lazy-loaded from ../face/ on first use ══ */
+  window.FACELIB=(function(){
+    var BASE='../face/', ready=null;
+    function load(){if(ready)return ready;ready=new Promise(function(res,rej){
+      function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
+      if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face model not found at '+BASE));};document.head.appendChild(sc);}
+    });return ready;}
+    function describe(el){return load().then(function(){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:320,scoreThreshold:0.5})).withFaceLandmarks(true).withFaceDescriptor();})
+      .then(function(r){if(!r)return null;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:r.detection.box};});}
+    function thumb(el,box,size){size=size||96;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
+      var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
+      var bx=box?box.x:0,by=box?box.y:0,bw=box?box.width:w,bh=box?box.height:h,pad=Math.max(bw,bh)*0.35;
+      var sx=Math.max(0,bx-pad),sy=Math.max(0,by-pad*1.2),sw=Math.min(w-sx,bw+pad*2),sh=Math.min(h-sy,bh+pad*2.2),side=Math.max(sw,sh);
+      x.fillStyle='#0b1522';x.fillRect(0,0,size,size);x.drawImage(el,sx,sy,side,side,0,0,size,size);return c.toDataURL('image/jpeg',0.6);}
+    function dist(a,b){var s=0,n=Math.min(a.length,b.length);for(var i=0;i<n;i++){var t=a[i]-b[i];s+=t*t;}return Math.sqrt(s);}
+    return {load:load,describe:describe,thumb:thumb,dist:dist,base:function(b){BASE=b;}};
+  })();
+  /* ══ FACE · front-camera capture · scans until one confident face is found, then hands {d,img} to LOCK ══ */
+  window.FACE=(function(){
+    var stream=null, timer=null, done=null, scanning=false;
+    function $(i){return document.getElementById(i);}
+    function msg(t,c){var e=$('fc-msg');if(e){e.textContent=t||'';e.className='fc-msg '+(c||'');}}
+    function stop(){clearTimeout(timer);timer=null;scanning=false;try{if(stream)stream.getTracks().forEach(function(t){t.stop();});}catch(e){}stream=null;var v=$('fc-video');if(v)v.srcObject=null;$('face-cam').classList.remove('on','hit');}
+    function fail(t){msg(t,'bad');setTimeout(function(){var cb=done;done=null;stop();if(cb)cb(null,t);},1400);}
+    function scan(){if(!scanning)return;var v=$('fc-video');if(!v||v.readyState<2||!v.videoWidth){timer=setTimeout(scan,150);return;}
+      FACELIB.describe(v).then(function(r){if(!scanning)return;
+        if(r&&r.score>=0.6){scanning=false;$('face-cam').classList.add('hit');msg('Face captured · sending to ADMIN','ok');
+          var out={d:r.d,img:FACELIB.thumb(v,r.box,96),score:r.score};setTimeout(function(){var cb=done;done=null;stop();if(cb)cb(out);},500);}
+        else{msg(r?'Hold still · centre your face in the ring':'Looking for a face…');timer=setTimeout(scan,250);}
+      }).catch(function(e){fail('Face check failed · '+(e&&e.message||e));});}
+    function open(cb){done=cb;$('face-cam').classList.add('on');$('face-cam').classList.remove('hit');msg('Loading face model…');
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail('Camera not available on this device / origin (HTTPS required)');return;}
+      FACELIB.load().then(function(){msg('Starting camera…');return navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});})
+        .then(function(st){if(!done){try{st.getTracks().forEach(function(t){t.stop();});}catch(e){}return;}stream=st;var v=$('fc-video');v.srcObject=st;try{v.play();}catch(e){}scanning=true;msg('Looking for a face…');timer=setTimeout(scan,300);
+          timer&&setTimeout(function(){if(scanning)fail('No face found · try better light and hold the phone at eye level');},20000);})
+        .catch(function(e){fail(/NotAllowed|Permission/i.test(String(e&&e.name||e))?'Camera permission denied':('Camera unavailable · '+(e&&e.message||e)));});}
+    return {open:open,cancel:function(){var cb=done;done=null;stop();if(cb)cb(null,'cancelled');},active:function(){return !!done;}};
+  })();
   window.LOCK=(function(){
     var digits='', pending=null, waitT=null, resendT=null, busy=false, sess=ls(AUTH_KEY,null), siprMode=false;
     function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
     function dots(){var el=$('lk-dots');if(!el)return;el.classList.remove('err');var is=el.querySelectorAll('i');for(var i=0;i<6;i++)is[i].classList.toggle('f',i<digits.length);}
-    function msg(t,c){var e=$('lk-msg');if(!e)return;e.textContent=t||'';e.className='lk-msg '+(c||'');}
-    function padOn(on){document.querySelectorAll('#lk-pad button').forEach(function(b){b.disabled=!on;});}
+    var gateMode=false;
+    function msg(t,c){var e=$('lk-msg');if(e){e.textContent=t||'';e.className='lk-msg '+(c||'');}
+      if(gateMode){var g=$('gt-msg');if(g){g.textContent=t||'';g.className='gt-msg '+(c||'');}}}
+    function padOn(on){document.querySelectorAll('#lk-pad button').forEach(function(b){b.disabled=!on;});var f=$('gt-face');if(f)f.disabled=!on;}
     function show(){$('lock').classList.add('on');document.body.classList.add('locked');digits='';dots();msg('');padOn(true);$('lk-alt').style.display='none';}
     function hide(){$('lock').classList.remove('on');document.body.classList.remove('locked');}
     function valid(s){return !!(s&&s.key&&/^\d{6}$/.test(s.key)&&(Date.now()-(s.ts||0))<AUTH_TTL);}
@@ -3052,7 +3118,7 @@ window.SRADropZone=(function(){
       try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
     var RING_KEY='sonarmobile_keyring';
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
-    function reject(t){pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(t,'bad');padOn(true);}
+    function reject(t){pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(t,'bad');padOn(true);try{if(FACE.active())FACE.cancel();}catch(e){}if(gateMode){gateMode=false;try{GATE.faceIdle();}catch(e){}}}
     function submit(){
       if(busy||digits.length<6)return; busy=true; padOn(false);
       var ring=ls(RING_KEY,null), key=digits;
@@ -3067,19 +3133,21 @@ window.SRADropZone=(function(){
         });
       }else ask(key);
     }
-    function ask(key,hit){
+    function ask(key,hit,face){
       if(!busy)return;
-      pending={authId:uid(),key:key,ts:Date.now(),hit:hit||null,sipr:!!siprMode};
-      msg(siprMode?('SIPR · '+(hit?'key matches '+hit.n+' · ':'')+'waiting for ADMIN to accept…'):(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…'),'wait');
-      digits=key;
+      pending={authId:uid(),key:key||'',ts:Date.now(),hit:hit||null,sipr:!!siprMode,face:!!face};
+      msg(face?((siprMode?'SIPR · ':'')+'Face captured · waiting for ADMIN to verify…'):siprMode?('SIPR · '+(hit?'key matches '+hit.n+' · ':'')+'waiting for ADMIN to accept…'):(hit?'Key matches '+hit.n+' · verifying with ADMIN…':'Verifying with ADMIN…'),'wait');
+      digits=key||'';
+      /* the request body: a 6-digit key, or a 128-number face descriptor + thumbnail (never the key) */
+      function body(extra){var b=face?{faceAuth:true,face:face.d,faceImg:face.img}:{key:digits,keyAuth:true};return Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',authId:pending.authId,sipr:!!siprMode},b,extra||{});}
       /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
-      try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode}));}catch(e){}
+      try{bus.publish('HELLO',hello(body()));}catch(e){}
       /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
-      try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage({type:'CMDR_KEY_AUTH',key:digits,authId:pending.authId,commander:S.name,site:cfg.site,sipr:!!siprMode},'*');}catch(e){}
+      try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage(Object.assign({type:'CMDR_KEY_AUTH',commander:S.name,site:cfg.site},body()),'*');}catch(e){}
       clearTimeout(waitT);clearTimeout(resendT);
       /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
-      function resend(){if(!pending)return;msg((pending.sipr?'SIPR · ':'')+(pending.hit?'Key matches '+pending.hit.n+' · ':'')+(pending.sipr?'still waiting for ADMIN to accept\u2026 re-sending':'still waiting for ADMIN\u2026 re-sending'),'wait');
-        try{bus.publish('HELLO',hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',key:digits,authId:pending.authId,keyAuth:true,sipr:!!siprMode,resend:true}));}catch(e){}}
+      function resend(){if(!pending)return;msg((pending.sipr?'SIPR · ':'')+(pending.face?'Face captured · ':'')+(pending.hit?'Key matches '+pending.hit.n+' · ':'')+(pending.sipr?'still waiting for ADMIN to accept\u2026 re-sending':'still waiting for ADMIN\u2026 re-sending'),'wait');
+        try{bus.publish('HELLO',hello(body({resend:true})));}catch(e){}}
       resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
       waitT=setTimeout(function(){if(!pending)return;
         if(pending.hit&&!pending.sipr){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
@@ -3087,34 +3155,47 @@ window.SRADropZone=(function(){
           pending=null;busy=false;msg('\u2713 '+sess.name+' \u00b7 verified by keyring \u00b7 ADMIN confirmation pending','ok');
           try{ADMIN_CORE&&0;}catch(e){}
           setTimeout(function(){hide();renderAll();autoLink();announce();toast('Signed in via keyring',sess.name+' \u00b7 ADMIN has not confirmed yet \u2014 LIVE status will update when it does','amber');},650);return;}
-        busy=false;msg((pending.sipr?'SIPR not granted · ':'')+'ADMIN did not answer. Is ADMIN open and the SONARmobile link on?','bad');$('lk-alt').style.display='flex';padOn(true);},pending.sipr?AUTH_WAIT*2:AUTH_WAIT);
+        busy=false;msg((pending.sipr?'SIPR not granted · ':'')+'ADMIN did not answer. Is ADMIN open and the SONARmobile link on?','bad');$('lk-alt').style.display='flex';padOn(true);if(gateMode){gateMode=false;try{GATE.faceIdle();}catch(e){}}},pending.sipr?AUTH_WAIT*2:AUTH_WAIT);
+    }
+    /* Face ID from step 1: the camera replaces both the PASS-key entry and the security key. ADMIN matches the
+       descriptor and, on ACCEPT, returns the account's key, so the phone ends up with the same session a keypad login gives. */
+    function askFace(fromGate,sipr){
+      if(busy)return;busy=true;gateMode=!!fromGate;if(fromGate)siprMode=!!sipr;padOn(false);msg('Face ID · opening camera…','wait');
+      FACE.open(function(cap,err){
+        if(!cap){busy=false;padOn(true);msg(err&&err!=='cancelled'?err:'','bad');if(gateMode){gateMode=false;try{GATE.faceIdle();}catch(e){}}return;}
+        ask('',null,cap);if(pending)pending.gate=!!fromGate;
+      });
     }
     function lateConfirm(p){ if(pending||!sess||sess.via!=='keyring'||p.auth!=='ok'||!p.name)return; sess=Object.assign({},sess,{email:p.email||sess.email,name:p.name,first:p.first||'',last:p.last||'',site:p.site||sess.site,via:p.via||'admin'});lsSet(AUTH_KEY,sess);toast('ADMIN confirmed',sess.name+' \u00b7 LIVE','green');renderAll(); }
     function result(p){
       if(!pending)return; if(p.authId&&p.authId!==pending.authId)return;
       clearTimeout(waitT);clearTimeout(resendT);
       if(p.auth==='ok'&&pending.sipr){
-        var ss={key:pending.key,email:p.email||(sess&&sess.email)||'',name:p.name||(sess&&sess.name)||S.name,site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
-        pending=null;busy=false;siprMode=false;msg('✓ '+ss.name+' · SIPR granted by ADMIN','ok');
-        setTimeout(function(){hide();SIPR.grant(ss);},650);return;
+        var ss={key:pending.key||p.key||(sess&&sess.key)||'',email:p.email||(sess&&sess.email)||'',name:p.name||(sess&&sess.name)||S.name,site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
+        var gs=pending.gate;pending=null;busy=false;siprMode=false;msg('✓ '+ss.name+' · SIPR granted by ADMIN','ok');
+        setTimeout(function(){hide();if(gs){gateMode=false;try{GATE.faceDone();}catch(e){}}SIPR.grant(ss);},650);return;
       }
       if(p.auth==='ok'){
-        sess={key:pending.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||'admin'};
+        if(!pending.key&&!/^\d{6}$/.test(String(p.key||''))){reject('ADMIN accepted the face but sent no security key · update ADMIN');return;}
+        sess={key:pending.key||p.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||(pending.face?'admin-face':'admin')};
         lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;} if(sess.email)S.lastEmail=sess.email; save();
-        pending=null;busy=false;msg('✓ '+sess.name+' · LIVE','ok');
-        setTimeout(function(){hide();renderAll();autoLink();announce();},650);
+        var viaFace=pending.face,viaGate=pending.gate;pending=null;busy=false;msg('✓ '+sess.name+' · '+(viaFace?'Face ID accepted · ':'')+'LIVE','ok');
+        setTimeout(function(){hide();if(viaGate){gateMode=false;try{GATE.faceDone();}catch(e){}}renderAll();autoLink();announce();},650);
       }else{
         reject(p.reason||'Key not recognized · no match in ADMIN · User Accounts');
         if(/revoked|wiped/i.test(p.reason||'')){try{WIPE.run(p.reason,Date.now());}catch(e){}return;}
         if(pending===null&&siprMode&&/declined|expired/i.test(p.reason||'')){setTimeout(function(){try{SIPR.cancel();}catch(e){}},2200);}
       }
     }
-    window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH_OK')result(Object.assign({auth:'ok',via:'admin-window'},d));else if(d.type==='CMDR_KEY_AUTH_FAIL')result({auth:'fail',authId:d.authId});});
+    window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type==='CMDR_KEY_AUTH_OK')result(Object.assign({auth:'ok',via:'admin-window'},d));else if(d.type==='CMDR_KEY_AUTH_FAIL')result({auth:'fail',authId:d.authId,reason:d.reason||''});});
     return {
       hello:hello,
       hideForRelink:function(){pending=null;busy=false;clearTimeout(waitT);$('lock').classList.remove('on');},
       showSipr:function(){siprMode=true;show();msg('SIPR · enter your 6-digit security key · ADMIN must accept','wait');padOn(true);},
-      cancelSipr:function(){siprMode=false;pending=null;busy=false;clearTimeout(waitT);clearTimeout(resendT);hide();},
+      cancelSipr:function(){siprMode=false;pending=null;busy=false;clearTimeout(waitT);clearTimeout(resendT);try{if(FACE.active())FACE.cancel();}catch(e){}hide();},
+      face:askFace,
+      faceFromGate:function(sipr){askFace(true,sipr);},
+      _faceSubmit:function(cap,g){if(busy)return;busy=true;gateMode=!!g;padOn(false);ask('',null,cap);if(pending)pending.gate=!!g;},   /* test hook · bypasses the camera */
       show:show,
       wait:function(t){msg(t||'','wait');padOn(false);},
       keyring:function(ring,ts){lsSet(RING_KEY,{ring:ring,ts:ts||Date.now()});},
@@ -3296,7 +3377,17 @@ window.SRADropZone=(function(){
     try{$('gt-token').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();connect();}});}catch(e){}
     function sipr(){siprMode=true;show();msg('SIPR · enter the PASS key issued for this device, then your security key.','');}
     function cancelSipr(){siprMode=false;hide();}
-    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye,sipr:sipr,cancelSipr:cancelSipr};
+    /* ── Face ID at step 1 · bypasses PASS-key entry and the keypad ──
+       The face request still has to reach ADMIN, so the phone needs a route: the PASS key saved on this device
+       (re-armed silently), the same browser as ADMIN (BroadcastChannel), or ADMIN's preview window (postMessage). */
+    function face(){if(busy)return;var c=bus.cfg();var local=false;try{local=(window.parent!==window)||!!window.opener||c.transport==='broadcast';}catch(e){}
+      if(c.token){bus.configure({transport:'github',token:c.token,node:'cmdr'});cfg=bus.cfg();}
+      else if(!local){msg('Face ID needs the PASS key saved on this device first. Enter it once below — after that, Face ID alone signs you in.','bad');return;}
+      $('gt-go').disabled=true;$('gt-face').disabled=true;msg('Face ID · opening camera…','wait');
+      LOCK.faceFromGate(siprMode);}
+    function faceIdle(){$('gt-go').disabled=false;$('gt-face').disabled=false;}
+    function faceDone(){try{localStorage.removeItem(REJ_KEY);}catch(e){}var wasSipr=siprMode;siprMode=false;hide();faceIdle();toast(wasSipr?'Face ID accepted':'Face ID accepted','Signed in · two-step bypassed','green');}
+    return {show:show,connect:connect,offline:offline,boot:boot,change:change,relink:change,eye:eye,sipr:sipr,cancelSipr:cancelSipr,face:face,faceIdle:faceIdle,faceDone:faceDone};
   })();
   if(WIPE.boot()){document.body.classList.add('wiped');}else if(GATE.boot())LOCK.boot();
   setTimeout(function(){bus.publish('HELLO',LOCK.hello({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5'}));},400);
