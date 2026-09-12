@@ -2476,6 +2476,38 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 #sipr-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
 #sipr-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
 #sipr-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
+/* ── FACE · portrait enrollment + face-auth request ── */
+.ca-face{display:flex;gap:12px;align-items:center}
+.ca-face .pv{width:58px;height:58px;border-radius:50%;flex:none;background:#0b1522;border:1px solid rgba(24,212,248,.35);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#3a5670;font-size:22px}
+.ca-face .pv img{width:100%;height:100%;object-fit:cover}
+.ca-face .st{font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:1px;color:#6e90b0;line-height:1.6}
+.ca-face .st.ok{color:#4db88a}.ca-face .st.bad{color:#ff8a7a}.ca-face .st.wait{color:#d4a05a}
+.ca-face .pick{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap}
+.au-face{width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(24,212,248,.5)}
+#face-req{position:fixed;inset:0;z-index:19900;display:none;align-items:center;justify-content:center;background:rgba(2,6,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#face-req.on{display:flex}
+#face-req .sr-card{width:min(560px,92vw);background:linear-gradient(180deg,#061420,#0d1520 55%);border:1px solid rgba(24,212,248,.55);border-radius:10px;box-shadow:0 0 0 1px rgba(24,212,248,.15),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(24,212,248,.18);overflow:hidden;animation:srpop .18s ease-out}
+#face-req .sr-h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(24,212,248,.12);border-bottom:1px solid rgba(24,212,248,.35);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#18d4f8;text-transform:uppercase}
+#face-req .sr-h i{width:9px;height:9px;border-radius:50%;background:#18d4f8;box-shadow:0 0 10px #18d4f8;animation:secpulse 1.1s infinite}
+#face-req .sr-h .n{margin-left:auto;font-size:9px;color:#e08a45;letter-spacing:1.5px}
+#face-req .fr-pics{display:flex;gap:14px;justify-content:center;padding:18px 18px 6px}
+#face-req .fr-pic{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase}
+#face-req .fr-pic img{width:120px;height:120px;border-radius:12px;object-fit:cover;background:#0b1522;border:1px solid rgba(24,212,248,.35)}
+#face-req .fr-arrow{align-self:center;font-size:22px;color:#18d4f8;padding-bottom:18px}
+#face-req .fr-match{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;padding:4px 18px 0}
+#face-req .fr-match b{font-size:18px;letter-spacing:1px}
+#face-req .fr-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin:8px 40px 4px;overflow:hidden}
+#face-req .fr-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#18d4f8,#4db88a)}
+#face-req .sr-b{padding:10px 18px 6px;display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:12.5px;color:#cce0f2}
+#face-req .sr-b .k{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase;align-self:center}
+#face-req .sr-b .v{color:#f2f8ff}#face-req .sr-b .v.big{font-size:16px;font-weight:700}
+#face-req .sr-b .v.mono{font-family:'Share Tech Mono',monospace;letter-spacing:2px;color:#18d4f8}
+#face-req .sr-note{padding:8px 18px 4px;font-size:11px;color:#8fb0d0;line-height:1.5}
+#face-req .sr-f{display:flex;gap:10px;justify-content:flex-end;padding:14px 18px 16px;border-top:1px solid rgba(255,255,255,.06);margin-top:8px}
+#face-req .sr-f .adm-b{padding:10px 18px;font-size:11px}
+#face-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
+#face-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
+#face-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
 </style>
 </head>
 <body class="adm-locked">
@@ -2802,6 +2834,18 @@ body.adm-locked > #demo-modal { z-index: 20000; }
       <div style="display:flex;gap:8px;align-items:center">
         <input class="ca-input" id="ca-security" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocorrect="off" placeholder="e.g. 482910" style="flex:1;letter-spacing:4px;font-family:'Share Tech Mono',monospace" oninput="clearErr(this);this.value=this.value.replace(/\D/g,'').slice(0,6)">
         <button type="button" onclick="caGenerateKey()" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap">GENERATE</button>
+      </div>
+    </div>
+
+    <div class="ca-field">
+      <div class="ca-label">Portrait <span style="color:#6e90b0;letter-spacing:.5px">&mdash; face enrollment &middot; lets the commander sign in to SONARmobile with Face ID (optional)</span></div>
+      <div class="ca-face">
+        <div class="pv" id="ca-face-pv">&#9786;</div>
+        <div style="flex:1;min-width:0">
+          <div class="st" id="ca-face-st">No portrait &middot; upload a clear, front-facing photo</div>
+        </div>
+        <button type="button" class="pick" onclick="document.getElementById('ca-face-file').click()">UPLOAD</button>
+        <input type="file" id="ca-face-file" accept="image/*" capture="user" style="display:none" onchange="caPortraitPick(this)">
       </div>
     </div>
 
@@ -9835,8 +9879,25 @@ function openCreateAccount() {
     document.querySelectorAll('.ca-multi-chip.selected').forEach(function (c) { c.classList.remove('selected'); });
     var w = document.getElementById('ca-installs'); if (w) { w.style.border = ''; w.style.boxShadow = ''; }
     var btn = document.querySelector('.ca-submit'); if (btn) { btn.textContent = 'CREATE ACCOUNT'; btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }
+    caPortraitReset();
   } catch (e) {}
   document.getElementById('create-account-modal').classList.add('show');
+}
+/* ── Portrait · face enrollment on the Create Account form ──
+   The photo is reduced to a 128-number face descriptor (face-api.js, in-browser) plus a small thumbnail;
+   both live in the account record. Nothing leaves this browser at enrollment time. */
+window.CA_FACE = null;
+function caPortraitReset() { window.CA_FACE = null; var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st'), f = document.getElementById('ca-face-file');
+  if (pv) pv.innerHTML = '&#9786;'; if (st) { st.textContent = 'No portrait · upload a clear, front-facing photo'; st.className = 'st'; } if (f) f.value = ''; }
+function caPortraitPick(input) {
+  var file = input.files && input.files[0]; if (!file) return;
+  var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st');
+  st.textContent = 'Loading face model…'; st.className = 'st wait'; window.CA_FACE = null;
+  FACELIB.enroll(file).then(function (r) {
+    if (!r) { st.textContent = 'No face found · try a closer, front-facing photo'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
+    window.CA_FACE = r; pv.innerHTML = '<img src="' + r.img + '" alt="">';
+    st.textContent = 'Face captured · descriptor ready (' + Math.round(r.score * 100) + '% detection)'; st.className = 'st ok';
+  }).catch(function (e) { st.textContent = 'Face model unavailable · ' + (e && e.message || e); st.className = 'st bad'; });
 }
 function closeCreateAccount() {
   document.getElementById('create-account-modal').classList.remove('show');
@@ -9891,7 +9952,7 @@ function submitCreateAccount() {
 
   var fv = first.value.trim(), lv = last.value.trim(), ev = email.value.trim(),
       sv = station.value.trim(), rv = region.value, rov = role.value, expv = exp.value;
-  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv };
+  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv, face:window.CA_FACE||null };
   if (window.SRASec) { try { window.SRASec.createAccount(record); } catch(e) { console.warn('SRASec create', e); } }
   if (window.ADMIN_CORE) { try { window.ADMIN_CORE.audit('CREATE_ACCOUNT', ev, rov + ' · ' + sv + ' · ' + installs.join('/')); } catch(e) {} }
   if (typeof hubToast === 'function') hubToast('⬡ Account provisioned — ' + fv + ' ' + lv + ' (' + rov.split(' —')[0].split(' (')[0] + ')', 'ok', 3200);
@@ -12356,10 +12417,10 @@ document.addEventListener("DOMContentLoaded",function(){
     function isOff(em){return !!(live[em]&&live[em].off);}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
-      rows.push({site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
+      rows.push({face:(a.face&&a.face.img)||'',faceOn:!!(a.face&&a.face.d),faceid:(a.face&&a.face.d)?'enrolled':'none',site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
         status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:(isLive(em)&&(live[em]||{}).via!=='admin-web')?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||'',via:(live[em]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(em))?'unlocked':'locked'});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);if(st.removed)return;var lv=isLive(u.email);
-      rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(u.email))?'unlocked':'locked'});});});
+      rows.push({face:(st.face&&st.face.img)||'',faceOn:!!(st.face&&st.face.d),faceid:(st.face&&st.face.d)?'enrolled':'none',site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(u.email))?'unlocked':'locked'});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12368,7 +12429,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(reg&&r.region!==reg)return false; if(role&&r.who!==role)return false;
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
       if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
-    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['sipr','SIPR','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
+    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['sipr','SIPR','cat'],['faceid','Face ID','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
     rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users).replace('<tr>','<tr>'+auHeadCell(rows));auPrune();
     var all=userRows();
     $('au-strip').innerHTML=
@@ -12376,7 +12437,7 @@ document.addEventListener("DOMContentLoaded",function(){
       mini('Away',all.filter(function(r){return r.status==='away';}).length,'#f2d24b')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
       mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#c0c8d0')+
-      mini('SIPR unlocked',all.filter(function(r){return r.sipr==='unlocked';}).length,'#4db88a')+mini('Revoked',all.filter(function(r){return window.SRASec&&SRASec.isRevoked(r.email);}).length,'#ff5a4e')+
+      mini('SIPR unlocked',all.filter(function(r){return r.sipr==='unlocked';}).length,'#4db88a')+mini('Face ID enrolled',all.filter(function(r){return r.faceOn;}).length,'#18d4f8')+mini('Revoked',all.filter(function(r){return window.SRASec&&SRASec.isRevoked(r.email);}).length,'#ff5a4e')+
       mini('Showing',rows.length,'#18d4f8');
     $('au-body').innerHTML=rows.length?rows.map(function(r){
       var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
@@ -12384,18 +12445,22 @@ document.addEventListener("DOMContentLoaded",function(){
       var web=r.via==='admin-web';
     if(keyLive&&web)c='#18d4f8';
     var revoked=window.SRASec&&SRASec.isRevoked(r.email);if(revoked)c='#ff5a4e';
-    var stLbl=revoked?'<span class="sec-live-dot" style="background:#ff5a4e;box-shadow:0 0 8px #ff5a4e"></span>REVOKED':keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+
+    var byFace=keyLive&&!!((SRASec.live()[r.email]||{}).face);
+    var stLbl=revoked?'<span class="sec-live-dot" style="background:#ff5a4e;box-shadow:0 0 8px #ff5a4e"></span>REVOKED':keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+(byFace?' · FACE ID':'')+
       (web&&window.ADMIN_SESSION&&ADMIN_SESSION.email===r.email?' · YOU':'')+
       (r.github?' · '+esc(r.github):'')):r.status;
-      return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
+      return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+(r.face?'<img class="au-face" src="'+r.face+'" alt="" title="Face enrolled">':'')+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
         '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
         '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
         '<td>'+(r.sipr==='unlocked'?'<span class="sec-live-dot" style="background:#4db88a;box-shadow:0 0 0 3px rgba(77,184,138,.25),0 0 10px #4db88a"></span><span style="color:#4db88a;font-weight:700;letter-spacing:1px">SIPR</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">locked</span>')+'</td>'+
+        '<td>'+(r.faceOn?'<span class="sec-live-dot" style="background:#18d4f8;box-shadow:0 0 0 3px rgba(24,212,248,.25),0 0 10px #18d4f8"></span><span style="color:#18d4f8;font-weight:700;letter-spacing:1px">FACE ID</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">none</span>')+'</td>'+
         '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+(r.seen>=99999?'never':C.ago(r.seen))+'</td>'+
         (r.kind==='custom'?
         '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
+        '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\'custom\',\''+esc(r.email)+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
+        '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
@@ -12403,13 +12468,15 @@ document.addEventListener("DOMContentLoaded",function(){
         '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></td></tr>'
         :
         '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
+        '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\''+r.siteId+'\',\''+r.who+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
+        '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         '<button class="adm-b sm" onclick="admUserReset(\''+r.siteId+'\',\''+r.who+'\')">RESET</button> '+
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
         (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="13" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="14" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
 
   /* ══ ADM-01 MULTI-SELECT · BATCH DELETE ══
@@ -12533,9 +12600,10 @@ document.addEventListener("DOMContentLoaded",function(){
       var o=SRASec.custom(); var em=String(rec.email||'').toLowerCase(); if(!em)return null;
       var name=(rec.first?rec.first.charAt(0)+'. ':'')+(rec.last||''); var key=String(rec.security||'').replace(/\D/g,'');
       o[em]={name:name.trim()||em,first:rec.first||'',last:rec.last||'',email:em,station:rec.station||'',region:rec.region||'',role:rec.role||'',exp:rec.exp||'',installations:rec.installations||[],
-             security:key,status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0};
+             security:key,status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0,face:rec.face&&rec.face.d?{d:rec.face.d,img:rec.face.img||'',ts:Date.now()}:null};
       SRASec.saveCustom(o);
       if(key)C.audit('ACTIVATE_ACCOUNT',em,'security key assigned at creation');
+      if(o[em].face)C.audit('FACE_ENROLL',em,o[em].name+' · portrait enrolled at creation');
       return o[em];
     },
     setKey:function(id,key){ // id = email (custom) or siteId|who (site seat)
@@ -12546,12 +12614,22 @@ document.addEventListener("DOMContentLoaded",function(){
       else{var o=SRASec.custom();if(!o[id])return false;o[id].security=key;o[id].status=key?'active':'pending';if(key)o[id].disabled=false;if(key&&!o[id].activatedAt)o[id].activatedAt=Date.now();lsW(SEC_CUSTOM,o);}
       SRASec.storeKeys(); return true;
     },
+    /* ── FACE: portrait descriptor per account (custom = email · seat = siteId|who) ── */
+    setFace:function(id,face){face=face&&face.d&&face.d.length?{d:face.d,img:face.img||'',ts:Date.now()}:null;
+      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.face=face;C.setOverride(id,st);}
+      else{var o=SRASec.custom();if(!o[id])return false;o[id].face=face;lsW(SEC_CUSTOM,o);}
+      SRASec.storeKeys();SRASec.repaint();return true;},
+    faceOf:function(id){if(id.indexOf('|')>0){var pr=id.split('|');return C.acctState(pr[0],pr[1]).face||null;}return (SRASec.custom()[id]||{}).face||null;},
+    /* best enrolled match for a live descriptor · {acct,dist} or null when nobody is enrolled */
+    faceMatch:function(desc){if(!desc||!desc.length||!window.FACELIB)return null;var m=SRASec.keys();var best=null,n=0;
+      Object.keys(m).forEach(function(em){var a=m[em];if(!a.face||!a.face.d||a.disabled||SRASec.isRevoked(em))return;n++;var d=FACELIB.dist(desc,a.face.d);if(!best||d<best.dist)best={acct:a,dist:d};});
+      return best?Object.assign(best,{enrolled:n}):{acct:null,dist:9,enrolled:n};},
     /* merged key directory · email → account (consumed by keypad + CMDR) */
     storeKeys:function(){
       var m={};
       C.SITES.forEach(function(site){['fm','backup'].forEach(function(who){var u=site[who];if(!u)return;var st=C.acctState(site.id,who);var sec=st.security||'';
-        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',role:u.role||'',disabled:!!st.disabled};});});
-      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[]};});
+        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',role:u.role||'',disabled:!!st.disabled,face:st.face||null};});});
+      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[],face:a.face||null};});
       lsW(SEC_KEYS,m); return m;
     },
     keys:function(){return SRASec.storeKeys();},
@@ -12606,6 +12684,24 @@ document.addEventListener("DOMContentLoaded",function(){
   };
   try{window.addEventListener('pagehide',function(){try{admSessionEnd();}catch(e){}});}catch(e){}
   window.storeSecurityKeys=SRASec.storeKeys;
+  /* FACE · enroll or replace the portrait for an existing account (custom = email · seat = siteId|who) */
+  window.admFaceEnroll=function(siteId,who){
+    var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
+    var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
+    var cur=SRASec.faceOf(id);
+    if(cur&&!confirm('Replace the enrolled portrait for '+label+'?\n(Cancel keeps the current one · use CLEAR in the next prompt to remove it)'))return;
+    var f=document.getElementById('adm-face-file');if(!f){f=document.createElement('input');f.type='file';f.id='adm-face-file';f.accept='image/*';f.style.display='none';document.body.appendChild(f);}
+    f.value='';f.onchange=function(){var file=f.files&&f.files[0];if(!file)return;
+      try{hubToast('⬡ Reading portrait for '+label+'…','warn',2200);}catch(e){}
+      FACELIB.enroll(file).then(function(r){
+        if(!r){hubToast('⬡ No face found in that photo · try a closer, front-facing shot','warn',3200);return;}
+        SRASec.setFace(id,r);
+        try{ADMIN_CORE&&ADMIN_CORE.audit('FACE_ENROLL',isCustom?who:C.SITE[siteId][who].email,label+' · portrait enrolled by ADMIN');}catch(e){}
+        hubToast('⬡ Face enrolled for '+label+' · '+Math.round(r.score*100)+'% detection','ok',3000);
+      }).catch(function(e){hubToast('⬡ Face model unavailable · '+(e&&e.message||e),'warn',3600);});};
+    f.click();
+  };
+  window.admFaceClear=function(id){SRASec.setFace(id,null);};
   window.admSetSecurityKey=function(siteId,who){
     var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
     var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
@@ -12625,6 +12721,16 @@ document.addEventListener("DOMContentLoaded",function(){
   /* ══ WIPE DEVICE · remote self-destruct. KILL goes out three times over ~20 s (bus writes can be lost); the account is
         marked REVOKED so any later contact from that phone is answered with KILL again. The PASS key (GitHub PAT) must be
         revoked on GitHub separately — that layer works even if the phone never comes back online. ══ */
+  /* ── PING · sound a 10-second soft alarm on one commander's phone (bus, resent once; phone dedupes by id) ── */
+  window.admPingUser=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em]||{};var name=m.name||em;
+    var id='pg'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+    var by=(window.ADMIN_SESSION&&(ADMIN_SESSION.name||ADMIN_SESSION.email))||'ADMIN';
+    var p={node:'admin',app:'ie-SRS ADMIN',id:id,email:em,name:name,by:by,secs:10,ts:Date.now()};
+    var live=SRASec.isLive(em);
+    [0,6000].forEach(function(d){setTimeout(function(){try{SRABus.publish('PING',Object.assign({},p,{resend:d>0}),{site:'*'});}catch(e){}},d);});
+    try{C.audit('CMDR_PING',em,name+' · 10 s alarm sent by '+by+(live?'':' · phone not LIVE — will sound when it reconnects'));}catch(e){}
+    hubToast('⬡ Ping sent to '+name+(live?'':' · not LIVE, queued on the bus'),live?'ok':'warn',3000);
+  };
   window.admWipeDevice=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em];if(!m){toastWarn('Account not found');return;}
     if(!confirm('WIPE SONARmobile on '+(m.name||em)+"'s device?\n\nThe phone will erase every key, session and cached record and lock to a DEVICE REVOKED screen. The account stays REVOKED until you press RESTORE.\n\nRemember to also revoke the PASS key (GitHub PAT) on GitHub."))return;
     var rec=SRASec.revoke(m,{by:(window.ADMIN_SESSION&&ADMIN_SESSION.email)||'admin'});
@@ -13916,7 +14022,10 @@ window.SRADropZone=(function(){
      • SRABus HELLO envelope with payload.key                       (cross-device via GitHub transport)
    ADMIN validates against SRASec.keys() and marks the account LIVE. */
 (function(){
-  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!d.key||!window.SRASec)return;
+  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!window.SRASec)return;
+    if(d.face&&!d.key){var fsrc=ev.source;FACEAUTH.handle({desc:d.face,img:d.faceImg||'',authId:d.authId||('pm'+Date.now()),site:d.site||'*',real:false,sipr:!!d.sipr,ts:Date.now(),
+      reply:function(ok,a,reason){try{fsrc&&fsrc.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',face:true,sipr:!!d.sipr,key:a.security,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',face:true,sipr:!!d.sipr,reason:reason||'Face not recognized'},'*');}catch(e){}}});return;}
+    if(!d.key)return;
     var a=SRASec.validate(d.key);
     if(a){try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview window · not marked LIVE');}catch(e){}try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' signed in on the preview (not LIVE)','ok',2600);}catch(e){}if(d.sipr){var src=ev.source;SIPRREQ.open({authId:d.authId||('pm'+Date.now()),acct:a,site:d.site||'*',real:false,key:d.key,ts:Date.now(),reply:function(ok,reason){try{src&&src.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,sipr:true}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',sipr:true,reason:reason||''},'*');}catch(e){}}});return;}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
     else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
@@ -13953,8 +14062,24 @@ window.SRADropZone=(function(){
       ringDigest=digest;ringLast=Date.now();SRABus.publish('KEYRING',{node:'admin',count:ring.length,ring:ring});});}catch(e){}}
   window.publishKeyring=publishKeyring;
   function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
+    SRABus.subscribe(function(env,replay){if(replay||!env||env.from!=='cmdr'||env.type!=='PING_ACK')return;var p=env.payload||{};
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PING_ACK',p.email||'',(p.name||p.email||'phone')+' · '+(p.dismissed?'dismissed the ping':'ping sounded for 10 s'));}catch(e){}
+      try{hubToast('⬡ '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed the ping':' · ping received'),'ok',2600);}catch(e){}});
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
-    if(!p.key||!window.SRASec)return;
+    if(!window.SRASec)return;
+    /* ── FACE two-step: the phone sends a live face descriptor instead of a key; ADMIN matches it against enrolled portraits, then HOLDS it for the operator ── */
+    if(p.faceAuth&&p.authId&&p.face&&!p.key){
+      var fsite=env.site&&env.site!=='*'?env.site:'*', freal=!p.embedded&&(p.transport||'github')==='github', fage=Date.now()-(env.ts||0);
+      if(fage>10*60*1000)return;
+      FACEAUTH.handle({desc:p.face,img:p.faceImg||'',authId:p.authId,site:fsite,real:freal,sipr:!!p.sipr,github:p.github||'',dev:env.dev||p.dev||'',ts:env.ts||Date.now(),
+        reply:function(ok,a,reason){
+          var rp=ok?{node:'admin',app:'ie-SRS ADMIN',auth:'ok',face:true,sipr:!!p.sipr,authId:p.authId,key:a.security,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:freal?'admin-bus':'admin-bus-preview'}
+                  :{node:'admin',app:'ie-SRS ADMIN',auth:'fail',face:true,sipr:!!p.sipr,authId:p.authId,reason:reason||'Face not recognized'};
+          SRABus.publish('HELLO',rp,{site:fsite});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},rp,{resend:true}),{site:fsite});}catch(e){}},6000);
+          if(ok&&freal){try{autoConnect(a,fsite,p);}catch(e){}}
+        }});
+      return;}
+    if(!p.key)return;
     var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
     var real=!p.embedded&&(p.transport||'github')==='github';
     if(a&&SRASec.isRevoked(a.email)&&!p.wiped){var rv=SRASec.revoked()[a.email]||{};
@@ -14043,6 +14168,112 @@ window.SIPRREQ=(function(){
   return {open:open,decide:decide,pending:function(){return (cur?1:0)+q.length;},current:function(){return cur;}};
 })();
 </script>
+<script>
+/* ══ FACELIB · face-api.js loader + descriptor helpers (shared shape with SONARmobile) ══
+   Models are lazy-loaded from face/models/ the first time a portrait is enrolled. Matching is pure math
+   (Euclidean distance between 128-d descriptors), so a face request never needs the model on ADMIN. */
+window.FACELIB=(function(){
+  var BASE='face/', ready=null, THRESHOLD=0.55;
+  function load(){if(ready)return ready;ready=new Promise(function(res,rej){
+    function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
+    if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face-api.min.js not found at '+BASE));};document.head.appendChild(sc);}
+  });return ready;}
+  function describe(el){return load().then(function(){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.5})).withFaceLandmarks(true).withFaceDescriptor();})
+    .then(function(r){if(!r)return null;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:r.detection.box};});}
+  function thumb(el,box,size){size=size||112;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
+    var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
+    var bx=box?box.x:0,by=box?box.y:0,bw=box?box.width:w,bh=box?box.height:h,pad=Math.max(bw,bh)*0.35;
+    var sx=Math.max(0,bx-pad),sy=Math.max(0,by-pad*1.2),sw=Math.min(w-sx,bw+pad*2),sh=Math.min(h-sy,bh+pad*2.2),side=Math.max(sw,sh);
+    x.fillStyle='#0b1522';x.fillRect(0,0,size,size);x.drawImage(el,sx,sy,side,side,0,0,size,size);return c.toDataURL('image/jpeg',0.72);}
+  function fromFile(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file);var im=new Image();im.onload=function(){res(im);};im.onerror=function(){rej(new Error('Could not read that image'));};im.src=u;});}
+  function enroll(file){return fromFile(file).then(function(im){return describe(im).then(function(r){if(!r)return null;return {d:r.d,img:thumb(im,r.box,112),score:r.score};});});}
+  function dist(a,b){var s=0,n=Math.min(a.length,b.length);for(var i=0;i<n;i++){var t=a[i]-b[i];s+=t*t;}return Math.sqrt(s);}
+  return {load:load,describe:describe,thumb:thumb,enroll:enroll,dist:dist,THRESHOLD:THRESHOLD,base:function(b){BASE=b;}};
+})();
+/* ══ FACEAUTH · face-auth request broker (ADM-01) ══
+   The phone's lock screen sends HELLO{faceAuth,face:[128],faceImg,authId} (bus) or postMessage CMDR_KEY_AUTH{face} (preview).
+   ADMIN finds the closest enrolled portrait; a miss is answered immediately, a hit is HELD in a popup showing the enrolled
+   portrait beside the live capture so the operator can ACCEPT or DECLINE. Resends with the same authId never open twice. */
+window.FACEAUTH=(function(){
+  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000;
+  function $(i){return document.getElementById(i);}
+  function handle(r){                                          /* r = {desc,img,authId,site,real,sipr,github,dev,ts,reply(ok,acct,reason)} */
+    if(decided[r.authId]){var d=decided[r.authId];if(Date.now()-d.ts<10*60*1000){try{r.reply(d.ok,d.acct,d.reason);}catch(e){}}return;}
+    for(var i=0;i<q.length;i++)if(q[i].authId===r.authId){q[i].reply=r.reply;return;}
+    if(cur&&cur.authId===r.authId){cur.reply=r.reply;return;}
+    var m=SRASec.faceMatch(r.desc);
+    if(!m||!m.enrolled){decided[r.authId]={ok:false,reason:'No portraits enrolled in ADMIN · User Accounts',ts:Date.now()};try{r.reply(false,null,decided[r.authId].reason);}catch(e){}
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REJECT',r.site,'face request · no portraits enrolled');}catch(e){}try{hubToast('⬡ Face sign-in refused · no portraits enrolled','warn',3000);}catch(e){}return;}
+    if(!m.acct||m.dist>FACELIB.THRESHOLD){decided[r.authId]={ok:false,reason:'Face not recognized · no enrolled portrait matched',ts:Date.now()};try{r.reply(false,null,decided[r.authId].reason);}catch(e){}
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REJECT',r.site,'face request · best distance '+m.dist.toFixed(2)+(m.acct?' ('+m.acct.name+')':'')+' > '+FACELIB.THRESHOLD);}catch(e){}
+      try{hubToast('⬡ Face sign-in refused · no match (closest '+m.dist.toFixed(2)+')','warn',3000);}catch(e){}return;}
+    r.acct=m.acct;r.dist=m.dist;r.at=Date.now();q.push(r);
+    try{hubToast('⬡ '+r.acct.name+' is signing in with Face ID','warn',3200);}catch(e){}
+    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REQUEST',r.acct.email,r.acct.name+' · distance '+m.dist.toFixed(2)+' · awaiting ADMIN decision');}catch(e){}
+    show();
+  }
+  function conf(d){return Math.max(0,Math.min(100,Math.round((1-d/(FACELIB.THRESHOLD*1.6))*100)));}
+  function show(){
+    if(cur||!q.length){paintCount();return;}
+    cur=q.shift();
+    $('fr-enrolled').src=(cur.acct.face&&cur.acct.face.img)||'';$('fr-live').src=cur.img||'';
+    $('fr-live').style.display=cur.img?'':'none';$('fr-live-lbl').style.display=cur.img?'':'none';
+    $('fr-name').textContent=cur.acct.name||cur.acct.email;
+    $('fr-site').textContent=cur.acct.site||cur.site||'—';
+    $('fr-email').textContent=cur.acct.email||'—';
+    $('fr-dist').textContent=cur.dist.toFixed(3)+' / '+FACELIB.THRESHOLD.toFixed(2);
+    $('fr-conf').textContent=conf(cur.dist)+'%';$('fr-bar').style.width=conf(cur.dist)+'%';
+    $('fr-via').textContent=(cur.real?'SONARmobile · cross-device link':'Preview / same browser')+(cur.sipr?' · SIPR':'');
+    $('fr-when').textContent=new Date(cur.at||Date.now()).toLocaleTimeString();
+    $('fr-accept').textContent=cur.sipr?'ACCEPT · UNLOCK SIPR':'ACCEPT · SIGN IN';
+    paintCount();$('face-req').classList.add('on');
+    clearInterval(tick);tick=setInterval(function(){var left=Math.max(0,Math.round((cur.at+EXPIRE-Date.now())/1000));$('fr-timer').textContent='EXPIRES IN '+left+' S';if(left<=0)expire();},500);
+    $('fr-timer').textContent='';
+  }
+  function paintCount(){var e=$('fr-count');if(e)e.textContent=q.length?('+'+q.length+' MORE QUEUED'):'';}
+  function close(){clearInterval(tick);cur=null;$('face-req').classList.remove('on');show();}
+  function expire(){if(!cur)return;try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_EXPIRED',cur.acct.email,cur.acct.name+' · no decision · face request expired');}catch(e){}decided[cur.authId]={ok:false,reason:'Face request expired · try again',ts:Date.now()};close();}
+  function decide(ok){if(!cur)return;var r=cur;
+    if(ok){
+      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',dev:r.dev||'',via:'cmdr-mobile',face:true});}catch(e){}
+      try{if(r.sipr)SRASec.markSipr(r.acct,{via:r.real?'cmdr-mobile':'preview'});}catch(e){}
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_AUTH',r.acct.email,r.acct.name+' · Face ID accepted by ADMIN · distance '+r.dist.toFixed(2)+' · '+(r.real?'mobile':'preview')+(r.sipr?' · SIPR':''));}catch(e){}
+      try{hubToast('⬡ '+r.acct.name+' · Face ID accepted'+(r.sipr?' · SIPR granted':''),'ok',2600);}catch(e){}
+      decided[r.authId]={ok:true,acct:r.acct,ts:Date.now()};
+    }else{
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_DECLINE',r.acct.email,r.acct.name+' · Face ID declined by ADMIN');}catch(e){}
+      try{hubToast('⬡ '+r.acct.name+' · Face ID declined','warn',2600);}catch(e){}
+      decided[r.authId]={ok:false,reason:'Face sign-in declined by ADMIN',ts:Date.now()};
+    }
+    try{r.reply(ok,r.acct,decided[r.authId].reason);}catch(e){}
+    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
+    close();
+  }
+  return {handle:handle,decide:decide,pending:function(){return (cur?1:0)+q.length;},current:function(){return cur;}};
+})();
+</script>
+<!-- ══ FACE ID REQUEST POPUP · a commander's phone sent a live face; ADMIN sees the enrolled portrait beside it and accepts or declines ══ -->
+<div id="face-req" role="dialog" aria-modal="true" aria-label="Face ID sign-in request">
+  <div class="sr-card">
+    <div class="sr-h"><i></i>Face ID sign-in request<span class="n" id="fr-count"></span></div>
+    <div class="fr-pics">
+      <div class="fr-pic"><img id="fr-enrolled" alt=""><span>Enrolled portrait</span></div>
+      <div class="fr-arrow">⇄</div>
+      <div class="fr-pic"><img id="fr-live" alt=""><span id="fr-live-lbl">Live capture</span></div>
+    </div>
+    <div class="fr-match"><span style="color:#6e90b0">MATCH</span> <b id="fr-conf" style="color:#4db88a">—</b> <span style="color:#6e90b0">· DISTANCE</span> <span id="fr-dist" style="color:#18d4f8">—</span></div>
+    <div class="fr-bar"><i id="fr-bar" style="width:0"></i></div>
+    <div class="sr-b">
+      <div class="k">Commander</div><div class="v big" id="fr-name">—</div>
+      <div class="k">Installation</div><div class="v" id="fr-site">—</div>
+      <div class="k">Account</div><div class="v mono" id="fr-email" style="letter-spacing:.5px;font-size:11px">—</div>
+      <div class="k">Channel</div><div class="v" id="fr-via">—</div>
+      <div class="k">Requested</div><div class="v" id="fr-when">—</div>
+    </div>
+    <div class="sr-note">The phone matched a live face to this enrolled portrait on-device and sent only the 128-number descriptor. Accepting signs the commander in to SONARmobile exactly as a security key would. Distance below <b style="color:#18d4f8">0.55</b> is a match; lower is closer.</div>
+    <div class="sr-f"><span class="sr-t" id="fr-timer"></span><button class="adm-b warn" id="fr-decline" onclick="FACEAUTH.decide(false)">DECLINE</button><button class="adm-b ok" id="fr-accept" onclick="FACEAUTH.decide(true)">ACCEPT · SIGN IN</button></div>
+  </div>
+</div>
 <!-- ══ SIPR ACCESS REQUEST POPUP · shown when a commander's phone asks for SIPR; ADMIN accepts or declines ══ -->
 <div id="sipr-req" role="dialog" aria-modal="true" aria-label="SIPR access request">
   <div class="sr-card">
