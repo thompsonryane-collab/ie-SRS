@@ -2830,6 +2830,11 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     </div>
 
     <div class="ca-field">
+      <div class="ca-label">Cell Phone <span style="color:#6e90b0;letter-spacing:.5px">&mdash; optional &middot; shown in User Accounts as a tap-to-call number</span></div>
+      <input class="ca-input" id="ca-phone" type="tel" inputmode="tel" autocomplete="off" placeholder="e.g. 619-555-0142" oninput="clearErr(this)">
+    </div>
+
+    <div class="ca-field">
       <div class="ca-label">Security Key <span style="color:#6e90b0;letter-spacing:.5px">&mdash; 6 digits &middot; assigning a key activates the account for CMDR mobile sign-in</span></div>
       <div style="display:flex;gap:8px;align-items:center">
         <input class="ca-input" id="ca-security" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocorrect="off" placeholder="e.g. 482910" style="flex:1;letter-spacing:4px;font-family:'Share Tech Mono',monospace" oninput="clearErr(this);this.value=this.value.replace(/\D/g,'').slice(0,6)">
@@ -9879,7 +9884,7 @@ function openCreateAccount() {
     document.querySelectorAll('.ca-multi-chip.selected').forEach(function (c) { c.classList.remove('selected'); });
     var w = document.getElementById('ca-installs'); if (w) { w.style.border = ''; w.style.boxShadow = ''; }
     var btn = document.querySelector('.ca-submit'); if (btn) { btn.textContent = 'CREATE ACCOUNT'; btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }
-    caPortraitReset();
+    caPortraitReset();var ph=document.getElementById('ca-phone');if(ph){ph.value='';ph.style.border='';ph.style.boxShadow='';}
   } catch (e) {}
   document.getElementById('create-account-modal').classList.add('show');
 }
@@ -9937,6 +9942,9 @@ function submitCreateAccount() {
   check(region,  region  && region.value);
   check(role,    role    && role.value);
   check(exp,     exp     && exp.value);
+  var phEl = document.getElementById('ca-phone'), phv = phEl ? phEl.value.trim() : '';
+  if (phv && !/^\+?[\d\s().-]{7,20}$/.test(phv)) { phEl.style.border = ERR; phEl.style.boxShadow = '0 0 0 3px rgba(255,80,80,.15)'; invalid = true; }
+  else if (phEl) { phEl.style.border = OK; phEl.style.boxShadow = ''; }
   var secEl = document.getElementById('ca-security');
   var secv  = secEl ? secEl.value.replace(/\D/g,'') : '';
   if (secv && !/^\d{6}$/.test(secv)) { secEl.style.border = ERR; secEl.style.boxShadow = '0 0 0 3px rgba(255,80,80,.15)'; invalid = true; }
@@ -9952,7 +9960,7 @@ function submitCreateAccount() {
 
   var fv = first.value.trim(), lv = last.value.trim(), ev = email.value.trim(),
       sv = station.value.trim(), rv = region.value, rov = role.value, expv = exp.value;
-  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv, face:window.CA_FACE||null };
+  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv, phone:phv, face:window.CA_FACE||null };
   if (window.SRASec) { try { window.SRASec.createAccount(record); } catch(e) { console.warn('SRASec create', e); } }
   if (window.ADMIN_CORE) { try { window.ADMIN_CORE.audit('CREATE_ACCOUNT', ev, rov + ' · ' + sv + ' · ' + installs.join('/')); } catch(e) {} }
   if (typeof hubToast === 'function') hubToast('⬡ Account provisioned — ' + fv + ' ' + lv + ' (' + rov.split(' —')[0].split(' (')[0] + ')', 'ok', 3200);
@@ -12417,10 +12425,10 @@ document.addEventListener("DOMContentLoaded",function(){
     function isOff(em){return !!(live[em]&&live[em].off);}
     var cu=window.SRASec?SRASec.custom():{};
     Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
-      rows.push({face:(a.face&&a.face.img)||'',faceOn:!!(a.face&&a.face.d),faceid:(a.face&&a.face.d)?'enrolled':'none',site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
+      rows.push({phone:a.phone||'',face:(a.face&&a.face.img)||'',faceOn:!!(a.face&&a.face.d),faceid:(a.face&&a.face.d)?'enrolled':'none',site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
         status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:(isLive(em)&&(live[em]||{}).via!=='admin-web')?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||'',via:(live[em]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(em))?'unlocked':'locked'});});
     C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);if(st.removed)return;var lv=isLive(u.email);
-      rows.push({face:(st.face&&st.face.img)||'',faceOn:!!(st.face&&st.face.d),faceid:(st.face&&st.face.d)?'enrolled':'none',site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(u.email))?'unlocked':'locked'});});});
+      rows.push({phone:'',face:(st.face&&st.face.img)||'',faceOn:!!(st.face&&st.face.d),faceid:(st.face&&st.face.d)?'enrolled':'none',site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(u.email))?'unlocked':'locked'});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12429,7 +12437,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(reg&&r.region!==reg)return false; if(role&&r.who!==role)return false;
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
       if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
-    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['security','Security Key','text'],['status','Status','cat'],['sipr','SIPR','cat'],['faceid','Face ID','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
+    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['phone','Cell','text'],['security','Security Key','text'],['status','Status','cat'],['sipr','SIPR','cat'],['faceid','Face ID','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
     rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users).replace('<tr>','<tr>'+auHeadCell(rows));auPrune();
     var all=userRows();
     $('au-strip').innerHTML=
@@ -12452,6 +12460,7 @@ document.addEventListener("DOMContentLoaded",function(){
       return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+(r.face?'<img class="au-face" src="'+r.face+'" alt="" title="Face enrolled">':'')+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
         '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
+        '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;white-space:nowrap">'+(r.phone?'<a href="tel:'+esc(r.phone.replace(/[^\d+]/g,''))+'" style="color:#18d4f8" title="Call">'+esc(r.phone)+'</a>':(r.kind==='custom'?'<span style="color:#3a4658">—</span>':'<span style="color:#3a4658">—</span>'))+(r.kind==='custom'?' <button class="adm-b sm" style="padding:1px 5px;font-size:8px;margin-left:4px" onclick="admSetPhone(\''+esc(r.email)+'\')" title="Edit cell number">✎</button>':'')+'</td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
         '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
         '<td>'+(r.sipr==='unlocked'?'<span class="sec-live-dot" style="background:#4db88a;box-shadow:0 0 0 3px rgba(77,184,138,.25),0 0 10px #4db88a"></span><span style="color:#4db88a;font-weight:700;letter-spacing:1px">SIPR</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">locked</span>')+'</td>'+
@@ -12476,7 +12485,7 @@ document.addEventListener("DOMContentLoaded",function(){
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
         (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="14" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="15" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
 
   /* ══ ADM-01 MULTI-SELECT · BATCH DELETE ══
@@ -12600,7 +12609,7 @@ document.addEventListener("DOMContentLoaded",function(){
       var o=SRASec.custom(); var em=String(rec.email||'').toLowerCase(); if(!em)return null;
       var name=(rec.first?rec.first.charAt(0)+'. ':'')+(rec.last||''); var key=String(rec.security||'').replace(/\D/g,'');
       o[em]={name:name.trim()||em,first:rec.first||'',last:rec.last||'',email:em,station:rec.station||'',region:rec.region||'',role:rec.role||'',exp:rec.exp||'',installations:rec.installations||[],
-             security:key,status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0,face:rec.face&&rec.face.d?{d:rec.face.d,img:rec.face.img||'',ts:Date.now()}:null};
+             security:key,phone:String(rec.phone||'').trim(),status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0,face:rec.face&&rec.face.d?{d:rec.face.d,img:rec.face.img||'',ts:Date.now()}:null};
       SRASec.saveCustom(o);
       if(key)C.audit('ACTIVATE_ACCOUNT',em,'security key assigned at creation');
       if(o[em].face)C.audit('FACE_ENROLL',em,o[em].name+' · portrait enrolled at creation');
@@ -12619,6 +12628,7 @@ document.addEventListener("DOMContentLoaded",function(){
       if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.face=face;C.setOverride(id,st);}
       else{var o=SRASec.custom();if(!o[id])return false;o[id].face=face;lsW(SEC_CUSTOM,o);}
       SRASec.storeKeys();SRASec.repaint();return true;},
+    setPhone:function(em,phone){var o=SRASec.custom();if(!o[em])return false;o[em].phone=String(phone||'').trim();lsW(SEC_CUSTOM,o);SRASec.storeKeys();SRASec.repaint();return true;},
     faceOf:function(id){if(id.indexOf('|')>0){var pr=id.split('|');return C.acctState(pr[0],pr[1]).face||null;}return (SRASec.custom()[id]||{}).face||null;},
     /* best enrolled match for a live descriptor · {acct,dist} or null when nobody is enrolled */
     faceMatch:function(desc){if(!desc||!desc.length||!window.FACELIB)return null;var m=SRASec.keys();var best=null,n=0;
@@ -12629,7 +12639,7 @@ document.addEventListener("DOMContentLoaded",function(){
       var m={};
       C.SITES.forEach(function(site){['fm','backup'].forEach(function(who){var u=site[who];if(!u)return;var st=C.acctState(site.id,who);var sec=st.security||'';
         if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',role:u.role||'',disabled:!!st.disabled,face:st.face||null};});});
-      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[],face:a.face||null};});
+      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[],face:a.face||null,phone:a.phone||''};});
       lsW(SEC_KEYS,m); return m;
     },
     keys:function(){return SRASec.storeKeys();},
@@ -12702,6 +12712,10 @@ document.addEventListener("DOMContentLoaded",function(){
     f.click();
   };
   window.admFaceClear=function(id){SRASec.setFace(id,null);};
+  window.admSetPhone=function(em){var a=SRASec.custom()[em];if(!a){toastWarn('Only provisioned accounts carry a cell number');return;}
+    var v=prompt('Cell phone for '+(a.name||em)+':\n(leave blank to clear)',a.phone||'');if(v===null)return;v=String(v).trim();
+    if(v&&!/^\+?[\d\s().-]{7,20}$/.test(v)){alert('That does not look like a phone number');return;}
+    SRASec.setPhone(em,v);try{C.audit('SET_PHONE',em,(a.name||em)+' · cell '+(v||'cleared'));}catch(e){}};
   window.admSetSecurityKey=function(siteId,who){
     var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
     var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
