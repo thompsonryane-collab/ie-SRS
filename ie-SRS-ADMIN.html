@@ -9899,7 +9899,7 @@ function caPortraitPick(input) {
   var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st');
   st.textContent = 'Loading face model…'; st.className = 'st wait'; window.CA_FACE = null;
   FACELIB.enroll(file).then(function (r) {
-    if (!r) { st.textContent = 'No face found · try a closer, front-facing photo'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
+    if (!r) { st.textContent = 'No face found · move closer so the face fills most of the frame, good light, no sunglasses'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
     window.CA_FACE = r; pv.innerHTML = '<img src="' + r.img + '" alt="">';
     st.textContent = 'Face captured · descriptor ready (' + Math.round(r.score * 100) + '% detection)'; st.className = 'st ok';
   }).catch(function (e) { st.textContent = 'Face model unavailable · ' + (e && e.message || e); st.className = 'st bad'; });
@@ -11888,6 +11888,16 @@ document.addEventListener("DOMContentLoaded",function(){
 .adm-tbl th.au-chk-h,.adm-tbl td.au-chk-c{width:26px;padding:7px 4px 7px 10px;cursor:default;}
 .au-chk{accent-color:#18d4f8;width:13px;height:13px;margin:0;cursor:pointer;vertical-align:middle;}
 .adm-tbl tr.au-selrow td{background:rgba(224,85,85,.10)!important;}
+/* ── USER ACCOUNTS · default sizing tuned so all 15 columns fit a 1280px+ viewport without horizontal scroll ── */
+#overlay-adm-users .adm-tbl{font-size:11px;table-layout:auto}
+#overlay-adm-users .adm-tbl th{font-size:8px;letter-spacing:.8px;padding:8px 5px;white-space:normal;line-height:1.25;vertical-align:bottom}
+#overlay-adm-users .adm-tbl td{padding:7px 5px;line-height:1.35;font-size:11px!important}
+#overlay-adm-users .adm-tbl td:last-child{white-space:normal}
+#overlay-adm-users .au-act{width:170px;display:flex;flex-wrap:wrap;gap:4px 4px;align-items:center}
+#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:8.5px;padding:4px 7px;margin:0}
+#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:8.5px;padding:4px 7px}
+#overlay-adm-users .au-face{width:22px;height:22px;margin-right:6px}
+#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:none;margin-right:5px}
 .adm-tbl tr.au-selrow td:first-child{box-shadow:inset 2px 0 0 #e05555;}
 .au-selcount{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#6e90b0;border:1px solid var(--border);border-radius:3px;padding:3px 8px;white-space:nowrap;}
 .au-selcount.on{color:#e05555;border-color:rgba(224,85,85,.45);}
@@ -12467,16 +12477,16 @@ document.addEventListener("DOMContentLoaded",function(){
         '<td>'+(r.faceOn?'<span class="sec-live-dot" style="background:#18d4f8;box-shadow:0 0 0 3px rgba(24,212,248,.25),0 0 10px #18d4f8"></span><span style="color:#18d4f8;font-weight:700;letter-spacing:1px">FACE ID</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">none</span>')+'</td>'+
         '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+(r.seen>=99999?'never':C.ago(r.seen))+'</td>'+
         (r.kind==='custom'?
-        '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
+        '<td><div class="au-act"><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
         '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\'custom\',\''+esc(r.email)+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
         '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
         (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></td></tr>'
+        '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></div></td></tr>'
         :
-        '<td><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
+        '<td><div class="au-act"><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
         '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\''+r.siteId+'\',\''+r.who+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
         '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
         '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
@@ -12485,7 +12495,7 @@ document.addEventListener("DOMContentLoaded",function(){
         (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
         (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
         (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="15" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></div></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="15" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
 
   /* ══ ADM-01 MULTI-SELECT · BATCH DELETE ══
@@ -12735,16 +12745,36 @@ document.addEventListener("DOMContentLoaded",function(){
   /* ══ WIPE DEVICE · remote self-destruct. KILL goes out three times over ~20 s (bus writes can be lost); the account is
         marked REVOKED so any later contact from that phone is answered with KILL again. The PASS key (GitHub PAT) must be
         revoked on GitHub separately — that layer works even if the phone never comes back online. ══ */
-  /* ── PING · sound a 10-second soft alarm on one commander's phone (bus, resent once; phone dedupes by id) ── */
+  /* ── PING · sound a 10-second soft alarm on one commander's phone (bus, resent once; phone dedupes by id) ──
+     Instrumented: every stage is toasted + audited (transport → bus write → ACK / no answer), and a ping that goes
+     unanswered for 30 s surfaces the commander's cell number as the fallback. The phone is addressed by email AND by
+     a SHA-256 of its security key, so a keyring-fallback session (no email known) still recognizes its own ping. */
+  var PINGS={};
+  function sha256(str){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(str))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve('');}}
   window.admPingUser=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em]||{};var name=m.name||em;
     var id='pg'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
     var by=(window.ADMIN_SESSION&&(ADMIN_SESSION.name||ADMIN_SESSION.email))||'ADMIN';
-    var p={node:'admin',app:'ie-SRS ADMIN',id:id,email:em,name:name,by:by,secs:10,ts:Date.now()};
-    var live=SRASec.isLive(em);
-    [0,6000].forEach(function(d){setTimeout(function(){try{SRABus.publish('PING',Object.assign({},p,{resend:d>0}),{site:'*'});}catch(e){}},d);});
-    try{C.audit('CMDR_PING',em,name+' · 10 s alarm sent by '+by+(live?'':' · phone not LIVE — will sound when it reconnects'));}catch(e){}
-    hubToast('⬡ Ping sent to '+name+(live?'':' · not LIVE, queued on the bus'),live?'ok':'warn',3000);
+    var live=SRASec.isLive(em), lv=SRASec.live()[em]||{}, st=SRABus.status(), tr=st.transport||'?';
+    var phone=m.phone||(SRASec.custom()[em]||{}).phone||'';
+    PINGS[id]={em:em,name:name,phone:phone,t0:Date.now(),acked:false};
+    var stage1='transport '+tr+(tr==='github'?(st.connected?' · linked':' · NOT CONNECTED'):tr==='broadcast'?' · same-browser only':'')+' · target '+(live?'LIVE ('+(lv.via||'')+(lv.face?' · Face ID':'')+')':'not LIVE');
+    hubToast('⬡ PING 1/3 → '+name+' · '+stage1,live&&(tr!=='github'||st.connected)?'ok':'warn',3200);
+    try{C.audit('CMDR_PING',em,name+' · 10 s alarm sent by '+by+' · '+stage1);}catch(e){}
+    sha256(m.security||'').then(function(kh){
+      var p={node:'admin',app:'ie-SRS ADMIN',id:id,email:em,kh:kh,name:name,by:by,secs:10,ts:Date.now()};
+      function send(resend){try{return SRABus.publish('PING',Object.assign({},p,{resend:!!resend}),{site:'*'});}catch(e){return Promise.reject(e);}}
+      send(false).then(function(){setTimeout(function(){var s2=SRABus.status();var ok=tr!=='github'||s2.write==='ok'||s2.pending>0&&!s2.error;
+          hubToast('⬡ PING 2/3 · bus write '+(tr==='github'?(s2.write==='ok'?'OK':s2.write==='error'?'FAILED · '+(s2.error||''):(s2.pending?'pending ('+s2.pending+' queued)':'…')):'sent (BroadcastChannel)'),ok?'ok':'warn',3200);
+          try{C.audit('CMDR_PING_TX',em,name+' · id '+id+' · write '+(s2.write||'n/a')+(s2.error?' · '+s2.error:''));}catch(e){}},tr==='github'?2500:200);
+      }).catch(function(e){hubToast('⬡ PING 2/3 · publish threw · '+(e&&e.message||e),'warn',4000);});
+      setTimeout(function(){send(true);},6000);
+      setTimeout(function(){var r=PINGS[id];if(!r||r.acked)return;
+        hubToast('⬡ PING 3/3 · NO ANSWER from '+name+' in 30 s'+(phone?' · call '+phone:' · no cell on file'),'warn',8000);
+        try{C.audit('CMDR_PING_NOANSWER',em,name+' · no ACK in 30 s · '+(phone?'cell '+phone:'no cell on file'));}catch(e){}
+        try{if(phone&&confirm('No answer from '+name+' after 30 s.\n\nCall '+phone+' now?'))window.location.href='tel:'+phone.replace(/[^\d+]/g,'');}catch(e){}},30000);
+    });
   };
+  window.admPingStatus=function(){return PINGS;};
   window.admWipeDevice=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em];if(!m){toastWarn('Account not found');return;}
     if(!confirm('WIPE SONARmobile on '+(m.name||em)+"'s device?\n\nThe phone will erase every key, session and cached record and lock to a DEVICE REVOKED screen. The account stays REVOKED until you press RESTORE.\n\nRemember to also revoke the PASS key (GitHub PAT) on GitHub."))return;
     var rec=SRASec.revoke(m,{by:(window.ADMIN_SESSION&&ADMIN_SESSION.email)||'admin'});
@@ -14077,8 +14107,9 @@ window.SRADropZone=(function(){
   window.publishKeyring=publishKeyring;
   function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
     SRABus.subscribe(function(env,replay){if(replay||!env||env.from!=='cmdr'||env.type!=='PING_ACK')return;var p=env.payload||{};
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PING_ACK',p.email||'',(p.name||p.email||'phone')+' · '+(p.dismissed?'dismissed the ping':'ping sounded for 10 s'));}catch(e){}
-      try{hubToast('⬡ '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed the ping':' · ping received'),'ok',2600);}catch(e){}});
+      var r=window.admPingStatus?admPingStatus()[p.id]:null;var secs=r?((Date.now()-r.t0)/1000).toFixed(1)+' s':'';if(r)r.acked=true;
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PING_ACK',p.email||(r&&r.em)||'',(p.name||p.email||'phone')+' · '+(p.dismissed?'dismissed the ping':'ping sounded for 10 s')+(secs?' · round trip '+secs:'')+(p.sound===false?' · AUDIO BLOCKED on phone':''));}catch(e){}
+      try{hubToast('⬡ PING 3/3 · '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed':' received')+(secs?' · '+secs:'')+(p.sound===false?' · phone audio blocked (tap Ping pill on phone)':''),p.sound===false?'warn':'ok',4000);}catch(e){}});
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
     if(!window.SRASec)return;
     /* ── FACE two-step: the phone sends a live face descriptor instead of a key; ADMIN matches it against enrolled portraits, then HOLDS it for the operator ── */
@@ -14192,7 +14223,15 @@ window.FACELIB=(function(){
     function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
     if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face-api.min.js not found at '+BASE));};document.head.appendChild(sc);}
   });return ready;}
-  function describe(el){return load().then(function(){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.5})).withFaceLandmarks(true).withFaceDescriptor();})
+  /* Phone captures are 12MP+; at inputSize 416 a face that fills a quarter of the frame shrinks below what the tiny
+     detector can see and enrollment failed with "No face found". describe() now walks a ladder — bigger detector inputs,
+     then a looser score — and takes the largest face if several are present. Box coords are always in `el` pixels. */
+  var LADDER=[{inputSize:416,scoreThreshold:0.5},{inputSize:608,scoreThreshold:0.5},{inputSize:800,scoreThreshold:0.4},{inputSize:1024,scoreThreshold:0.3}];
+  function describe(el){return load().then(function(){
+    var i=0;function step(){if(i>=LADDER.length)return Promise.resolve(null);var o=LADDER[i++];
+      return faceapi.detectAllFaces(el,new faceapi.TinyFaceDetectorOptions(o)).withFaceLandmarks(true).withFaceDescriptors()
+        .then(function(rs){if(!rs||!rs.length)return step();rs.sort(function(a,b){return b.detection.box.area-a.detection.box.area;});return rs[0];},function(){return step();});}
+    return step();})
     .then(function(r){if(!r)return null;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:r.detection.box};});}
   function thumb(el,box,size){size=size||112;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
     var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
