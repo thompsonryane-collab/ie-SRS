@@ -6,14 +6,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>ie-SRS // SYSTEM ADMIN PLATFORM — ie-SRS // SONAR | Reconnaissance | Simulation</title>
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260908">
-<link rel="manifest" href="site.webmanifest">
-<meta name="apple-mobile-web-app-title" content="ie-SRS ADM">
-<meta name="theme-color" content="#0e1824">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -1359,11 +1351,6 @@ html::after {
 /* PROTOTYPE watermark removed */
 .overlay-erecon  .overlay-app-name { color: var(--sage); }
 /* ── OVERLAY CHROME LOGO ── */
-.wm { color: #fff !important; text-shadow: none !important; }
-.wm .wm-ie { font-size: .82em; }
-.wm .wm-dash { display: inline-block; transform: scaleX(.5); margin: 0 -.06em; }
-.wm .wm-s { color: #ff4757 !important; }
-.overlay-logo.wm { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 1px; color: #fff; }
 .overlay-logo {
   display: flex; align-items: center; gap: 3px;
   flex-shrink: 0; text-decoration: none;
@@ -1902,85 +1889,19 @@ html::after {
   position: fixed; bottom: 46px; right: 32px; z-index: 10040;
   width: 72px; height: 72px; padding: 0; margin: 0;
   border-radius: 50%; cursor: pointer;
-  color: #0b1016;
-  background: linear-gradient(180deg,#ffffff 0%,#eef1f5 55%,#d9dee6 100%);
-  border: 1.5px solid rgba(0,0,0,.35);
-  box-shadow: 0 0 0 6px rgba(255,255,255,.05), 0 18px 40px rgba(0,0,0,.55), 0 0 18px rgba(72,207,255,.18), 0 0 18px rgba(255,71,87,.18), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(0,0,0,.18);
-  overflow: visible;
+  color: #18d4f8;
+  background: radial-gradient(circle at 50% 40%, rgba(24,212,248,.18), rgba(10,18,30,.96) 70%);
+  border: 1.5px solid rgba(24,212,248,.55);
+  box-shadow: 0 0 0 6px rgba(24,212,248,.06), 0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(24,212,248,.25);
   display: flex; align-items: center; justify-content: center;
   transition: transform .22s cubic-bezier(.32,.72,0,1), box-shadow .22s, border-color .22s;
 }
-#demo-btn svg { width: 44px; height: 44px; margin: 0; overflow: visible; filter: drop-shadow(0 2px 2px rgba(0,0,0,.45)); animation: demoBolt 2.2s ease-in-out infinite; }
-@keyframes demoBolt { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-#demo-btn .gloss { position: absolute; left: 8%; right: 8%; top: 4%; height: 46%; border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%; background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.05)); pointer-events: none; }
-#demo-btn .ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid transparent; border-top-color: rgba(72,207,255,.7); border-right-color: rgba(72,207,255,.7); border-bottom-color: rgba(255,71,87,.7); border-left-color: rgba(255,71,87,.7); animation: demoRing 2.6s ease-out infinite; pointer-events: none; }
+#demo-btn svg { width: 30px; height: 30px; fill: currentColor; margin-left: 4px; filter: drop-shadow(0 0 8px rgba(24,212,248,.55)); }
+#demo-btn .ring { position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px solid rgba(24,212,248,.5); animation: demoRing 2.6s ease-out infinite; pointer-events: none; }
 @keyframes demoRing { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(1.65); opacity: 0; } }
-#demo-btn:hover { transform: scale(1.06); border-color: rgba(0,0,0,.5); box-shadow: 0 0 0 8px rgba(255,255,255,.08), 0 0 24px rgba(72,207,255,.35), 0 0 24px rgba(255,71,87,.35), 0 18px 40px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(0,0,0,.18); }
+#demo-btn:hover { transform: scale(1.06); border-color: rgba(94,232,255,.9); box-shadow: 0 0 0 8px rgba(24,212,248,.09), 0 0 34px rgba(24,212,248,.35), 0 18px 40px rgba(0,0,0,.55); color: #5ee8ff; }
 #demo-btn:active { transform: scale(.96); }
 #demo-btn.open .ring { animation: none; opacity: 0; }
-
-/* ── GITHUB KEY GATE ── */
-#gh-gate { display: none; position: fixed; inset: 0; z-index: 10050; background: rgba(4,8,14,.72); backdrop-filter: blur(6px); flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; }
-#gh-gate.open { display: flex; }
-#gh-gate.boot { backdrop-filter: none; background:
-  radial-gradient(140% 70% at 50% -10%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.06) 35%, rgba(255,255,255,0) 60%),
-  linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.07) 50%, rgba(255,255,255,0) 60%),
-  radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%),
-  linear-gradient(180deg, #3a3f47 0%, #2b2f36 45%, #22262c 100%); }   /* locked on open: glossy dark gray, matches CMDR */
-#adm-lock { display: none; position: fixed; inset: 0; z-index: 20050; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; user-select: none; background:
-  radial-gradient(140% 70% at 50% -10%, rgba(255,255,255,.22) 0%, rgba(255,255,255,.06) 35%, rgba(255,255,255,0) 60%),
-  linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.07) 50%, rgba(255,255,255,0) 60%),
-  radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%),
-  linear-gradient(180deg, #3a3f47 0%, #2b2f36 45%, #22262c 100%); }
-#adm-lock.open { display: flex; }
-/* ── STEP 2 HARD LOCK ──
-   Set on <body> at parse time and cleared only by a verified security key.
-   Nothing but the two authentication gates is allowed to paint until then.
-   visibility (not display) so layout/measurement inside the shell stays valid. */
-body.adm-locked { overflow: hidden; }
-body.adm-locked > *:not(#adm-lock):not(#gh-gate):not(#demo-pick):not(#demo-modal):not(script):not(style) { visibility: hidden !important; }
-body.adm-locked > #adm-lock, body.adm-locked > #gh-gate,
-body.adm-locked > #demo-pick, body.adm-locked > #demo-modal { visibility: visible !important; }
-/* demo picker + player ride above the gate on the auth screen (gate 10050 / lock 10060) */
-body.adm-locked > #demo-modal { z-index: 20000; }
-#adm-lock .gg-step i { width: 26px; height: 1px; background: rgba(255,255,255,.18); }
-#adm-lock .gg-step b.done { background: #4fd98a; border-color: #4fd98a; color: #03121f; }
-#adm-lock .al-dots { display: flex; gap: 14px; margin: 6px 0 4px; }
-#adm-lock .al-dots i { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #3fd6ff; display: block; transition: background .12s, transform .12s; }
-#adm-lock .al-dots i.f { background: #3fd6ff; box-shadow: 0 0 12px #3fd6ff; transform: scale(1.08); }
-#adm-lock .al-dots.err i { border-color: #ff5a4e; background: transparent; box-shadow: none; animation: alshake .35s; }
-@keyframes alshake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
-#adm-lock .al-msg { min-height: 20px; font-size: 13px; text-align: center; color: rgba(255,255,255,.45); }
-#adm-lock .al-msg.ok { color: #6fe3a1; } #adm-lock .al-msg.bad { color: #ef9a9a; }
-#adm-lock #al-mode { display: none; margin-top: 2px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: #d4a05a; border: 1px solid rgba(212,160,90,.45); border-radius: 3px; padding: 3px 9px; }
-#adm-lock #al-mode.on { display: block; }
-#adm-lock .al-pad { display: grid; grid-template-columns: repeat(3, 78px); gap: 14px 16px; margin-top: 6px; justify-content: center; }
-#adm-lock .al-pad button { height: 62px; border-radius: 16px; cursor: pointer; font-family: inherit; font-size: 24px; font-weight: 600; color: #fff; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 0 rgba(0,0,0,.45), 0 6px 14px rgba(0,0,0,.45); transition: transform .06s, box-shadow .06s; }
-#adm-lock .al-pad button:active { transform: translateY(2px); box-shadow: inset 0 1px 3px rgba(0,0,0,.5); }
-#adm-lock .al-pad button.sec { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.7); }
-#adm-lock .al-pad button:disabled { opacity: .5; }
-#gh-gate .gg-brand, #adm-lock .gg-brand { position: static; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; gap: 0; margin: 0 0 clamp(18px, 6vh, 56px); flex: none; }
-#gh-gate .gg-mark, #adm-lock .gg-mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(160deg, #3fd6ff, #1f6fb0); display: flex; align-items: center; justify-content: center; }
-#gh-gate .gg-mark svg, #adm-lock .gg-mark svg { width: 20px; height: 20px; fill: none; stroke: #03121f; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-#gh-gate .gg-t1, #adm-lock .gg-t1 { font-size: clamp(30px, 5.5vw, 44px); font-weight: 800; letter-spacing: 1px; color: #fff; line-height: 1.05; text-shadow: 0 2px 10px rgba(0,0,0,.6); }
-#gh-gate .gg-t1 .wm-s, #adm-lock .gg-t1 .wm-s { color: #ff4757; }
-#gh-gate .gg-t2, #adm-lock .gg-t2 { font-size: 13px; color: rgba(255,255,255,.5); letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; }
-#gh-gate .gg-step, #adm-lock .gg-step { display: flex; gap: 8px; align-items: center; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.45); }
-#gh-gate .gg-step b, #adm-lock .gg-step b { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #3fd6ff; color: #3fd6ff; display: flex; align-items: center; justify-content: center; font-size: 11px; }
-#gh-gate .gg { width: 100%; max-width: 340px; background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04)); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(0,0,0,.45), 0 14px 30px rgba(0,0,0,.5); }
-#gh-gate input { width: 100%; box-sizing: border-box; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; padding: 13px 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,.35); background: linear-gradient(180deg, #f2f4f7, #ffffff 40%); color: #07111f; caret-color: #07111f; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,.28), inset 0 -1px 0 rgba(255,255,255,.9); }
-#gh-gate input:focus { border-color: #3fd6ff; box-shadow: inset 0 2px 4px rgba(0,0,0,.28), 0 0 0 3px rgba(63,214,255,.18); }
-#gh-gate .gg-eye { align-self: flex-end; margin: -4px 0 2px; font-size: 12px; font-weight: 600; color: #3fd6ff; padding: 6px 10px; border-radius: 10px; cursor: pointer; background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.03)); border: 1px solid rgba(63,214,255,.4); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), inset 0 -1px 0 rgba(0,0,0,.4), 0 3px 8px rgba(0,0,0,.4); }
-#gh-gate .gg-eye:active { transform: translateY(1px); box-shadow: inset 0 1px 3px rgba(0,0,0,.4); }
-#gh-gate .gg-go { margin-top: 2px; height: 50px; border-radius: 14px; cursor: pointer; border: 1px solid rgba(0,60,80,.55); background: linear-gradient(180deg, #8ee9ff 0%, #3fd6ff 48%, #1fb6e6 52%, #159ccb 100%); color: #03121f; font-family: inherit; font-size: 16px; font-weight: 700; letter-spacing: .5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 0 rgba(0,40,60,.35), 0 6px 14px rgba(0,0,0,.45); text-shadow: 0 1px 0 rgba(255,255,255,.35); transition: transform .08s, box-shadow .08s; }
-#gh-gate .gg-go:active { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.6), inset 0 2px 4px rgba(0,40,60,.35), 0 2px 6px rgba(0,0,0,.45); }
-#gh-gate .gg-go:disabled { opacity: .55; cursor: default; }
-#gh-gate .gg-go.busy { background: rgba(255,255,255,.08); color: #3fd6ff; border: 1px solid #3fd6ff; box-shadow: none; text-shadow: none; }
-#gh-gate .gg-skip { background: none; border: 0; padding: 4px 8px; cursor: pointer; font-family: inherit; font-size: 12px; color: rgba(255,255,255,.45); text-decoration: underline; text-underline-offset: 3px; }
-#gh-gate .gg-skip:hover { color: #3fd6ff; }
-#gh-gate .gg-msg { min-height: 20px; max-width: 340px; text-align: center; font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.45; }
-#gh-gate .gg-msg.ok { color: #6fe3a1; } #gh-gate .gg-msg.bad { color: #ef9a9a; } #gh-gate .gg-msg.wait { color: #3fd6ff; }
 
 /* ── DEMO PICKER ── */
 #demo-pick {
@@ -2455,62 +2376,9 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 #fs-btn.active { color: #9ebc52; border-color: rgba(158,188,82,.55); background: rgba(158,188,82,.10); }
 #fs-btn.blocked { color: #c07050; border-color: rgba(192,112,80,.5); }
 #fs-btn svg { display: block; }
-.sec-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c0c8d0;box-shadow:0 0 6px #c0c8d0;margin-right:4px;animation:secpulse 1.4s infinite}@keyframes secpulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* ══ SIPR ACCESS REQUEST POPUP (ADM-01) ══ */
-#sipr-req{position:fixed;inset:0;z-index:19900;display:none;align-items:center;justify-content:center;background:rgba(2,6,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#sipr-req.on{display:flex}
-#sipr-req .sr-card{width:min(520px,92vw);background:linear-gradient(180deg,#160607,#0d1520 55%);border:1px solid rgba(224,85,85,.55);border-radius:10px;box-shadow:0 0 0 1px rgba(224,85,85,.15),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(224,85,85,.18);overflow:hidden;animation:srpop .18s ease-out}
-@keyframes srpop{from{transform:translateY(10px) scale(.98);opacity:0}to{transform:none;opacity:1}}
-#sipr-req .sr-h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(224,85,85,.14);border-bottom:1px solid rgba(224,85,85,.35);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#ff8a7a;text-transform:uppercase}
-#sipr-req .sr-h i{width:9px;height:9px;border-radius:50%;background:#ff5a4e;box-shadow:0 0 10px #ff5a4e;animation:secpulse 1.1s infinite}
-#sipr-req .sr-h .n{margin-left:auto;font-size:9px;color:#e08a45;letter-spacing:1.5px}
-#sipr-req .sr-b{padding:16px 18px 6px;display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:12.5px;color:#cce0f2}
-#sipr-req .sr-b .k{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase;align-self:center}
-#sipr-req .sr-b .v{color:#f2f8ff}
-#sipr-req .sr-b .v.big{font-size:16px;font-weight:700}
-#sipr-req .sr-b .v.mono{font-family:'Share Tech Mono',monospace;letter-spacing:2px;color:#18d4f8}
-#sipr-req .sr-note{padding:8px 18px 4px;font-size:11px;color:#8fb0d0;line-height:1.5}
-#sipr-req .sr-f{display:flex;gap:10px;justify-content:flex-end;padding:14px 18px 16px;border-top:1px solid rgba(255,255,255,.06);margin-top:8px}
-#sipr-req .sr-f .adm-b{padding:10px 18px;font-size:11px}
-#sipr-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
-#sipr-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
-#sipr-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
-/* ── FACE · portrait enrollment + face-auth request ── */
-.ca-face{display:flex;gap:12px;align-items:center}
-.ca-face .pv{width:58px;height:58px;border-radius:50%;flex:none;background:#0b1522;border:1px solid rgba(24,212,248,.35);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#3a5670;font-size:22px}
-.ca-face .pv img{width:100%;height:100%;object-fit:cover}
-.ca-face .st{font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:1px;color:#6e90b0;line-height:1.6}
-.ca-face .st.ok{color:#4db88a}.ca-face .st.bad{color:#ff8a7a}.ca-face .st.wait{color:#d4a05a}
-.ca-face .pick{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap}
-.au-face{width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;border:1px solid rgba(24,212,248,.5)}
-#face-req{position:fixed;inset:0;z-index:19900;display:none;align-items:center;justify-content:center;background:rgba(2,6,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-#face-req.on{display:flex}
-#face-req .sr-card{width:min(560px,92vw);background:linear-gradient(180deg,#061420,#0d1520 55%);border:1px solid rgba(24,212,248,.55);border-radius:10px;box-shadow:0 0 0 1px rgba(24,212,248,.15),0 30px 80px rgba(0,0,0,.7),0 0 40px rgba(24,212,248,.18);overflow:hidden;animation:srpop .18s ease-out}
-#face-req .sr-h{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(24,212,248,.12);border-bottom:1px solid rgba(24,212,248,.35);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#18d4f8;text-transform:uppercase}
-#face-req .sr-h i{width:9px;height:9px;border-radius:50%;background:#18d4f8;box-shadow:0 0 10px #18d4f8;animation:secpulse 1.1s infinite}
-#face-req .sr-h .n{margin-left:auto;font-size:9px;color:#e08a45;letter-spacing:1.5px}
-#face-req .fr-pics{display:flex;gap:14px;justify-content:center;padding:18px 18px 6px}
-#face-req .fr-pic{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase}
-#face-req .fr-pic img{width:120px;height:120px;border-radius:12px;object-fit:cover;background:#0b1522;border:1px solid rgba(24,212,248,.35)}
-#face-req .fr-arrow{align-self:center;font-size:22px;color:#18d4f8;padding-bottom:18px}
-#face-req .fr-match{text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;padding:4px 18px 0}
-#face-req .fr-match b{font-size:18px;letter-spacing:1px}
-#face-req .fr-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);margin:8px 40px 4px;overflow:hidden}
-#face-req .fr-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#18d4f8,#4db88a)}
-#face-req .sr-b{padding:10px 18px 6px;display:grid;grid-template-columns:110px 1fr;gap:8px 14px;font-size:12.5px;color:#cce0f2}
-#face-req .sr-b .k{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase;align-self:center}
-#face-req .sr-b .v{color:#f2f8ff}#face-req .sr-b .v.big{font-size:16px;font-weight:700}
-#face-req .sr-b .v.mono{font-family:'Share Tech Mono',monospace;letter-spacing:2px;color:#18d4f8}
-#face-req .sr-note{padding:8px 18px 4px;font-size:11px;color:#8fb0d0;line-height:1.5}
-#face-req .sr-f{display:flex;gap:10px;justify-content:flex-end;padding:14px 18px 16px;border-top:1px solid rgba(255,255,255,.06);margin-top:8px}
-#face-req .sr-f .adm-b{padding:10px 18px;font-size:11px}
-#face-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
-#face-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
-#face-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
 </style>
 </head>
-<body class="adm-locked">
+<body>
 
 <div id="scan-line"></div>
 
@@ -2632,9 +2500,9 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     return {
       id:a[0], name:a[1], region:a[2], regionName:REG[a[2]], regionColor:REGC[a[2]],
       lat:a[3], lon:a[4], mapId:a[5], uic:'N'+String(60000+((seedOf(a[0])%39999))).slice(0,5),
-      fm:{first:'Facility', last:'Manager', name:'Facility Manager', email:('fm.'+slug+'@example.mil'), role:'FM — Facility Manager',
+      fm:{name:pick(r,FIRST)+' '+fmL, email:(fmL.toLowerCase()+'.fm@'+slug+'.navy.mil'), role:'FM — Facility Manager',
           device:r()<.9?'enrolled':'pending', status:p==='offline'?'offline':(r()<.6?'online':'away'), lastSeenMin:rint(r,0,240)},
-      backup:{first:'Backup', last:'Support', name:'Backup Support', email:('bfs.'+slug+'@example.mil'), role:'Backup Facilities Support',
+      backup:{name:pick(r,FIRST)+' '+bkL, email:(bkL.toLowerCase()+'.bfs@'+slug+'.navy.mil'), role:'Backup Facilities Support',
           device:r()<.82?'enrolled':'pending', status:s==='offline'?'offline':(r()<.45?'online':'away'), lastSeenMin:rint(r,0,600)},
       primary:{status:p, version:pick(r,VERS), lastSyncMin:lastSyncMin, uptime:p==='online'?(99+r()).toFixed(2):(90+r()*8).toFixed(2), cpu:rint(r,8,72)},
       secondary:{status:s, version:pick(r,VERS), lastSyncMin:s==='online'?rint(r,0,12):rint(r,30,900), uptime:s==='online'?(99+r()).toFixed(2):(88+r()*10).toFixed(2), cpu:rint(r,5,60)},
@@ -2653,7 +2521,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     return 'HEALTHY';
   }
   function healthColor(h){return h==='HEALTHY'?'#4db88a':h==='DEGRADED'?'#d4a05a':h==='OFFLINE'?'#e08a45':'#e05555';}
-  function stColor(st){return st==='online'?'#4db88a':st==='degraded'?'#d4a05a':st==='away'?'#f2d24b':'#e05555';}
+  function stColor(st){return st==='online'?'#4db88a':st==='degraded'?'#d4a05a':st==='away'?'#6e90b0':'#e05555';}
   function ago(min){return min<1?'now':min<60?min+'m ago':min<1440?(min/60).toFixed(1)+'h ago':Math.round(min/1440)+'d ago';}
 
   function summary(){
@@ -2673,7 +2541,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
   var AUDIT_KEY='adm_audit', MSG_KEY='adm_msgs', ACCT_KEY='adm_acct_overrides', WO_KEY='adm_wo_log';
   function audit(action,target,detail){
     var log=lsGet(AUDIT_KEY,[]);
-    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||'sysadmin@example.mil'),action:action,target:target||'',detail:detail||''});
+    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||'sysadmin@navy.mil'),action:action,target:target||'',detail:detail||''});
     if(log.length>400)log.length=400;
     lsSet(AUDIT_KEY,log);
     try{ g.dispatchEvent(new CustomEvent('adm-audit')); }catch(e){}
@@ -2730,46 +2598,136 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 <script>
 (function(){function p(){var C=window.ADMIN_CORE;if(!C)return;var s=C.summary();function t(i,v){var e=document.getElementById(i);if(e)e.textContent=v;}t("sp-t-inst",s.online);t("sp-t-users",s.usersOnline);t("sp-t-wo",s.openWO);t("sp-t-wo-sub",s.outages+" SITES IN OUTAGE");t("sp-t-pend",s.pendingAccounts);t("sp-t-dev",s.devicesPending+" DEVICES NOT ENROLLED");}document.addEventListener("DOMContentLoaded",p);setInterval(p,10000);})();
 </script>
-<!-- splash removed · authentication is the PASS gate; ARIA credentials live in ADM-06 → Platform settings -->
+<div id="splash">
+  <canvas id="bg-canvas"></canvas>
 
-<!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
-<div id="gh-gate" class="open boot" role="dialog" aria-label="PASS key">
-    <div class="gg-brand"><div><div class="gg-t1"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
-    <div class="gg">
-      <input id="gg-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="">
-      <div class="gg-repo" id="gg-repo" hidden></div>
-      <button type="button" class="gg-eye" id="gg-eye" onclick="GHGATE.eye()">Show key</button>
-      <button class="gg-go" id="gg-go" onclick="GHGATE.connect()">CONNECT</button>
-    </div>
-    <div class="gg-msg" id="gg-msg"></div>
-    <button class="gg-skip" id="gg-skip" onclick="GHGATE.skip()">Continue without link</button>
-  <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
-      <span class="ring"></span><span class="gloss"></span><svg viewBox="0 0 24 24" aria-hidden="true">
-        <defs>
-          <linearGradient id="dbFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7fe6ff"/><stop offset=".25" stop-color="#2fc4ff"/><stop offset=".5" stop-color="#0f7fbf"/>
-            <stop offset=".5" stop-color="#ff6a58"/><stop offset=".75" stop-color="#d9281a"/><stop offset="1" stop-color="#7a0e08"/>
-          </linearGradient>
-          <linearGradient id="dbGloss" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".3" stop-color="#fff" stop-opacity=".06"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset=".52" stop-color="#fff" stop-opacity=".18"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/>
-          </linearGradient>
-          <filter id="dbBevel" x="-20%" y="-20%" width="140%" height="140%">
-            <feOffset in="SourceAlpha" dx="0" dy=".9" result="lo"/><feOffset in="SourceAlpha" dx="0" dy="-.9" result="hi"/>
-            <feComposite in="SourceAlpha" in2="lo" operator="out" result="topEdge"/><feComposite in="SourceAlpha" in2="hi" operator="out" result="botEdge"/>
-            <feGaussianBlur in="topEdge" stdDeviation=".25" result="topS"/><feGaussianBlur in="botEdge" stdDeviation=".25" result="botS"/>
-            <feFlood flood-color="#fff" flood-opacity=".85" result="w"/><feComposite in="w" in2="topS" operator="in" result="edgeHi"/>
-            <feFlood flood-color="#000" flood-opacity=".55" result="k"/><feComposite in="k" in2="botS" operator="in" result="edgeLo"/>
-            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="edgeLo"/><feMergeNode in="edgeHi"/></feMerge>
-          </filter>
-        </defs>
-        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="none" stroke="#0b1016" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
-        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#dbFill)" stroke="#0b1016" stroke-width=".6" stroke-linejoin="round" filter="url(#dbBevel)"/>
-        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="url(#dbGloss)"/>
-      </svg>
-    </button>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <!-- ── STATUS BAR ── -->
+  <div id="sp-status-bar">
+    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#e05555;margin-right:14px;">&#x2B21; SYSTEM ADMIN PLATFORM &middot; 70 INSTALLATIONS &middot; 140 INSTANCES</div>
+    <div id="sp-clock" style="color:#00e5ff;text-shadow:0 0 12px rgba(0,229,255,0.6);letter-spacing:2.5px;font-size:10px;font-family:'Share Tech Mono',monospace;">--:--:-- EDT</div>
   </div>
-<div id="demo-pick" role="dialog" aria-label="Choose a demo">
-    <div class="dp-head"><span class="wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
+
+  <!-- ── LEFT TELEMETRY ── -->
+  <div class="side-telem" id="telem-left">
+    <div class="telem-block">
+      <div class="telem-label">Instances Online</div>
+      <div class="telem-value" style="color:#9ebc52;" id="sp-t-inst">—</div>
+      <div class="telem-sub">OF 140 · 70 SITES</div>
+    </div>
+    <div class="telem-block">
+      <div class="telem-label">Users Online</div>
+      <div class="telem-value" id="sp-t-users">—</div>
+      <div class="telem-sub">FM + BACKUP SEATS</div>
+    </div>
+    <div class="telem-block">
+      <div class="telem-label">Open SONAR Alerts</div>
+      <div class="telem-value" style="color:#e05555;" id="sp-t-wo">—</div>
+      <div class="telem-sub" id="sp-t-wo-sub">SITES IN OUTAGE</div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT TELEMETRY ── -->
+  <div class="side-telem" id="telem-right">
+    <div class="telem-block" style="text-align:right;">
+      <div class="telem-label">Hosting</div>
+      <div class="telem-value" style="color:#18d4f8;">ADVANA</div>
+      <div class="telem-sub">FOUNDRY ENCLAVE · CUI</div>
+    </div>
+    <div class="telem-block" style="text-align:right;">
+      <div class="telem-label">Regions</div>
+      <div class="telem-value">11 CNR</div>
+      <div class="telem-sub">CONUS · OCONUS</div>
+    </div>
+    <div class="telem-block" style="text-align:right;">
+      <div class="telem-label">Pending Accounts</div>
+      <div class="telem-value" style="color:#d4a05a;" id="sp-t-pend">—</div>
+      <div class="telem-sub" id="sp-t-dev">DEVICES NOT ENROLLED</div>
+    </div>
+  </div>
+
+  <!-- ── CENTER PANEL ── -->
+  <div id="center-panel">
+
+    <!-- Logo -->
+    <div class="logo-wrap" style="margin-bottom:20px;">
+      <div id="sp-logo-wrap">
+        <div class="sp-logo-i">
+          <svg width="22" height="32" viewBox="0 0 22 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="0" width="8" height="8" rx="3" fill="white"/>
+            <rect x="5" y="13" width="12" height="19" rx="3" fill="white"/>
+          </svg>
+          <span class="sp-logo-e">e</span>
+        </div>
+        <div class="sp-logo-esr">SRS</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:4px;color:#e05555;text-shadow:0 0 10px rgba(224,85,85,.6);border:1px solid rgba(224,85,85,.45);border-radius:3px;padding:2px 9px;margin-left:10px;white-space:nowrap;">ADMIN</div>
+      </div>
+      <div class="sp-eyebrow-orig" style="color:#e05555;text-shadow:0 0 10px rgba(224,85,85,.55),0 0 2px rgba(224,85,85,.8);">SYSTEM ADMIN PLATFORM<br>ACCOUNTS | INSTANCES | SONAR<br>SHORE OUTAGE NOTIFICATION, ANALYSIS &amp; RESPONSE</div>
+    </div>
+
+    <div class="sp-divider-v2"><span>CREDENTIALS</span></div>
+
+    <!-- Login fields (hidden until API AUTH enabled) -->
+    <div id="sp-login-fields">
+      <div class="model-select-row">
+        <span class="model-sel-lbl">MODEL</span>
+        <select id="sp-model-select" class="model-sel" onchange="onModelChange(this.value)">
+          <option value="aria">ARIA</option>
+          <option value="gemini">Gemini — Google</option>
+          <option value="capra">Capra — Classified</option>
+        </select>
+      </div>
+      <div class="login-row">
+        <input class="login-input" id="sp-username" type="text" placeholder="username / email" autocomplete="off" oninput="clearEnterError()">
+        <input class="login-input" id="sp-password" type="password" placeholder="paste API key" oninput="clearEnterError()">
+      </div>
+    </div>
+
+    <!-- Enter button -->
+    <button id="enter-btn" onclick="handleEnter()">&#x2B21; &nbsp; ENTER</button>
+    <div id="sp-enter-error">&#x26A0; &nbsp;EMAIL AND API KEY REQUIRED</div>
+
+    <!-- GUEST / API AUTH toggle -->
+    <div class="toggle-row">
+      <span class="t-lbl active" id="sp-toggle-off-lbl">ADMIN</span>
+      <div class="auth-pill" id="sp-auth-pill" onclick="toggleLoginBlock()"></div>
+      <span class="t-lbl" id="sp-toggle-on-lbl">API AUTH</span>
+    </div>
+
+    <!-- Metrics -->
+    <div class="sp-divider-v2" style="margin-top:16px;"><span>SYSTEM TELEMETRY</span></div>
+    <div id="sp-metrics">
+      <div class="metric-row">
+        <div class="metric-label">INSTANCE HEALTH</div>
+        <div class="metric-track"><div class="metric-fill" id="spf1" style="background:#d4aa62;"></div></div>
+        <div class="metric-val" id="spv1">0%</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label">ACCOUNT COMPLIANCE</div>
+        <div class="metric-track"><div class="metric-fill" id="spf2" style="background:#c07038;"></div></div>
+        <div class="metric-val" id="spv2">0%</div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-label">SYNC INTEGRITY</div>
+        <div class="metric-track"><div class="metric-fill" id="spf3" style="background:#9ebc52;"></div></div>
+        <div class="metric-val" id="spv3">0%</div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- ── BOTTOM BAR ── -->
+
+  <button id="demo-btn" onclick="openDemoPicker()" title="Play a demo" aria-label="Play a demo" aria-haspopup="dialog" aria-expanded="false">
+    <span class="ring"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+  </button>
+  <div id="demo-pick" role="dialog" aria-label="Choose a demo">
+    <div class="dp-head"><span>ie-SRS</span><b>CHOOSE A DEMO</b><button class="dp-x" onclick="closeDemoPicker()" aria-label="Close">✕</button></div>
     <button class="dp-item" onclick="openDemoPlayer('live/','ie-SRS // SONAR · Shore Outage Notification, Analysis &amp; Response · Scenario Broadcast')">
       <span class="dp-ico"><svg viewBox="0 0 24 24"><path d="M3 5h18v11H3zM8 20h8M12 16v4"/><path d="M7 12l3-3 3 2 4-4"/></svg></span>
       <span class="dp-txt"><i>01 · SCENARIO BROADCAST</i><em>SONAR · Cyber-attack on NB San Diego</em><small>ADMIN response · alert fan-out to email + mobile</small></span>
@@ -2781,19 +2739,22 @@ body.adm-locked > #demo-modal { z-index: 20000; }
       <span class="dp-dur">5:50</span>
     </button>
   </div>
-<div id="adm-lock" role="dialog" aria-label="Security key">
-    <div class="gg-brand"><div><div class="gg-t1"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div><div class="gg-t2">System admin platform</div></div></div>
-    <div class="gg-step"><b class="done">✓</b><span>PASS key</span><i></i><b>2</b><span>Security key</span></div>
-    <div class="al-dots" id="al-dots"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="al-msg" id="al-msg"></div>
-    <div id="al-mode"></div>
-    <div class="al-pad" id="al-pad">
-      <button onclick="ADMLOCK.press(1)">1</button><button onclick="ADMLOCK.press(2)">2</button><button onclick="ADMLOCK.press(3)">3</button>
-      <button onclick="ADMLOCK.press(4)">4</button><button onclick="ADMLOCK.press(5)">5</button><button onclick="ADMLOCK.press(6)">6</button>
-      <button onclick="ADMLOCK.press(7)">7</button><button onclick="ADMLOCK.press(8)">8</button><button onclick="ADMLOCK.press(9)">9</button>
-      <button class="sec" onclick="ADMLOCK.clear()">Clear</button><button onclick="ADMLOCK.press(0)">0</button><button class="sec" onclick="ADMLOCK.back()">⌫</button>
-    </div>
+  <div id="sp-bottom-bar">
+    <div class="bb-dot"></div>
+    <span>ie-SRS ADMIN · FOUNDRY ADVANA</span>
+    <div class="bb-sep"></div><span>ADM-01 USER ACCOUNTS</span>
+    <div class="bb-sep"></div><span>ADM-02 MESSAGE CENTER</span>
+    <div class="bb-sep"></div><span>ADM-03 SONAR ALERT ROUTING</span>
+    <div class="bb-sep"></div><span>ADM-04 INSTANCE HEALTH</span>
+    <div class="bb-sep"></div><span>SYS-03 GLOBAL MAP</span>
+    <div class="bb-sep"></div><span>ARIA AI ASSISTANT</span>
+    <div style="margin-left:auto;">ENTERPRISE CONTROL · 70 INSTALLATIONS · OUTAGE VISIBILITY</div>
   </div>
+
+</div>
+
+
+<!-- LIVE DEMO PLAYER (ie-SRS scenario broadcast · live/index.html) -->
 <div id="demo-modal" role="dialog" aria-label="ie-SRS demo">
   <div id="demo-modal-inner">
     <div id="demo-modal-chrome">
@@ -2826,32 +2787,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 
     <div class="ca-field">
       <div class="ca-label">Email Address</div>
-      <input class="ca-input" type="email" placeholder="first.last@example.mil" oninput="clearErr(this)">
-    </div>
-
-    <div class="ca-field">
-      <div class="ca-label">Cell Phone <span style="color:#6e90b0;letter-spacing:.5px">&mdash; optional &middot; shown in User Accounts as a tap-to-call number</span></div>
-      <input class="ca-input" id="ca-phone" type="tel" inputmode="tel" autocomplete="off" placeholder="e.g. 619-555-0142" oninput="clearErr(this)">
-    </div>
-
-    <div class="ca-field">
-      <div class="ca-label">Security Key <span style="color:#6e90b0;letter-spacing:.5px">&mdash; 6 digits &middot; assigning a key activates the account for CMDR mobile sign-in</span></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input class="ca-input" id="ca-security" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autocorrect="off" placeholder="e.g. 482910" style="flex:1;letter-spacing:4px;font-family:'Share Tech Mono',monospace" oninput="clearErr(this);this.value=this.value.replace(/\D/g,'').slice(0,6)">
-        <button type="button" onclick="caGenerateKey()" style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:8px 10px;border-radius:6px;border:1px solid rgba(24,212,248,.4);background:rgba(24,212,248,.1);color:#18d4f8;cursor:pointer;white-space:nowrap">GENERATE</button>
-      </div>
-    </div>
-
-    <div class="ca-field">
-      <div class="ca-label">Portrait <span style="color:#6e90b0;letter-spacing:.5px">&mdash; face enrollment &middot; lets the commander sign in to SONARmobile with Face ID (optional)</span></div>
-      <div class="ca-face">
-        <div class="pv" id="ca-face-pv">&#9786;</div>
-        <div style="flex:1;min-width:0">
-          <div class="st" id="ca-face-st">No portrait &middot; upload a clear, front-facing photo</div>
-        </div>
-        <button type="button" class="pick" onclick="document.getElementById('ca-face-file').click()">UPLOAD</button>
-        <input type="file" id="ca-face-file" accept="image/*" capture="user" style="display:none" onchange="caPortraitPick(this)">
-      </div>
+      <input class="ca-input" type="email" placeholder="your.name@navy.mil" oninput="clearErr(this)">
     </div>
 
     <div class="ca-field-row">
@@ -2876,7 +2812,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 
     <div class="ca-field">
       <div class="ca-label">Role</div>
-      <select class="ca-select" id="ca-role" onchange="clearErr(this);caRoleChanged(this)">
+      <select class="ca-select" onchange="clearErr(this)">
         <option value="">Select role…</option>
         <option>FM — Facility Manager (Primary instance)</option>
         <option>Backup Facilities Support (Secondary instance)</option>
@@ -2887,7 +2823,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
         <option>Reporter</option>
         <option>Certifier</option>
         <option>Verifier</option>
-        <option>System Administrator — full platform access (ADMIN lock/unlock, accounts, keys)</option>
+        <option>System Admin</option>
       </select>
     </div>
 
@@ -2910,15 +2846,14 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     </div>
 
     <div class="ca-field">
-      <div class="ca-label">SONAR Experience Level</div>
-      <select class="ca-select" id="ca-exp" onchange="clearErr(this)">
+      <div class="ca-label">NES Experience Level</div>
+      <select class="ca-select" onchange="clearErr(this)">
         <option value="">Select level…</option>
-        <option>L0 — Observer · view dashboards, maps and outage status (read-only)</option>
-        <option>L1 — Responder · receive and acknowledge SONAR alerts (CMDR mobile)</option>
-        <option>L2 — Analyst · outage analysis, mission-impact and asset triage</option>
-        <option>L3 — Dispatcher · compose, route and escalate SONAR alerts (ADM-03/ADM-08)</option>
-        <option>L4 — Controller · scenario builder, black-start and microgrid coordination</option>
-        <option>L5 — Administrator · platform, accounts, security keys and Foundry link</option>
+        <option>None — New to NES</option>
+        <option>Beginner — Less than 1 year</option>
+        <option>Intermediate — 1–3 years</option>
+        <option>Advanced — 3+ years</option>
+        <option>Expert — Trainer / Certifier level</option>
       </select>
     </div>
 
@@ -2946,7 +2881,7 @@ body.adm-locked > #demo-modal { z-index: 20000; }
     <div class="c-spacer"></div>
     <div class="c-clock" id="wall-clock">--:--:-- ET</div>
 
-    <button id="home-btn" onclick="showSplash()" title="Back to hub" style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s;flex-shrink:0;white-space:nowrap;">⌂ HOME</button>
+    <button id="home-btn" onclick="showSplash()" title="Back to splash" style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s;flex-shrink:0;white-space:nowrap;">⌂ HOME</button>
     <button id="fs-btn" onclick="toggleFullscreen()" title="Full screen view">
       <svg id="fs-ico-in" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="4.4,1 1,1 1,4.4"/><polyline points="7.6,1 11,1 11,4.4"/>
@@ -2957,26 +2892,6 @@ body.adm-locked > #demo-modal { z-index: 20000; }
         <polyline points="1,7.6 4.4,7.6 4.4,11"/><polyline points="11,7.6 7.6,7.6 7.6,11"/>
       </svg>
       <span id="fs-lbl">FULL</span>
-    </button>
-    <button id="guide-btn" onclick="openGuide()" title="Open ADMIN Users Guide">
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="6" cy="6" r="5"/>
-        <path d="M 6 3.5 L 6 6 L 8 8"/>
-      </svg>
-      <span>GUIDE</span>
-    </button>
-    
-    <button id="demo-chrome-btn" onclick="openDemoPicker(true)" title="Play a demo" aria-haspopup="dialog">
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor"><path d="M3.5 2v8l6.5-4z"/></svg>
-      <span>DEMO</span>
-    </button>
-    <button id="lock-btn" onclick="lockAdmin()" title="Lock · security key required to resume">
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="7" height="5" rx="1"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>
-      <span>LOCK</span>
-    </button>
-    <button id="logout-btn" onclick="logoutAdmin()" title="Log out · return to authentication">
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.5H2.5a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1H5"/><path d="M7.5 3.5 10 6l-2.5 2.5M10 6H4.5"/></svg>
-      <span>LOGOUT</span>
     </button>
     <button id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark">
       <div class="t-pill"></div>
@@ -3287,39 +3202,6 @@ body.adm-locked > #demo-modal { z-index: 20000; }
           <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-adm-cmdr')">&#x2B21; &nbsp;ENTER</button>
         </div>
 
-        <!-- ── CARD: ie-SRS Core Hub ── -->
-        <div class="app-card card-hub" id="card-ie-srs-hub" onclick="window.location.href='ie-SRS.html';" style="cursor:pointer;">
-          <div class="card-head">
-            <div style="position:relative;width:52px;height:52px;border:2px solid #18d4f8;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(24,212,248,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #18d4f8,0 0 18px rgba(24,212,248,.35);">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="14" cy="14" r="9" stroke="#18d4f8" stroke-width="1.4" fill="rgba(24,212,248,0.10)"/>
-                <path d="M14 6v16M6 14h16" stroke="#18d4f8" stroke-width="1.4" stroke-linecap="round"/>
-                <circle cx="14" cy="14" r="3" fill="#18d4f8" opacity=".9">
-                  <animate attributeName="opacity" values="0.9;0.4;0.9" dur="2.2s" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="14" cy="14" r="9" stroke="#18d4f8" stroke-width=".6" fill="none" opacity="0">
-                  <animate attributeName="opacity" values="0.4;0" dur="2.4s" repeatCount="indefinite"/>
-                  <animate attributeName="r" values="9;15" dur="2.4s" repeatCount="indefinite"/>
-                </circle>
-              </svg>
-            </div>
-            <div class="card-head-text">
-              <div class="card-badge" style="color:#18d4f8;">HUB</div>
-              <div class="card-title"><span class="wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</span> <span style="color:#ffffff;">Core Hub</span></div>
-            </div>
-          </div>
-          <div class="card-desc">
-            <em>Primary control center</em> &mdash; the core ie-SRS hub for monitoring shore facility status, energy resilience metrics, and SONAR alert coordination across all installations. Access real-time dashboards, alert summaries, and cross-installation analytics.
-          </div>
-          <div class="card-meta">
-            <span class="meta-pill">Shore Resilience</span>
-            <span class="meta-pill">Energy Metrics</span>
-            <span class="meta-pill">Cross-Site</span>
-            <span class="meta-pill">Live Data</span>
-          </div>
-          <button class="launch-btn" onclick="event.stopPropagation();window.location.href='ie-SRS.html';">&#x2B21; &nbsp;ENTER</button>
-        </div>
-
 </div><!-- #card-grid -->
     </div><!-- #stage -->
 
@@ -3409,7 +3291,10 @@ body.adm-locked > #demo-modal { z-index: 20000; }
      ═══════════════════════════════════════ -->
 <div class="app-overlay" id="overlay-aria" style="flex-direction:column;background:var(--void);">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo">
+      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
+      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
+    </div>
     <button class="overlay-back" onclick="closeApp('overlay-aria')">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#4db88a;">ARIA // AI ASSISTANT</span>
     <span id="aria-model-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:rgba(0,229,255,.6);border:1px solid rgba(0,229,255,.2);border-radius:3px;padding:2px 8px;white-space:nowrap;">ARIA</span>
@@ -7564,9 +7449,9 @@ if(window.parent!==window){
     return {
       id:a[0], name:a[1], region:a[2], regionName:REG[a[2]], regionColor:REGC[a[2]],
       lat:a[3], lon:a[4], mapId:a[5], uic:&#x27;N&#x27;+String(60000+((seedOf(a[0])%39999))).slice(0,5),
-      fm:{first:&#x27;Facility&#x27;, last:&#x27;Manager&#x27;, name:&#x27;Facility Manager&#x27;, email:(&#x27;fm.&#x27;+slug+&#x27;@example.mil&#x27;), role:&#x27;FM — Facility Manager&#x27;,
+      fm:{name:pick(r,FIRST)+&#x27; &#x27;+fmL, email:(fmL.toLowerCase()+&#x27;.fm@&#x27;+slug+&#x27;.navy.mil&#x27;), role:&#x27;FM — Facility Manager&#x27;,
           device:r()&lt;.9?&#x27;enrolled&#x27;:&#x27;pending&#x27;, status:p===&#x27;offline&#x27;?&#x27;offline&#x27;:(r()&lt;.6?&#x27;online&#x27;:&#x27;away&#x27;), lastSeenMin:rint(r,0,240)},
-      backup:{first:&#x27;Backup&#x27;, last:&#x27;Support&#x27;, name:&#x27;Backup Support&#x27;, email:(&#x27;bfs.&#x27;+slug+&#x27;@example.mil&#x27;), role:&#x27;Backup Facilities Support&#x27;,
+      backup:{name:pick(r,FIRST)+&#x27; &#x27;+bkL, email:(bkL.toLowerCase()+&#x27;.bfs@&#x27;+slug+&#x27;.navy.mil&#x27;), role:&#x27;Backup Facilities Support&#x27;,
           device:r()&lt;.82?&#x27;enrolled&#x27;:&#x27;pending&#x27;, status:s===&#x27;offline&#x27;?&#x27;offline&#x27;:(r()&lt;.45?&#x27;online&#x27;:&#x27;away&#x27;), lastSeenMin:rint(r,0,600)},
       primary:{status:p, version:pick(r,VERS), lastSyncMin:lastSyncMin, uptime:p===&#x27;online&#x27;?(99+r()).toFixed(2):(90+r()*8).toFixed(2), cpu:rint(r,8,72)},
       secondary:{status:s, version:pick(r,VERS), lastSyncMin:s===&#x27;online&#x27;?rint(r,0,12):rint(r,30,900), uptime:s===&#x27;online&#x27;?(99+r()).toFixed(2):(88+r()*10).toFixed(2), cpu:rint(r,5,60)},
@@ -7605,7 +7490,7 @@ if(window.parent!==window){
   var AUDIT_KEY=&#x27;adm_audit&#x27;, MSG_KEY=&#x27;adm_msgs&#x27;, ACCT_KEY=&#x27;adm_acct_overrides&#x27;, WO_KEY=&#x27;adm_wo_log&#x27;;
   function audit(action,target,detail){
     var log=lsGet(AUDIT_KEY,[]);
-    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||&#x27;sysadmin@example.mil&#x27;),action:action,target:target||&#x27;&#x27;,detail:detail||&#x27;&#x27;});
+    log.unshift({ts:Date.now(),actor:(g._inedApiEmail||&#x27;sysadmin@navy.mil&#x27;),action:action,target:target||&#x27;&#x27;,detail:detail||&#x27;&#x27;});
     if(log.length&gt;400)log.length=400;
     lsSet(AUDIT_KEY,log);
     try{ g.dispatchEvent(new CustomEvent(&#x27;adm-audit&#x27;)); }catch(e){}
@@ -9441,7 +9326,10 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-dropzone">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo">
+      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
+      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
+    </div>
     <button class="overlay-back" onclick="closeApp('overlay-dropzone');">&#8592; HUB</button>
     <span class="overlay-app-name" style="color:#b0b8c4;">SYS-04 // DATA DROP ZONE</span>
   </div>
@@ -9453,7 +9341,10 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-saved-scenarios">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo">
+      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
+      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
+    </div>
     <button class="overlay-back" onclick="closeApp('overlay-saved-scenarios');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-A // SAVED SCENARIOS</span>
   </div>
@@ -9526,7 +9417,10 @@ updateAiContext();
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-recon-sites">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo">
+      <span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span>
+      <span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span>
+    </div>
     <button class="overlay-back" onclick="closeApp('overlay-recon-sites');setTimeout(function(){openApp('overlay-intel-hub');},420);">&#8592; SYS-01C</button>
     <span class="overlay-app-name" style="color:#d4855a;">SYS-01C-B // RECON SITES</span>
   </div>
@@ -9864,45 +9758,8 @@ function exitSim() {
 
 
 // ── CREATE ACCOUNT MODAL ──
-/* Security-key generation: the first System Administrator account receives the master backup key so ADMIN can never be locked out; all others get a random 6-digit key. */
-function caSysAdminExists() { try { var m = SRASec.custom(); return Object.keys(m).some(function (e) { return /system admin/i.test(m[e].role || '') && m[e].security && !m[e].disabled; }); } catch (e) { return false; } }
-function caGenerateKey() {
-  var el = document.getElementById('ca-security'), role = (document.getElementById('ca-role') || {}).value || '';
-  var sysadmin = /system admin/i.test(role);
-  el.value = (sysadmin && !caSysAdminExists()) ? (typeof ADMIN_MASTER_KEY !== 'undefined' ? ADMIN_MASTER_KEY : '201219') : String(Math.floor(100000 + Math.random() * 900000));
-  clearErr(el);
-}
-function caRoleChanged(sel) {
-  var el = document.getElementById('ca-security'), exp = document.getElementById('ca-exp');
-  if (/system admin/i.test(sel.value || '')) { if (el && (!el.value || (el.value === ADMIN_MASTER_KEY && caSysAdminExists()))) caGenerateKey(); if (exp && !exp.value) exp.value = exp.options[exp.options.length - 1].value; }
-}
 function openCreateAccount() {
-  /* always open on a clean form — a stale security key from the previous account must never be re-submitted */
-  try {
-    document.querySelectorAll('.ca-input').forEach(function (i) { i.value = ''; i.style.border = ''; i.style.boxShadow = ''; });
-    document.querySelectorAll('.ca-select').forEach(function (x) { x.value = ''; x.style.border = ''; x.style.boxShadow = ''; });
-    document.querySelectorAll('.ca-multi-chip.selected').forEach(function (c) { c.classList.remove('selected'); });
-    var w = document.getElementById('ca-installs'); if (w) { w.style.border = ''; w.style.boxShadow = ''; }
-    var btn = document.querySelector('.ca-submit'); if (btn) { btn.textContent = 'CREATE ACCOUNT'; btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }
-    caPortraitReset();var ph=document.getElementById('ca-phone');if(ph){ph.value='';ph.style.border='';ph.style.boxShadow='';}
-  } catch (e) {}
   document.getElementById('create-account-modal').classList.add('show');
-}
-/* ── Portrait · face enrollment on the Create Account form ──
-   The photo is reduced to a 128-number face descriptor (face-api.js, in-browser) plus a small thumbnail;
-   both live in the account record. Nothing leaves this browser at enrollment time. */
-window.CA_FACE = null;
-function caPortraitReset() { window.CA_FACE = null; var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st'), f = document.getElementById('ca-face-file');
-  if (pv) pv.innerHTML = '&#9786;'; if (st) { st.textContent = 'No portrait · upload a clear, front-facing photo'; st.className = 'st'; } if (f) f.value = ''; }
-function caPortraitPick(input) {
-  var file = input.files && input.files[0]; if (!file) return;
-  var pv = document.getElementById('ca-face-pv'), st = document.getElementById('ca-face-st');
-  st.textContent = 'Loading face model…'; st.className = 'st wait'; window.CA_FACE = null;
-  FACELIB.enroll(file).then(function (r) {
-    if (!r) { st.textContent = 'No face found · try a closer, front-facing photo'; st.className = 'st bad'; pv.innerHTML = '&#9786;'; return; }
-    window.CA_FACE = r; pv.innerHTML = '<img src="' + r.img + '" alt="">';
-    st.textContent = 'Face captured · descriptor ready (' + Math.round(r.score * 100) + '% detection)'; st.className = 'st ok';
-  }).catch(function (e) { st.textContent = 'Face model unavailable · ' + (e && e.message || e); st.className = 'st bad'; });
 }
 function closeCreateAccount() {
   document.getElementById('create-account-modal').classList.remove('show');
@@ -9942,13 +9799,6 @@ function submitCreateAccount() {
   check(region,  region  && region.value);
   check(role,    role    && role.value);
   check(exp,     exp     && exp.value);
-  var phEl = document.getElementById('ca-phone'), phv = phEl ? phEl.value.trim() : '';
-  if (phv && !/^\+?[\d\s().-]{7,20}$/.test(phv)) { phEl.style.border = ERR; phEl.style.boxShadow = '0 0 0 3px rgba(255,80,80,.15)'; invalid = true; }
-  else if (phEl) { phEl.style.border = OK; phEl.style.boxShadow = ''; }
-  var secEl = document.getElementById('ca-security');
-  var secv  = secEl ? secEl.value.replace(/\D/g,'') : '';
-  if (secv && !/^\d{6}$/.test(secv)) { secEl.style.border = ERR; secEl.style.boxShadow = '0 0 0 3px rgba(255,80,80,.15)'; invalid = true; }
-  else if (secEl) { secEl.style.border = OK; secEl.style.boxShadow = ''; }
   // Installation chips — highlight the container if none selected
   var chipWrap = document.getElementById('ca-installs');
   if (!installs.length) {
@@ -9960,8 +9810,7 @@ function submitCreateAccount() {
 
   var fv = first.value.trim(), lv = last.value.trim(), ev = email.value.trim(),
       sv = station.value.trim(), rv = region.value, rov = role.value, expv = exp.value;
-  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs, security:secv, phone:phv, face:window.CA_FACE||null };
-  if (window.SRASec) { try { window.SRASec.createAccount(record); } catch(e) { console.warn('SRASec create', e); } }
+  var record = { first:fv, last:lv, email:ev, station:sv, region:rv, role:rov, exp:expv, installations:installs };
   if (window.ADMIN_CORE) { try { window.ADMIN_CORE.audit('CREATE_ACCOUNT', ev, rov + ' · ' + sv + ' · ' + installs.join('/')); } catch(e) {} }
   if (typeof hubToast === 'function') hubToast('⬡ Account provisioned — ' + fv + ' ' + lv + ' (' + rov.split(' —')[0].split(' (')[0] + ')', 'ok', 3200);
   var frame = document.getElementById('frame-briefing');
@@ -9991,7 +9840,6 @@ function submitCreateAccount() {
     btn.style.color = '';
     document.querySelectorAll('.ca-input').forEach(function(i){i.value='';});
     document.querySelectorAll('.ca-select').forEach(function(s){s.value='';});
-    var se=document.getElementById('ca-security'); if(se)se.value='';
     document.querySelectorAll('.ca-multi-chip.selected').forEach(function(c){c.classList.remove('selected');});
   }, 2000);
 }
@@ -10000,7 +9848,6 @@ function submitCreateAccount() {
 // ── PARENT TTS BRIDGE ──
 (function() {
   var ss           = window.speechSynthesis;
-  var vol          = 0.90;  // narration level, driven by the STR-01 volume slider
   var voice        = null;
   var voiceReady   = false;
   var paused       = false;
@@ -10048,7 +9895,7 @@ function submitCreateAccount() {
       return;
     }
     var u = new SpeechSynthesisUtterance(text);
-    u.voice = voice; u.rate = 0.90; u.pitch = 1.10; u.volume = vol;
+    u.voice = voice; u.rate = 0.90; u.pitch = 1.10; u.volume = 0.90;
     utt = u;
     u.onend   = function() { utt=null; paused=false; _done(); };
     u.onerror = function(ev) {
@@ -10064,8 +9911,6 @@ function submitCreateAccount() {
     cancel: function() { _cancel(); activeSrc=null; activeId=null; },
     pause:  function() { if (ss && ss.speaking && !paused) { ss.pause();  paused=true;  } },
     resume: function() { if (ss && paused)                 { ss.resume(); paused=false; } },
-    getVolume: function() { return vol; },
-    setVolume: function(v) { vol = Math.max(0, Math.min(1, v)); return vol; },
   };
 })();
 
@@ -10258,7 +10103,7 @@ bootScan();
 
 function showSplash() {
   var splash = document.getElementById('splash');
-  if (!splash) { try { document.querySelectorAll('.app-overlay.visible').forEach(function (o) { closeApp(o.id); }); document.getElementById('launcher-shell').classList.remove('pushed'); } catch (e) {} return; }   /* no splash: HOME returns to the hub grid */
+  if (!splash) return;
 
   // Reset credentials
   var u = document.getElementById('sp-username');
@@ -10294,116 +10139,18 @@ function showSplash() {
   if (window._splashRestart) window._splashRestart();
 }
 
-/* ── STEP 2 · SECURITY KEY LOCK (admin) ──
-   Unlocks with the master backup key, plus — per ADMLOCK_OPEN_KEY — either any active
-   security key (test mode, current) or System Administrator keys only (production). */
-var ADMIN_MASTER_KEY = '201219';
-/* TEST MODE. true  = STEP 2 admits any ACTIVE account holding a valid security key.
-                false = STEP 2 admits System Administrator keys only (production posture).
-   Disabled and deleted accounts are refused in BOTH modes — SRASec.validate() filters them. */
-var ADMLOCK_OPEN_KEY = true;
-window.ADMLOCK = (function () {
-  var digits = '', busy = false, unlocked = false;
-  function $l(id) { return document.getElementById(id); }
-  function dots() { var el = $l('al-dots'); if (!el) return; el.classList.remove('err'); var is = el.querySelectorAll('i'); for (var i = 0; i < 6; i++) is[i].classList.toggle('f', i < digits.length); }
-  function msg(t, c) { var e = $l('al-msg'); if (e) { e.textContent = t || ''; e.className = 'al-msg ' + (c || ''); } }
-  function roleOf(a) { try { var c = SRASec.custom()[String(a.email || '').toLowerCase()]; return (c && c.role) || a.role || ''; } catch (e) { return a.role || ''; } }
-  function isAdmin(a) { return !!(a && /system admin/i.test(roleOf(a))); }
-  /* show() always re-arms the lock: the admin surface is hidden again until a key is accepted. */
-  function show() { digits = ''; busy = false; unlocked = false; dots(); msg('');
-    try { if (window.admSessionEnd) admSessionEnd(); } catch (e) {}
-    try { var bd = $l('al-mode');
-      if (bd) { var on = (typeof ADMLOCK_OPEN_KEY !== 'undefined') && ADMLOCK_OPEN_KEY;
-        bd.textContent = on ? '⚠ test mode · any active security key' : '';
-        bd.classList.toggle('on', on); } } catch (e) {}
-    try { document.body.classList.add('adm-locked'); } catch (e) {}
-    var el = $l('adm-lock'); if (el) el.classList.add('open'); }
-  function close() { var el = $l('adm-lock'); if (el) el.classList.remove('open'); }
-  /* hide() is a no-op while locked — the overlay cannot be dismissed without a key. */
-  function hide() { if (!unlocked) return; close(); }
-  /* reset() drops the pad but keeps the surface locked (log out hands control back to STEP 1). */
-  function reset() { unlocked = false; digits = ''; busy = false; dots(); msg('');
-    try { if (window.admSessionEnd) admSessionEnd(); } catch (e) {}
-    try { document.body.classList.add('adm-locked'); } catch (e) {} close(); }
-  function submit() {
-    busy = true; var key = digits;
-    var a = null; try { a = window.SRASec ? SRASec.validate(key) : null; } catch (e) {}
-    var open = (typeof ADMLOCK_OPEN_KEY !== 'undefined') && ADMLOCK_OPEN_KEY;
-    var ok = key === ADMIN_MASTER_KEY || (open ? !!a : isAdmin(a));
-    setTimeout(function () {
-      if (ok) { unlocked = true;
-        var who = a && a.name ? a.name : 'Master key';
-        var rl  = a ? (roleOf(a) || 'no role on file') : 'master backup key';
-        msg('✓ ' + who + ' · ' + rl + ' · unlocked', 'ok');
-        try { document.body.classList.remove('adm-locked'); } catch (e) {}
-        try { if (a && window.admSessionStart) admSessionStart(a); } catch (e) {}
-        try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK', a ? a.email : 'master', (a ? a.name : 'master key') + ' · ' + rl + ' · key ends ' + key.slice(-2) + (a && open && !isAdmin(a) ? ' · OPEN-KEY MODE' : '')); } catch (e) {}
-        setTimeout(function () { hide(); try { hubToast('⬡ Unlocked', 'ok', 1800); } catch (e) {} }, 500); }
-      else { digits = ''; dots(); $l('al-dots').classList.add('err'); msg((a && !open) ? 'That key is not a System Administrator key.' : 'Security key not recognised.', 'bad'); busy = false;
-        try { window.ADMIN_CORE && ADMIN_CORE.audit('ADMIN_UNLOCK_FAIL', 'admin', 'key ends ' + key.slice(-2)); } catch (e) {} }
-    }, 150);
-  }
-  document.addEventListener('keydown', function (e) {
-    if (!$l('adm-lock') || !$l('adm-lock').classList.contains('open')) return;
-    if (/^[0-9]$/.test(e.key)) ADMLOCK.press(e.key); else if (e.key === 'Backspace') ADMLOCK.back(); else if (e.key === 'Escape') ADMLOCK.clear();
-  });
-  return {
-    show: show, hide: hide, reset: reset,
-    isLocked: function () { return !unlocked; },
-    press: function (d) { if (busy || digits.length >= 6) return; digits += String(d); dots(); msg(''); if (digits.length === 6) setTimeout(submit, 110); },
-    back: function () { if (busy) return; digits = digits.slice(0, -1); dots(); },
-    clear: function () { if (busy) return; digits = ''; dots(); msg(''); }
-  };
-})();
-function lockAdmin() {
-  try { if (typeof closeDemoPlayer === "function") closeDemoPlayer(); } catch (e) {}
-  ADMLOCK.show();
-  try { window.ADMIN_CORE && ADMIN_CORE.audit("ADMIN_LOCK", "admin", "Locked from chrome bar"); } catch (e) {}
-}
-
-function logoutAdmin() {
-  try { if (typeof closeApp === "function") closeApp(); } catch (e) {}
-  try { if (typeof closeDemoPlayer === "function") closeDemoPlayer(); } catch (e) {}
-  try { ADMLOCK.reset(); } catch (e) {}   /* re-arm STEP 2 · the surface stays locked behind STEP 1 */
-  try { document.querySelectorAll('.app-overlay.visible').forEach(function (o) { closeApp(o.id); }); } catch (e) {}
-  window._inedApiKey = null; window._inedApiEmail = null; try { updateAiStatus(); } catch (e) {}   /* ARIA session key is cleared on log out */
-  var g = document.getElementById("gh-gate");
-  if (g) { g.classList.add("boot"); g.classList.add("open"); }      /* opaque lock, same as first open */
-  try { window.GHGATE && GHGATE.boot(); } catch (e) {}
-  try { var t = document.getElementById("gg-token"); if (t) t.value = ""; } catch (e) {}
-  try { window.ADMIN_CORE && ADMIN_CORE.audit("ADMIN_LOGOUT", "admin", "Logged out from chrome bar"); } catch (e) {}
-}
-
-function openGuide() {
-  // Open guide PDF in new window
-  const pdfUrl = 'https://thompsonryane-collab.github.io/ie-SRS/docs/ie-SRS-ADMIN-Users-Guide.pdf';
-  window.open(pdfUrl, 'ie-SRS-ADMIN-Guide', 'width=1000,height=800,resizable=yes,scrollbars=yes');
-}
-
-function linkIsLive() {
-  try { if (!window.SRABus) return false; var c = SRABus.cfg(), st = SRABus.status();
-    return c.transport === 'github' && !!c.token && st.read === 'ok' && st.write !== 'error' && st.connected !== false; } catch (e) { return false; }
-}
 function updateAiStatus() {
   var el  = document.getElementById('ai-status');
   var lbl = el && el.querySelector('.ai-status-lbl');
   if (!el) return;
-  if (linkIsLive()) {                       /* GitHub key verified + CMDR link reading and writing */
-    el.className = 'live';
-    if (lbl) lbl.textContent = 'LIVE';
-    el.title = 'CMDR link LIVE · ' + SRABus.cfg().repo + (window._inedApiKey ? ' · ARIA online' : '');
-  } else if (window._inedApiKey) {
+  if (window._inedApiKey) {
     el.className = 'live';
     if (lbl) lbl.textContent = 'ONLINE';
-    el.title = 'ARIA online · CMDR link not connected';
   } else {
     el.className = 'offline';
     if (lbl) lbl.textContent = 'OFFLINE';
-    el.title = 'CMDR link not connected';
   }
 }
-/* re-evaluate whenever the bus status changes (link up / down / key rejected) */
-document.addEventListener('DOMContentLoaded', function() { try { window.SRABus && SRABus.onStatus(function() { updateAiStatus(); }); } catch (e) {} setTimeout(updateAiStatus, 1200); });
 
 function toggleTheme() {
   var current = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -10637,7 +10384,7 @@ function launchSim() {
     bgW=bgCanvas.width=window.innerWidth;bgH=bgCanvas.height=window.innerHeight;buildHexGrid();
   }
   window.addEventListener('resize',bgResize);
-  if(bgCanvas){bgResize();bgFrame();}
+  bgResize();bgFrame();
 
   // Resume canvas when returning to splash
   window._splashRestart=function(){cancelAnimationFrame(bgRaf);bgResize();bgFrame();};
@@ -10719,7 +10466,6 @@ function launchSim() {
   // ── CORE SPLASH EXIT ──
   window.enterHub = function() {
     var splash = document.getElementById('splash');
-    if (!splash) { updateAiStatus(); return; }
     splash.classList.add('exiting');
     cancelAnimationFrame(bgRaf);
     // Hide demo button — splash is dismissed
@@ -10730,79 +10476,11 @@ function launchSim() {
     setTimeout(function() { splash.style.display = 'none'; updateAiStatus(); }, 660);
   };
 
-  // ── GITHUB KEY GATE (opens on load when no token is configured) ──
-  window.GHGATE = (function() {
-    var busy = false, tmr = null;
-    /* Instrument trace for the STEP 1 → STEP 2 handoff. Read with: window.__ADMSTEP */
-    window.__ADMSTEP = window.__ADMSTEP || [];
-    function STEP(t) { try { window.__ADMSTEP.push(new Date().toISOString().slice(11, 23) + ' ' + t); } catch (e) {} }
-    function $g(id) { return document.getElementById(id); }
-    function msg(t, c) { var e = $g('gg-msg'); if (e) { e.textContent = t || ''; e.className = 'gg-msg ' + (c || ''); } }
-    function netErr(e) { return /network|no route|failed to fetch|timeout/i.test(String(e || '')); }
-    function hint(e) { e = String(e || '');
-      if (netErr(e)) return 'No route to the PASS link — this browser cannot reach the link (signal, VPN, proxy or Wi-Fi portal). Check the connection and press CONNECT again.';
-      if (/401/.test(e)) return 'The PASS key is invalid or expired.';
-      if (/403/.test(e)) return 'The PASS key was refused — it does not have read/write access to the link.';
-      if (/404/.test(e)) return 'The link target was not found. Check the link settings under ADM-10.';
-      if (/409|422|conflict/i.test(e)) return 'The link is busy. Press CONNECT again.';
-      return e.replace(/^GitHub\s+/i, 'PASS ').replace(/api\.github\.com/gi, 'the PASS link').replace(/\bread read\b/, 'read'); }
-    function btn(b) { var g = $g('gg-go'); if (!g) return; g.disabled = b; g.classList.toggle('busy', b); g.textContent = b ? 'CONNECTING…' : 'CONNECT'; }
-    function show() { if (!window.SRABus) return; var ti = $g('gg-token'); if (ti) ti.value = ''; var c = SRABus.cfg();
-      $g('gh-gate').classList.add('open'); msg(''); setTimeout(function() { try { $g('gg-token').focus(); } catch (e) {} }, 250); }
-    /* STEP 1 never releases the surface on its own: STEP 2 is raised first (z 10060 over 10050),
-       so there is no frame in which the admin screen is visible without a security key. */
-    function hide() {
-      /* A demo player left open sits at z 20000 and would bury the keypad. */
-      try { if (typeof closeDemoPlayer === 'function') closeDemoPlayer(); } catch (e) {}
-      var raised = false;
-      try {
-        if (window.ADMLOCK && ADMLOCK.isLocked()) ADMLOCK.show();
-        var al = $g('adm-lock');
-        /* ADMLOCK must EXIST. A missing module is a failure, not an unlocked state. */
-        raised = !!window.ADMLOCK && (!ADMLOCK.isLocked()
-              || !!(al && al.classList.contains('open') && getComputedStyle(al).display !== 'none'));
-      } catch (e) { raised = false; STEP('lock-error: ' + e); }
-      STEP('hide · step2 raised=' + raised);
-      /* Fail closed: STEP 1 never releases the surface unless STEP 2 is on screen. */
-      if (!raised) { msg('Security keypad did not load. Reload the console before continuing.', 'bad');
-        clearTimeout(tmr); busy = false; btn(false); return; }
-      $g('gh-gate').classList.remove('open'); $g('gh-gate').classList.remove('boot'); clearTimeout(tmr); busy = false; btn(false); }
-    function connect() { if (busy || !window.SRABus) return; var tok = ($g('gg-token').value || '').trim();
-      if (!/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(tok)) { msg('That does not look like a PASS key.', 'bad'); return; }
-      busy = true; btn(true); msg('Checking the link…', 'wait'); STEP('connect pressed');
-      SRABus.configure({ transport: 'github', token: tok });
-      setTimeout(function() { try { SRABus.publish('HELLO', { node: 'admin', app: 'ie-SRS ADMIN', linkCheck: true }); } catch (e) {} }, 400);  /* forces a write so a read-only key is caught here, not later */
-      var t0 = Date.now(), armed = false; clearTimeout(tmr);
-      (function tick() { if (!busy) return; var st = SRABus.status();
-        if (st.read === '' || st.read === undefined) armed = true;
-        if (armed || Date.now() - t0 > 1500) {
-          if (st.read === 'ok' && st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'PASS refused the write'), 'bad'); return; }
-          if (st.read === 'ok' && (st.write === 'ok' || Date.now() - t0 > 4000)) { busy = false; var c = SRABus.cfg(); msg('✓ Linked', 'ok'); try { if (typeof admPaintCmdr === 'function') admPaintCmdr(); var cx = $g('cx-token'); if (cx) { cx.dataset.keep = '1'; cx.value = tok; cx.placeholder = 'key stored · leave blank to keep · paste to replace'; } } catch (e) {} setTimeout(function() { hide(); try { hubToast('⬡ GitHub link up · ' + c.repo, 'ok', 2600); } catch (e) {} }, 500); return; }
-          if (st.read === 'error' || st.write === 'error') { busy = false; btn(false); msg(hint(st.error || 'PASS rejected the key'), 'bad'); return; } }
-        if (Date.now() - t0 > 20000) { busy = false; btn(false); msg('No answer from PASS. Check the connection and try again.', 'bad'); return; }
-        tmr = setTimeout(tick, 300); })(); }
-    function skip() { STEP('skip pressed'); hide(); try { var st = SRABus.status(), c = SRABus.cfg(); if (!(c.token && st.read === 'ok' && st.write !== 'error')) hubToast('CMDR link not connected · enter a PASS key under ADM-10 → Link', 'warn', 3200); } catch (e) {} }
-    /* Runs at load, over the splash, on every open. Healthy link → confirms status and offers CONTINUE; otherwise asks for a key. */
-    function boot() { try { if (!window.SRABus) return; var c = SRABus.cfg(), st = SRABus.status();
-      var healthy = !!c.token && c.transport === 'github' && st.read === 'ok' && st.write !== 'error' && st.connected !== false;
-      show();
-      var sk = $g('gg-skip'); if (sk) sk.textContent = healthy ? 'Continue' : 'Continue without link';
-      if (healthy) msg('✓ Link is up · a key is stored. Press CONTINUE, or enter a new key to replace it.', 'ok');
-      else if (c.token && (st.read === 'error' || st.write === 'error')) msg(netErr(st.error) ? hint(st.error) + ' Or continue without link.' : hint(st.error || 'The stored key was rejected') + ' Enter a new key.', 'bad');
-      else if (c.token) msg('A key is stored but the link is not confirmed yet — enter the key and CONNECT, or CONTINUE.', 'wait');
-    } catch (e) {} }
-    document.addEventListener('DOMContentLoaded', function() { var i = $g('gg-token'); if (i) i.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); connect(); } });
-      setTimeout(function(){ try { boot(); } catch (e) {} }, 60); });
-    function eye() { var i = $g('gg-token'), on = i.type === 'password'; i.type = on ? 'text' : 'password'; $g('gg-eye').textContent = on ? 'Hide key' : 'Show key'; }
-    return { show: show, connect: connect, skip: skip, boot: boot, eye: eye };
-  })();
-
   // ── DEMO PICKER + PLAYER MODAL ──
   var DEMO_BUILD = '202609071415'; // cache-buster appended to demo URLs; bump on every live/ redeploy
-  window.openDemoPicker = function(fromChrome) {
+  window.openDemoPicker = function() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (!pk) return;
-    pk.classList.toggle('chrome', !!fromChrome);
     var on = !pk.classList.contains('open');
     pk.classList.toggle('open', on); if (btn) { btn.classList.toggle('open', on); btn.setAttribute('aria-expanded', on ? 'true' : 'false'); }
   };
@@ -10810,29 +10488,15 @@ function launchSim() {
     var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
     if (pk) pk.classList.remove('open'); if (btn) { btn.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
   };
-  /* The demos live in ./live/ beside this file on GitHub Pages. When the console is opened
-     from a download (file://) or from any origin where live/ is not deployed, play the
-     published copy instead of leaving a dead iframe. */
-  var DEMO_REMOTE_BASE = 'https://thompsonryane-collab.github.io/ie-SRS/';
   window.openDemoPlayer = function(src, title) {
     src = src || 'live/';
-    var qs = (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
-    var local = src + qs, remote = DEMO_REMOTE_BASE + src + qs;
+    src += (src.indexOf('?') > -1 ? '&' : '?') + 'v=' + DEMO_BUILD;
     window.closeDemoPicker();
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame'),
         t = document.getElementById('demo-modal-title');
     if (t && title) t.innerHTML = title;
+    if (fr) fr.setAttribute('src', src);
     if (modal) modal.classList.add('open');
-    if (!fr) return;
-    fr.dataset.demoSrc = src;
-    if (location.protocol !== 'http:' && location.protocol !== 'https:') { fr.setAttribute('src', remote); return; }
-    fr.setAttribute('src', local);
-    /* Confirm live/ really exists at this origin; otherwise fall over to the published copy. */
-    try {
-      fetch(src, { method: 'HEAD', cache: 'no-store' })
-        .then(function(r) { if (!r.ok && fr.dataset.demoSrc === src) fr.setAttribute('src', remote); })
-        .catch(function()  { if (fr.dataset.demoSrc === src) fr.setAttribute('src', remote); });
-    } catch (e) { fr.setAttribute('src', remote); }
   };
   window.closeDemoPlayer = function() {
     var modal = document.getElementById('demo-modal'), fr = document.getElementById('demo-modal-frame');
@@ -10841,8 +10505,8 @@ function launchSim() {
   };
   // Close picker on outside click / Escape; close player on backdrop click
   document.addEventListener('click', function(e) {
-    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn'), cb = document.getElementById('demo-chrome-btn');
-    if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !(btn && btn.contains(e.target)) && !(cb && cb.contains(e.target))) window.closeDemoPicker();
+    var pk = document.getElementById('demo-pick'), btn = document.getElementById('demo-btn');
+    if (pk && pk.classList.contains('open') && !pk.contains(e.target) && !(btn && btn.contains(e.target))) window.closeDemoPicker();
   });
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { window.closeDemoPicker(); } });
   var demoModal = document.getElementById('demo-modal');
@@ -10902,7 +10566,7 @@ function launchSim() {
 document.addEventListener('DOMContentLoaded', function() {
   var cards = document.querySelectorAll('.app-card');
   cards.forEach(function(c, i) {
-    setTimeout(function() { c.classList.add('revealed'); }, 120 + i * 60);
+    setTimeout(function() { c.classList.add('revealed'); }, 300 + i * 180);
   });
 });
 
@@ -11885,32 +11549,6 @@ document.addEventListener("DOMContentLoaded",function(){
 .adm-tbl th{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.2px;color:#6e90b0;text-align:left;padding:7px 8px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#0d1520;cursor:pointer;text-transform:uppercase;}
 .adm-tbl td{padding:7px 8px;border-bottom:1px solid rgba(26,45,66,.6);vertical-align:middle;white-space:nowrap;}
 .adm-tbl tr:hover td{background:rgba(24,212,248,.04);}
-.adm-tbl th.au-chk-h,.adm-tbl td.au-chk-c{width:26px;padding:7px 4px 7px 10px;cursor:default;}
-.au-chk{accent-color:#18d4f8;width:13px;height:13px;margin:0;cursor:pointer;vertical-align:middle;}
-.adm-tbl tr.au-selrow td{background:rgba(224,85,85,.10)!important;}
-/* ── USER ACCOUNTS · taller rows, larger text, actions wrapped onto two lines ── */
-#overlay-adm-users .adm-tbl{font-size:25px}
-#overlay-adm-users .adm-tbl th{font-size:15px;padding:14px 12px}
-#overlay-adm-users .adm-tbl td{padding:16px 12px;line-height:1.4;font-size:25px!important}
-#overlay-adm-users .adm-tbl td:last-child{white-space:normal}
-#overlay-adm-users .au-act{width:400px;display:flex;flex-wrap:wrap;gap:8px 8px;align-items:center}
-#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:17px;padding:8px 16px;margin:0}
-#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:17px;padding:8px 16px}
-#overlay-adm-users .au-face{width:44px;height:44px;margin-right:12px}
-#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:scale(1.8);margin-right:10px}
-.adm-tbl tr.au-selrow td:first-child{box-shadow:inset 2px 0 0 #e05555;}
-.au-selcount{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#6e90b0;border:1px solid var(--border);border-radius:3px;padding:3px 8px;white-space:nowrap;}
-.au-selcount.on{color:#e05555;border-color:rgba(224,85,85,.45);}
-#au-del-btn[disabled]{opacity:.35;pointer-events:none;}
-#au-wipe{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(3,8,14,.78);backdrop-filter:blur(3px);}
-#au-wipe .w-box{width:min(520px,92vw);background:#0e1824;border:1px solid rgba(224,85,85,.45);border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.75);padding:18px 20px;font-family:'Rajdhani',sans-serif;color:#cce0f2;}
-#au-wipe h4{margin:0 0 4px;font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:#e05555;}
-#au-wipe .w-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:#6e90b0;margin-bottom:10px;}
-#au-wipe .w-list{max-height:170px;overflow:auto;border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9.5px;color:#8fb0d0;line-height:1.6;margin-bottom:12px;}
-#au-wipe .w-list b{color:#f2f8ff;font-weight:600;}
-#au-wipe .w-note{font-size:12px;color:#d4a05a;margin-bottom:10px;line-height:1.45;}
-#au-wipe input{width:100%;box-sizing:border-box;background:#0a121c;border:1px solid rgba(224,85,85,.45);border-radius:4px;padding:8px 10px;color:#f2f8ff;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;outline:none;}
-#au-wipe .w-act{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
 .adm-pill{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 7px;border-radius:3px;border:1px solid;text-transform:uppercase;}
 .adm-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle;}
 .adm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
@@ -12022,16 +11660,6 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-strategy-mod .overlay-chrome,#overlay-adm-strategy .overlay-chrome{position:sticky;top:0;z-index:60;}
 #str-mod-layout{grid-template-rows:minmax(0,1fr);transition:grid-template-columns .2s;}
 .str-vo-sep{width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0;}
-.str-vol{display:flex;align-items:center;gap:7px;padding:3px 9px;border:1px solid var(--border);border-radius:5px;background:rgba(14,24,36,.6);flex-shrink:0;}
-.str-vol-lbl{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#8aa4bd;white-space:nowrap;}
-.str-vol-out{font-family:'Share Tech Mono',monospace;font-size:8.5px;color:#3fd6ff;min-width:20px;text-align:right;}
-#str-vol-range{-webkit-appearance:none;appearance:none;width:78px;height:3px;border-radius:2px;background:var(--border);cursor:pointer;outline:none;}
-#str-vol-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:#3fd6ff;border:none;cursor:pointer;box-shadow:0 0 7px rgba(63,214,255,.55);}
-#str-vol-range::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#3fd6ff;border:none;cursor:pointer;}
-#str-vol-range:focus-visible{outline:2px solid #3fd6ff;outline-offset:2px;}
-.str-vol.muted #str-vol-range{opacity:.4;}
-.str-vol.muted .str-vol-out,.str-vol.muted .str-vol-lbl{color:#e8a33d;}
-#str-mute-btn.muted{border-color:rgba(232,163,61,.5);color:#e8a33d;}
 .str-vo{display:flex;align-items:center;gap:7px;padding:3px 9px;border:1px solid rgba(77,184,138,.35);border-radius:5px;background:rgba(77,184,138,.06);flex-shrink:0;}
 .str-vo-lbl{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#4db88a;white-space:nowrap;}
 .str-vo-bars{display:flex;align-items:flex-end;gap:2px;height:12px;width:15px;}
@@ -12068,7 +11696,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-users">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-users')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#18d4f8;">ADM-01 // USER ACCOUNTS</span>
   </div>
@@ -12076,10 +11704,6 @@ document.addEventListener("DOMContentLoaded",function(){
     <div class="adm-toolbar">
       <span style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;">140 SEATS · 70 INSTALLATIONS · sort and filter from the column carets</span>
       <span class="sp"></span>
-      <span class="au-selcount" id="au-selcount">0 SELECTED</span>
-      <button class="adm-b sm" onclick="admUsersSelectAll(true)">SELECT ALL SHOWN</button>
-      <button class="adm-b sm" onclick="admUsersSelectAll(false)">CLEAR SELECTION</button>
-      <button class="adm-b warn" id="au-del-btn" onclick="admUsersDeleteSelected()" disabled>&#10005; DELETE SELECTED</button>
       <button class="adm-b sm" onclick="cmReset('users')">CLEAR FILTERS</button>
       <button class="adm-b ok" onclick="openCreateAccount()">+ NEW ACCOUNT</button>
       <button class="adm-b" onclick="admExportUsers()">EXPORT CSV</button>
@@ -12096,7 +11720,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-msg">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-msg')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-02 // MESSAGE CENTER</span>
     <span id="am-online-badge" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#4db88a;border:1px solid rgba(77,184,138,.35);border-radius:3px;padding:2px 8px;white-space:nowrap;">0 ONLINE</span>
@@ -12140,7 +11764,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-routing">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-routing')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#d4a05a;">ADM-03 // SONAR ALERT ROUTING</span>
   </div>
@@ -12186,7 +11810,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-health">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-health')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#9ebc52;">ADM-04 // INSTANCE HEALTH &amp; DEPLOYMENT</span>
   </div>
@@ -12214,7 +11838,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-audit">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-audit')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#6e90b0;">ADM-05 // AUDIT LOG</span>
   </div>
@@ -12238,7 +11862,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-settings">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-settings')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#c3aaf8;">ADM-06 // PLATFORM SETTINGS</span>
   </div>
@@ -12258,10 +11882,6 @@ document.addEventListener("DOMContentLoaded",function(){
           <div style="margin-top:10px;">
             <div class="adm-field"><label>Active model</label><select class="adm-sel" id="as-model" onchange="admSetModel(this.value)"><option value="aria">ARIA (Claude direct)</option><option value="gemini">Gemini — Google</option><option value="capra">CAPRA — Classified</option></select></div>
             <div class="adm-field"><label>API key status</label><div id="as-keystatus" style="font-family:'Share Tech Mono',monospace;font-size:11px;">—</div></div>
-            <div class="adm-field"><label>Operator email</label><input class="adm-inp" id="as-email" type="email" autocomplete="off" placeholder="name@navy.mil"></div>
-            <div class="adm-field"><label>API key</label><div style="display:flex;gap:6px"><input class="adm-inp" id="as-apikey" type="password" autocomplete="off" placeholder="sk-… / AIza…" style="flex:1"><button class="adm-b" type="button" onclick="admToggleKeyEye()" id="as-eye">SHOW</button></div></div>
-            <div class="adm-field"><label>Browser-direct mode</label><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="as-direct" onchange="admSetDirect(this.checked)"> <span style="font-size:11px;color:#8fa8c0">Call the model API straight from this browser (no hub relay)</span></label></div>
-            <div class="adm-field"><label></label><div style="display:flex;gap:6px"><button class="adm-b ok" type="button" onclick="admApplyCreds()">APPLY KEY</button><button class="adm-b warn" type="button" onclick="admForgetKey()">FORGET KEY</button></div></div>
             <button class="adm-b" onclick="showAriaKeyModal()">ENTER / ROTATE KEY</button>
             <button class="adm-b" onclick="openApp('overlay-aria')">OPEN ARIA</button>
           </div>
@@ -12298,7 +11918,7 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#e4cc8c;">ADM-07 // DEPLOYMENT STRATEGY</span>
     <button class="adm-b sm" id="str-pdf-dl" onclick="strDownloadPdf()" title="Download the Enterprise Scale-Up document (PDF)" style="margin-left:auto;display:flex;align-items:center;gap:6px;border-color:rgba(228,204,140,.45);color:#e4cc8c;background:rgba(228,204,140,.08);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PDF</button>
@@ -12324,13 +11944,13 @@ document.addEventListener("DOMContentLoaded",function(){
      ═══════════════════════════════════════ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-strategy-mod">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-strategy-mod');setTimeout(function(){openApp('overlay-adm-strategy');},420);">&#8592; STRATEGY</button>
     <span class="overlay-app-name" style="color:#e4cc8c;" id="str-mod-title">STR-01 // MISSION</span>
     <button class="adm-b sm" id="str-prev" onclick="strStep(-1)" style="margin-left:auto;">&#9664; PREV</button><button class="adm-b sm" id="str-next" onclick="strStep(1)">NEXT &#9654;</button>
     <div class="str-vo-sep"></div>
     <div class="str-vo" id="str-vo-wrap" title="Slide narration"><div class="str-vo-bars idle" id="str-vo-bars"><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span><span class="str-vo-bar"></span></div><span class="str-vo-lbl" id="str-vo-lbl">VOICEOVER</span></div>
-    <button class="adm-b sm ok" id="str-replay-btn" onclick="strVoReplay()" title="Replay narration for this slide">&#8635; REPLAY</button><button class="adm-b sm warn" id="str-pause-btn" onclick="strVoPause()" title="Pause / resume narration">&#9208; PAUSE</button><button class="adm-b sm" id="str-mute-btn" onclick="strVoMute()" title="Mute narration (M)">&#128264;</button><div class="str-vol" id="str-vol-wrap" title="Narration volume (&#8593; / &#8595;)"><span class="str-vol-lbl">VOL</span><input id="str-vol-range" type="range" min="0" max="100" step="5" value="90" aria-label="Narration volume"><output class="str-vol-out" id="str-vol-out">90</output></div>
+    <button class="adm-b sm ok" id="str-replay-btn" onclick="strVoReplay()" title="Replay narration for this slide">&#8635; REPLAY</button><button class="adm-b sm warn" id="str-pause-btn" onclick="strVoPause()" title="Pause / resume narration">&#9208; PAUSE</button>
     <span id="str-mod-tag" style="margin-left:6px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#d8c8a4;border:1px solid rgba(216,200,164,.3);border-radius:3px;padding:2px 8px;white-space:nowrap;">DOC PAGE 1</span>
   </div>
   <div class="adm-body">
@@ -12353,7 +11973,7 @@ document.addEventListener("DOMContentLoaded",function(){
   function pill(t,c){return '<span class="adm-pill" style="color:'+c+';border-color:'+c+'">'+esc(t)+'</span>';}
   function mini(l,v,c,s){return '<div class="adm-mini"><div class="l">'+l+'</div><div class="v" style="color:'+(c||'#cce0f2')+'">'+v+'</div>'+(s?'<div class="l" style="margin-top:2px;text-transform:none;letter-spacing:.5px">'+s+'</div>':'')+'</div>';}
   function tsZ(ts){var d=new Date(ts);return d.toISOString().slice(0,10)+' '+d.toISOString().slice(11,19)+'Z';}
-  function me(){return window._inedApiEmail||'sysadmin@example.mil';}
+  function me(){return window._inedApiEmail||'sysadmin@navy.mil';}
   function toastOk(m){if(typeof hubToast==='function')hubToast(m,'ok',3200);}
   function toastWarn(m){if(typeof hubToast==='function')hubToast(m,'warn',3600);}
   function fillRegions(sel){var s=$(sel);if(!s||s.options.length>1)return;Object.keys(C.REG).forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k+' — '+C.REG[k];s.appendChild(o);});}
@@ -12428,17 +12048,8 @@ document.addEventListener("DOMContentLoaded",function(){
   var uSort={k:'site',d:1};
   window.admSortUsers=function(k){uSort.d=uSort.k===k?-uSort.d:1;uSort.k=k;admPaintUsers();};
   function userRows(){
-    var rows=[], live=window.SRASec?SRASec.live():{}, now=Date.now();
-    function liveMin(em){var e=live[em];return e?Math.round((now-e.ts)/60000):null;}
-    function isLive(em){var m=liveMin(em);return m!==null&&m<6&&!(live[em]&&live[em].off);}
-    function isAway(em){return isLive(em)&&!!(live[em]&&live[em].away);}
-    function isOff(em){return !!(live[em]&&live[em].off);}
-    var cu=window.SRASec?SRASec.custom():{};
-    Object.keys(cu).sort(function(a,b){return (cu[b].createdAt||0)-(cu[a].createdAt||0);}).forEach(function(em){var a=cu[em];var lm=liveMin(em);
-      rows.push({phone:a.phone||'',face:(a.face&&a.face.img)||'',faceOn:!!(a.face&&a.face.d),faceid:(a.face&&a.face.d)?'enrolled':'none',site:a.station||'—',siteId:'custom',region:shortRegion(a.region),regionColor:'#c3aaf8',who:em,roleLbl:'CMDR',name:a.name,first:a.first||'',last:a.last||'',role:a.role,email:em,
-        status:a.disabled?'disabled':isAway(em)?'away':isLive(em)?'online':isOff(em)?'offline':a.security?'active':'pending',device:(isLive(em)&&(live[em]||{}).via!=='admin-web')?'enrolled':'pending',seen:lm===null?99999:lm,security:a.security||'',kind:'custom',github:(live[em]||{}).github||'',via:(live[em]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(em))?'unlocked':'locked'});});
-    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];var st=C.acctState(s.id,w);if(st.removed)return;var lv=isLive(u.email);
-      rows.push({phone:'',face:(st.face&&st.face.img)||'',faceOn:!!(st.face&&st.face.d),faceid:(st.face&&st.face.d)?'enrolled':'none',site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,roleLbl:w==='fm'?'FM':'BACKUP',name:u.name,first:u.first||String(u.name||'').split(' ')[0],last:u.last||String(u.name||'').split(' ').slice(1).join(' '),role:u.role,email:u.email,status:st.disabled?'disabled':isAway(u.email)?'away':lv?'online':isOff(u.email)?'offline':userState(s,w),device:(lv&&(live[u.email]||{}).via!=='admin-web')?'enrolled':u.device,seen:lv?liveMin(u.email):u.lastSeenMin,security:st.security||'',kind:'seat',github:(live[u.email]||{}).github||'',via:(live[u.email]||{}).via||'',sipr:(window.SRASec&&SRASec.isSipr(u.email))?'unlocked':'locked'});});});
+    var rows=[];
+    C.SITES.forEach(function(s){['fm','backup'].forEach(function(w){var u=s[w];rows.push({site:s.name,siteId:s.id,region:s.region,regionColor:s.regionColor,who:w,name:u.name,role:u.role,email:u.email,status:userState(s,w),device:u.device,seen:u.lastSeenMin});});});
     return rows;
   }
   window.admPaintUsers=function(){
@@ -12446,351 +12057,31 @@ document.addEventListener("DOMContentLoaded",function(){
     var rows=userRows().filter(function(r){
       if(reg&&r.region!==reg)return false; if(role&&r.who!==role)return false;
       if(st==='pending'){if(r.device==='enrolled')return false;} else if(st&&r.status!==st)return false;
-      if(q&&(r.site+' '+r.name+' '+r.last+' '+r.first+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
-    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['last','Last Name','text'],['first','First Name','text'],['who','Role','cat'],['email','Email','text'],['phone','Cell','text'],['security','Security Key','text'],['status','Status','cat'],['sipr','SIPR','cat'],['faceid','Face ID','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
-    rows=cmApply(CFGS.users,rows); rows=rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';})); $('au-head').innerHTML=cmHead(CFGS.users).replace('<tr>','<tr>'+auHeadCell(rows));auPrune();
+      if(q&&(r.site+' '+r.name+' '+r.email).toLowerCase().indexOf(q)<0)return false; return true;});
+    if(!CFGS.users)CFGS.users={id:'users',cols:[['site','Installation','text'],['region','Region','cat'],['name','User','text'],['who','Role','cat'],['email','Email','text'],['status','Status','cat'],['device','Device','cat'],['seen','Last seen','num'],['act','Actions','none']],state:{sort:uSort,filters:{}},rows:userRows,paint:admPaintUsers};
+    rows=cmApply(CFGS.users,rows); $('au-head').innerHTML=cmHead(CFGS.users);
     var all=userRows();
     $('au-strip').innerHTML=
       mini('Total seats',all.length,'#ffffff')+mini('Online',all.filter(function(r){return r.status==='online';}).length,'#4db88a')+
-      mini('Away',all.filter(function(r){return r.status==='away';}).length,'#f2d24b')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
+      mini('Away',all.filter(function(r){return r.status==='away';}).length,'#6e90b0')+mini('Offline',all.filter(function(r){return r.status==='offline';}).length,'#e08a45')+
       mini('Disabled',all.filter(function(r){return r.status==='disabled';}).length,'#e05555')+mini('Device pending',all.filter(function(r){return r.device!=='enrolled';}).length,'#d4a05a')+
-      mini('Keyed · active',all.filter(function(r){return r.security&&r.status!=='disabled';}).length,'#18d4f8')+mini('Live via key',all.filter(function(r){return r.github!==undefined&&r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);}).length,'#c0c8d0')+
-      mini('SIPR unlocked',all.filter(function(r){return r.sipr==='unlocked';}).length,'#4db88a')+mini('Face ID enrolled',all.filter(function(r){return r.faceOn;}).length,'#18d4f8')+mini('Revoked',all.filter(function(r){return window.SRASec&&SRASec.isRevoked(r.email);}).length,'#ff5a4e')+
       mini('Showing',rows.length,'#18d4f8');
     $('au-body').innerHTML=rows.length?rows.map(function(r){
-      var c=r.status==='disabled'?'#e05555':r.status==='active'?'#18d4f8':r.status==='pending'?'#d4a05a':C.stColor(r.status);
-      var keyLive=r.status==='online'&&window.SRASec&&SRASec.isLive(r.email);if(keyLive)c='#c0c8d0';
-      var web=r.via==='admin-web';
-    if(keyLive&&web)c='#18d4f8';
-    var revoked=window.SRASec&&SRASec.isRevoked(r.email);if(revoked)c='#ff5a4e';
-    var byFace=keyLive&&!!((SRASec.live()[r.email]||{}).face);
-    var stLbl=revoked?'<span class="sec-live-dot" style="background:#ff5a4e;box-shadow:0 0 8px #ff5a4e"></span>REVOKED':keyLive?('<span class="sec-live-dot"></span>LIVE'+(web?' · WEB':'')+(byFace?' · FACE ID':'')+
-      (web&&window.ADMIN_SESSION&&ADMIN_SESSION.email===r.email?' · YOU':'')+
-      (r.github?' · '+esc(r.github):'')):r.status;
-      return '<tr'+(auSel(r)?' class="au-selrow"':'')+(r.kind==='custom'?' style="background:rgba(195,170,248,.04)"':'')+'>'+auChkCell(r)+'<td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td style="color:#f2f8ff;font-weight:600">'+(r.face?'<img class="au-face" src="'+r.face+'" alt="" title="Face enrolled">':'')+esc(r.last)+'</td><td>'+esc(r.first)+'</td>'+
-        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':r.kind==='custom'?'#c3aaf8':'#c3aaf8')+'">'+(r.roleLbl||(r.who==='fm'?'FM':'BACKUP'))+'</span></td>'+
+      var c=r.status==='disabled'?'#e05555':C.stColor(r.status);
+      return '<tr><td style="color:#cce0f2">'+esc(r.site)+'</td><td style="color:'+r.regionColor+'">'+r.region+'</td><td>'+esc(r.name)+'</td>'+
+        '<td><span style="color:'+(r.who==='fm'?'#18d4f8':'#c3aaf8')+'">'+(r.who==='fm'?'FM':'BACKUP')+'</span></td>'+
         '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;color:#8fb0d0">'+esc(r.email)+'</td>'+
-        '<td style="font-family:\'Share Tech Mono\',monospace;font-size:9.5px;white-space:nowrap">'+(r.phone?'<a href="tel:'+esc(r.phone.replace(/[^\d+]/g,''))+'" style="color:#18d4f8" title="Call">'+esc(r.phone)+'</a>':(r.kind==='custom'?'<span style="color:#3a4658">—</span>':'<span style="color:#3a4658">—</span>'))+(r.kind==='custom'?' <button class="adm-b sm" style="padding:1px 5px;font-size:8px;margin-left:4px" onclick="admSetPhone(\''+esc(r.email)+'\')" title="Edit cell number">✎</button>':'')+'</td>'+
-        '<td style="font-family:\'Share Tech Mono\',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:'+(r.security?'#18d4f8':'#d4a05a')+'">'+esc(r.security||'UNSET')+'</td>'+
-        '<td>'+(keyLive?'':'<span class="adm-dot" style="background:'+c+'"></span>')+'<span style="color:'+c+'">'+stLbl+'</span></td>'+
-        '<td>'+(r.sipr==='unlocked'?'<span class="sec-live-dot" style="background:#4db88a;box-shadow:0 0 0 3px rgba(77,184,138,.25),0 0 10px #4db88a"></span><span style="color:#4db88a;font-weight:700;letter-spacing:1px">SIPR</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">locked</span>')+'</td>'+
-        '<td>'+(r.faceOn?'<span class="sec-live-dot" style="background:#18d4f8;box-shadow:0 0 0 3px rgba(24,212,248,.25),0 0 10px #18d4f8"></span><span style="color:#18d4f8;font-weight:700;letter-spacing:1px">FACE ID</span>':'<span class="adm-dot" style="background:#3a4658"></span><span style="color:#6e90b0">none</span>')+'</td>'+
-        '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+(r.seen>=99999?'never':C.ago(r.seen))+'</td>'+
-        (r.kind==='custom'?
-        '<td><div class="au-act"><button class="adm-b sm ok" onclick="admSetSecurityKey(\'custom\',\''+esc(r.email)+'\')">KEY</button> '+
-        '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\'custom\',\''+esc(r.email)+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
-        '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
-        '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admCustomToggle(\''+esc(r.email)+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
-        (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
-        (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
-        (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm warn" onclick="admCustomDelete(\''+esc(r.email)+'\')">DEL</button></div></td></tr>'
-        :
-        '<td><div class="au-act"><button class="adm-b sm ok" onclick="admSetSecurityKey(\''+r.siteId+'\',\''+r.who+'\')">KEY</button> '+
-        '<button class="adm-b sm'+(r.faceOn?' ok':'')+'" onclick="admFaceEnroll(\''+r.siteId+'\',\''+r.who+'\')">'+(r.faceOn?'FACE ✓':'FACE')+'</button> '+
-        '<button class="adm-b sm" style="border-color:rgba(255,179,64,.55);color:#ffb340;background:rgba(255,179,64,.08)" onclick="admPingUser(\''+esc(r.email)+'\')" title="Sound a 10-second alarm on this commander\'s phone">PING</button> '+
-        '<button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
+        '<td><span class="adm-dot" style="background:'+c+'"></span><span style="color:'+c+'">'+r.status+'</span></td>'+
+        '<td style="color:'+(r.device==='enrolled'?'#4db88a':'#d4a05a')+'">'+r.device+'</td><td style="color:#6e90b0">'+C.ago(r.seen)+'</td>'+
+        '<td><button class="adm-b sm'+(r.status==='disabled'?' ok':' warn')+'" onclick="admUserToggle(\''+r.siteId+'\',\''+r.who+'\')">'+(r.status==='disabled'?'ENABLE':'DISABLE')+'</button> '+
         '<button class="adm-b sm" onclick="admUserReset(\''+r.siteId+'\',\''+r.who+'\')">RESET</button> '+
         (r.device!=='enrolled'?'<button class="adm-b sm ok" onclick="admUserEnroll(\''+r.siteId+'\',\''+r.who+'\')">ENROLL</button> ':'')+
-        (keyLive?'<button class="adm-b sm warn" onclick="admEndLive(\''+esc(r.email)+'\')">END SESSION</button> ':'')+
-        (r.sipr==='unlocked'?'<button class="adm-b sm warn" onclick="admEndSipr(\''+esc(r.email)+'\')">END SIPR</button> ':'')+
-        (revoked?'<button class="adm-b sm ok" onclick="admRestoreDevice(\''+esc(r.email)+'\')">RESTORE</button> ':'<button class="adm-b sm warn" style="border-color:rgba(255,90,78,.6);color:#ff6a5c;background:rgba(255,90,78,.08)" onclick="admWipeDevice(\''+esc(r.email)+'\')">WIPE</button> ')+
-        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></div></td></tr>');}).join('')+auSpan(cmFooter(CFGS.users,rows.length,all.length)):'<tr><td colspan="15" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
+        '<button class="adm-b sm" onclick="admMsgTo(\''+r.siteId+'\',\''+r.who+'\')">MSG</button></td></tr>';}).join('')+cmFooter(CFGS.users,rows.length,all.length):'<tr><td colspan="9" class="adm-empty">No accounts match. <a href="#" onclick="cmReset(\'users\');return false" style="color:#18d4f8">Reset column filters</a></td></tr>';
   };
-
-  /* ══ ADM-01 MULTI-SELECT · BATCH DELETE ══
-     Selection lives in AUSEL (survives repaints); rows are keyed by identity,
-     not by DOM position, so sorting/filtering never scrambles the set. */
-  var AUSEL={};
-  function auKey(r){return r.kind==='custom'?('custom|'+r.email):(r.siteId+'|'+r.who);}
-  function auSel(r){return !!AUSEL[auKey(r)];}
-  function auMeta(r){return {kind:r.kind,email:r.email,siteId:r.siteId,who:r.who,site:r.site,name:(r.last?r.last+', ':'')+(r.first||''),role:r.roleLbl||''};}
-  function auCount(){return Object.keys(AUSEL).length;}
-  function auPrune(){ /* drop selections whose row no longer exists */
-    var live={}; userRows().forEach(function(r){live[auKey(r)]=1;});
-    Object.keys(AUSEL).forEach(function(k){if(!live[k])delete AUSEL[k];});
-  }
-  function auSpan(html){return String(html).replace(/colspan="\d+"/,'colspan="13"');}
-  function auHeadCell(shown){
-    var n=(shown||[]).length, sel=(shown||[]).filter(auSel).length;
-    var state=n&&sel===n?' checked':''; var ind=(sel>0&&sel<n)?' data-ind="1"':'';
-    return '<th class="au-chk-h" title="Select every row currently shown"><input type="checkbox" class="au-chk" id="au-head-chk"'+state+ind+
-           ' onclick="event.stopPropagation();admUsersSelectAll(this.checked)"></th>';
-  }
-  function auChkCell(r){
-    return '<td class="au-chk-c"><input type="checkbox" class="au-chk"'+(auSel(r)?' checked':'')+
-           ' onclick="event.stopPropagation();admUsersToggle(\''+esc(auKey(r))+'\',this)"></td>';
-  }
-  function auShown(){ /* rows the operator can actually see right now */
-    if(!CFGS.users)return userRows();
-    var rows=cmApply(CFGS.users,userRows());
-    return rows.filter(function(r){return r.kind==='custom';}).concat(rows.filter(function(r){return r.kind!=='custom';}));
-  }
-  function auSync(){
-    var n=auCount(), lbl=$('au-selcount'), btn=$('au-del-btn');
-    if(lbl){lbl.textContent=n+' SELECTED';lbl.classList.toggle('on',n>0);}
-    if(btn){if(n>0)btn.removeAttribute('disabled');else btn.setAttribute('disabled','');}
-    var hc=$('au-head-chk');
-    if(hc){var shown=auShown(),sel=shown.filter(auSel).length;hc.checked=shown.length>0&&sel===shown.length;hc.indeterminate=sel>0&&sel<shown.length;}
-  }
-  window.admUsersToggle=function(k,el){
-    var hit=null; auShown().forEach(function(r){if(auKey(r)===k)hit=r;});
-    if(!hit){if(el)el.checked=false;return;}
-    if(AUSEL[k])delete AUSEL[k]; else AUSEL[k]=auMeta(hit);
-    var tr=el&&el.closest?el.closest('tr'):null;
-    if(tr)tr.classList.toggle('au-selrow',!!AUSEL[k]);
-    auSync();
-  };
-  window.admUsersSelectAll=function(on){
-    if(on){auShown().forEach(function(r){AUSEL[auKey(r)]=auMeta(r);});}
-    else {AUSEL={};}
-    admPaintUsers(); auSync();
-  };
-  window.admUsersDeleteSelected=function(){
-    var keys=Object.keys(AUSEL); if(!keys.length){toastWarn('Nothing selected');return;}
-    var seats=keys.filter(function(k){return AUSEL[k].kind!=='custom';}).length;
-    var prov=keys.length-seats;
-    var rowsHtml=keys.slice(0,60).map(function(k){var m=AUSEL[k];
-      return '<div><b>'+esc(m.name||m.email)+'</b> &middot; '+esc(m.role)+' &middot; '+esc(m.site||'')+' &middot; '+esc(m.email)+'</div>';}).join('')+
-      (keys.length>60?'<div style="color:#d4a05a">…and '+(keys.length-60)+' more</div>':'');
-    var w=document.getElementById('au-wipe'); if(w)w.remove();
-    w=document.createElement('div'); w.id='au-wipe';
-    w.innerHTML='<div class="w-box" role="dialog" aria-modal="true">'+
-      '<h4>&#9888; DELETE '+keys.length+' ACCOUNT'+(keys.length>1?'S':'')+'</h4>'+
-      '<div class="w-sub">'+prov+' PROVISIONED &middot; '+seats+' INSTALLATION SEAT'+(seats===1?'':'S')+'</div>'+
-      '<div class="w-list">'+rowsHtml+'</div>'+
-      '<div class="w-note">Security keys are revoked, live sessions are terminated and the accounts drop off the CMDR keyring immediately. Every removal is written to the audit log.</div>'+
-      '<div class="w-sub">TYPE <b style="color:#e05555">DELETE</b> TO CONFIRM</div>'+
-      '<input id="au-wipe-in" autocomplete="off" spellcheck="false" placeholder="DELETE">'+
-      '<div class="w-act"><button class="adm-b sm" onclick="admUsersWipeClose()">CANCEL</button>'+
-      '<button class="adm-b warn" id="au-wipe-go" onclick="admUsersWipeConfirm()" disabled>CONFIRM DELETE</button></div></div>';
-    document.body.appendChild(w);
-    var inp=document.getElementById('au-wipe-in'), go=document.getElementById('au-wipe-go');
-    inp.addEventListener('input',function(){
-      var ok=inp.value.trim().toUpperCase()==='DELETE';
-      if(ok)go.removeAttribute('disabled');else go.setAttribute('disabled','');});
-    inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!go.hasAttribute('disabled'))admUsersWipeConfirm();
-      if(e.key==='Escape')admUsersWipeClose();});
-    setTimeout(function(){inp.focus();},40);
-  };
-  window.admUsersWipeClose=function(){var w=document.getElementById('au-wipe');if(w)w.remove();};
-  window.admUsersWipeConfirm=function(){
-    var keys=Object.keys(AUSEL); if(!keys.length){admUsersWipeClose();return;}
-    var snap=keys.map(function(k){return AUSEL[k];});   /* endLive() repaints mid-loop; work off a snapshot */
-    var cu=SRASec.custom(), nProv=0, nSeat=0;
-    snap.forEach(function(m){
-      if(m.kind==='custom'){
-        if(cu[m.email])delete cu[m.email];
-        try{SRASec.endLive(m.email);}catch(e){}
-        C.audit('DELETE_ACCOUNT',m.email,'batch delete \u00b7 '+(m.site||''));
-        nProv++;
-      } else {
-        var st=C.acctState(m.siteId,m.who);
-        st.removed=true; st.security=''; st.active=false; st.disabled=true;
-        C.setOverride(m.siteId+'|'+m.who,st);
-        try{SRASec.endLive(m.email);}catch(e){}
-        C.audit('DELETE_ACCOUNT',m.email,'batch delete \u00b7 seat removed \u00b7 '+(m.site||''));
-        nSeat++;
-      }
-    });
-    SRASec.saveCustom(cu);          /* persists + republishes the keyring */
-    try{SRASec.storeKeys();}catch(e){}
-    AUSEL={};
-    admUsersWipeClose();
-    toastWarn((nProv+nSeat)+' account'+((nProv+nSeat)>1?'s':'')+' deleted \u00b7 keys revoked');
-    admPaintUsers(); if(typeof admPaintStrip==='function')admPaintStrip();
-    auSync();
-  };
-
   window.admUserToggle=function(sid,who){var st=C.acctState(sid,who);st.disabled=!st.disabled;C.setOverride(sid+'|'+who,st);var s=C.SITE[sid];C.audit(st.disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',s[who].email,s.name);toastOk(s[who].name+' '+(st.disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
   window.admUserReset=function(sid,who){var s=C.SITE[sid];C.audit('RESET_API_KEY',s[who].email,s.name);toastOk('Reset link sent to '+s[who].email);};
   window.admUserEnroll=function(sid,who){var s=C.SITE[sid];s[who].device='enrolled';C.audit('ENROLL_DEVICE',s[who].email,s.name);toastOk(s[who].name+': government device enrolled');admPaintUsers();admPaintStrip();};
-  window.admExportUsers=function(){var rows=userRows();var csv='installation,region,last_name,first_name,role,email,security_key,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.last,r.first,r.role,r.email,r.security||"UNSET",r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
-
-  /* ══ SECURITY KEYS · ACCOUNT ACTIVATION · KEY-AUTH LIVE SESSIONS ══ */
-  var SEC_CUSTOM='ie-srs-custom-accounts', SEC_KEYS='ie-srs-accounts', SEC_LIVE='ie-srs-live', LIVE_MS=6*60*1000, SEC_SIPR='ie-srs-sipr', SEC_REVOKED='ie-srs-revoked';
-  function lsJ(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
-  function lsW(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-  function shortRegion(r){r=String(r||'');if(/Washington/i.test(r))return 'NDW';var m=r.match(/NAVFAC\s+(\w+)/i);return m?('CNR'+m[1].slice(0,2).toUpperCase()):r.slice(0,8).toUpperCase();}
-  var SRASec=window.SRASec={
-    custom:function(){return lsJ(SEC_CUSTOM,{});},
-    saveCustom:function(o){lsW(SEC_CUSTOM,o);SRASec.storeKeys();},
-    createAccount:function(rec){
-      var o=SRASec.custom(); var em=String(rec.email||'').toLowerCase(); if(!em)return null;
-      var name=(rec.first?rec.first.charAt(0)+'. ':'')+(rec.last||''); var key=String(rec.security||'').replace(/\D/g,'');
-      o[em]={name:name.trim()||em,first:rec.first||'',last:rec.last||'',email:em,station:rec.station||'',region:rec.region||'',role:rec.role||'',exp:rec.exp||'',installations:rec.installations||[],
-             security:key,phone:String(rec.phone||'').trim(),status:key?'active':'pending',disabled:false,createdAt:Date.now(),activatedAt:key?Date.now():0,face:rec.face&&rec.face.d?{d:rec.face.d,img:rec.face.img||'',ts:Date.now()}:null};
-      SRASec.saveCustom(o);
-      if(key)C.audit('ACTIVATE_ACCOUNT',em,'security key assigned at creation');
-      if(o[em].face)C.audit('FACE_ENROLL',em,o[em].name+' · portrait enrolled at creation');
-      return o[em];
-    },
-    setKey:function(id,key){ // id = email (custom) or siteId|who (site seat)
-      /* Assigning a live key is an activation: a previously-disabled account must not stay silently
-         disabled underneath an "ACTIVE" key, or STEP 2 will reject it forever while claiming success. */
-      key=String(key||'').replace(/\D/g,''); if(key&&!/^\d{6}$/.test(key))return false;
-      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.security=key;st.active=!!key;if(key)st.disabled=false;if(key&&!st.activatedAt)st.activatedAt=Date.now();C.setOverride(id,st);}
-      else{var o=SRASec.custom();if(!o[id])return false;o[id].security=key;o[id].status=key?'active':'pending';if(key)o[id].disabled=false;if(key&&!o[id].activatedAt)o[id].activatedAt=Date.now();lsW(SEC_CUSTOM,o);}
-      SRASec.storeKeys(); return true;
-    },
-    /* ── FACE: portrait descriptor per account (custom = email · seat = siteId|who) ── */
-    setFace:function(id,face){face=face&&face.d&&face.d.length?{d:face.d,img:face.img||'',ts:Date.now()}:null;
-      if(id.indexOf('|')>0){var pr=id.split('|');var st=C.acctState(pr[0],pr[1]);st.face=face;C.setOverride(id,st);}
-      else{var o=SRASec.custom();if(!o[id])return false;o[id].face=face;lsW(SEC_CUSTOM,o);}
-      SRASec.storeKeys();SRASec.repaint();return true;},
-    setPhone:function(em,phone){var o=SRASec.custom();if(!o[em])return false;o[em].phone=String(phone||'').trim();lsW(SEC_CUSTOM,o);SRASec.storeKeys();SRASec.repaint();return true;},
-    faceOf:function(id){if(id.indexOf('|')>0){var pr=id.split('|');return C.acctState(pr[0],pr[1]).face||null;}return (SRASec.custom()[id]||{}).face||null;},
-    /* best enrolled match for a live descriptor · {acct,dist} or null when nobody is enrolled */
-    faceMatch:function(desc){if(!desc||!desc.length||!window.FACELIB)return null;var m=SRASec.keys();var best=null,n=0;
-      Object.keys(m).forEach(function(em){var a=m[em];if(!a.face||!a.face.d||a.disabled||SRASec.isRevoked(em))return;n++;var d=FACELIB.dist(desc,a.face.d);if(!best||d<best.dist)best={acct:a,dist:d};});
-      return best?Object.assign(best,{enrolled:n}):{acct:null,dist:9,enrolled:n};},
-    /* merged key directory · email → account (consumed by keypad + CMDR) */
-    storeKeys:function(){
-      var m={};
-      C.SITES.forEach(function(site){['fm','backup'].forEach(function(who){var u=site[who];if(!u)return;var st=C.acctState(site.id,who);var sec=st.security||'';
-        if(sec)m[u.email]={name:u.name,first:u.first||'',last:u.last||'',email:u.email,security:sec,site:site.name,siteId:site.id,who:who,kind:'seat',role:u.role||'',disabled:!!st.disabled,face:st.face||null};});});
-      var o=SRASec.custom(); Object.keys(o).forEach(function(em){var a=o[em];if(a.security)m[em]={name:a.name,first:a.first||'',last:a.last||'',email:em,security:a.security,site:a.station,siteId:'custom',who:'cmdr',kind:'custom',role:a.role||'',disabled:!!a.disabled,installations:a.installations||[],face:a.face||null,phone:a.phone||''};});
-      lsW(SEC_KEYS,m); return m;
-    },
-    keys:function(){return SRASec.storeKeys();},
-    validate:function(key){key=String(key||'').replace(/\D/g,'');if(!/^\d{6}$/.test(key))return null;var m=SRASec.keys();var hit=null;Object.keys(m).forEach(function(em){if(!hit&&m[em].security===key&&!m[em].disabled)hit=m[em];});return hit;},
-    /* live sessions · email → {name,site,ts,github,via} */
-    live:function(){return lsJ(SEC_LIVE,{});},
-    markLive:function(acct,extra){var l=SRASec.live();l[acct.email]=Object.assign({name:acct.name,first:acct.first||'',last:acct.last||'',email:acct.email,site:acct.site,siteId:acct.siteId,who:acct.who,kind:acct.kind,ts:Date.now(),github:'',via:'keypad'},extra||{});lsW(SEC_LIVE,l);
-      try{ if(!(extra&&extra.quiet)){                         /* heartbeats must not spam the ledger */
-        var via=(extra&&extra.via)||'keypad';
-        if(via==='admin-web')C.audit('ADMIN_SESSION_START',acct.email,acct.name+' · '+(acct.site||'')+' · web console');
-        else C.audit('CMDR_KEY_AUTH',acct.email,acct.name+' · '+(acct.site||'')+' · github:'+((extra&&extra.github)||'—'));
-      } }catch(e){}
-      try{window.dispatchEvent(new CustomEvent('security-authenticated',{detail:l[acct.email]}));}catch(e){}
-      SRASec.repaint(); return l[acct.email];},
-    endLive:function(email){var l=SRASec.live();var e=l[email]||{};l[email]={email:email,name:e.name||'',site:e.site||'',off:true,ts:Date.now()};lsW(SEC_LIVE,l);try{SRASec.endSipr(email,true);}catch(x){}SRASec.repaint();},
-    /* ── SIPR grant: set when ADMIN accepts a SIPR two-step request from the phone; refreshed by siprLive heartbeats; cleared on log out / END SESSION / END SIPR ── */
-    sipr:function(){return lsJ(SEC_SIPR,{});},
-    markSipr:function(acct,extra){var m=SRASec.sipr();m[acct.email]=Object.assign({email:acct.email,name:acct.name,site:acct.site,siteId:acct.siteId,ts:Date.now(),via:'cmdr-mobile'},extra||{});lsW(SEC_SIPR,m);if(!(extra&&extra.quiet))SRASec.repaint();return m[acct.email];},
-    endSipr:function(email,quiet){var m=SRASec.sipr();if(!m[email])return;delete m[email];lsW(SEC_SIPR,m);if(!quiet)SRASec.repaint();},
-    isSipr:function(email){var e=SRASec.sipr()[email];return !!(e&&Date.now()-e.ts<LIVE_MS)&&SRASec.isLive(email);},
-    /* ── REVOKED (remote wipe): email → {ts,dev,reason,by}. A revoked account is dropped from the keyring, every HELLO it sends is answered with KILL, and auth requests fail. ── */
-    revoked:function(){return lsJ(SEC_REVOKED,{});},
-    isRevoked:function(email){return !!SRASec.revoked()[email];},
-    revoke:function(acct,extra){var m=SRASec.revoked();var lv=SRASec.live()[acct.email]||{};m[acct.email]=Object.assign({email:acct.email,name:acct.name,site:acct.site,dev:lv.dev||'',ts:Date.now(),reason:'Device wiped by ADMIN'},extra||{});lsW(SEC_REVOKED,m);try{SRASec.endSipr(acct.email,true);}catch(e){}try{SRASec.endLive(acct.email);}catch(e){}SRASec.repaint();return m[acct.email];},
-    unrevoke:function(email){var m=SRASec.revoked();var r=m[email];delete m[email];lsW(SEC_REVOKED,m);SRASec.repaint();return r;},
-    isLive:function(email){var e=SRASec.live()[email];return !!(e&&!e.off&&Date.now()-e.ts<LIVE_MS);},
-    liveList:function(){var l=SRASec.live();return Object.keys(l).filter(function(k){return !l[k].off;}).map(function(k){return Object.assign({online:Date.now()-l[k].ts<LIVE_MS},l[k]);}).sort(function(a,b){return b.ts-a.ts;});},
-    repaint:function(){['admPaintUsers','admPaintStrip','admPaintPresence','admPaintCmdr'].forEach(function(f){try{if(typeof window[f]==='function'){if(f==='admPaintUsers'&&!($('overlay-adm-users')&&$('overlay-adm-users').classList.contains('visible')))return;if(f==='admPaintPresence'&&!($('overlay-adm-msg')&&$('overlay-adm-msg').classList.contains('visible')))return;if(f==='admPaintCmdr'&&!($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible')))return;window[f]();}}catch(e){}});}
-  };
-  /* ── ADMIN web-console presence ──
-     The operator who clears STEP 2 is a live user like any commander, so they get a
-     real record in ie-srs-live. A heartbeat keeps it inside the 6-minute TTL for as
-     long as the console stays unlocked; lock / log out ends it immediately. */
-  var ADM_HB=null, ADM_HB_MS=2*60*1000;
-  window.admSessionStart=function(acct){
-    if(!acct||!acct.email)return null;                       /* master-key unlock has no account to attribute */
-    window.ADMIN_SESSION={email:acct.email,name:acct.name,site:acct.site,siteId:acct.siteId,who:acct.who,kind:acct.kind,ts:Date.now()};
-    var rec=SRASec.markLive(acct,{via:'admin-web'});
-    if(ADM_HB)clearInterval(ADM_HB);
-    ADM_HB=setInterval(function(){
-      try{ if(!window.ADMIN_SESSION||(window.ADMLOCK&&ADMLOCK.isLocked())){admSessionEnd();return;}
-        SRASec.markLive(acct,{via:'admin-web',quiet:true}); }catch(e){}
-    },ADM_HB_MS);
-    return rec;
-  };
-  window.admSessionEnd=function(){
-    if(ADM_HB){clearInterval(ADM_HB);ADM_HB=null;}
-    var se=window.ADMIN_SESSION; window.ADMIN_SESSION=null;
-    if(!se||!se.email)return;
-    try{SRASec.endLive(se.email);}catch(e){}
-    try{C.audit('ADMIN_SESSION_END',se.email,(se.name||'')+' · web console');}catch(e){}
-  };
-  try{window.addEventListener('pagehide',function(){try{admSessionEnd();}catch(e){}});}catch(e){}
-  window.storeSecurityKeys=SRASec.storeKeys;
-  /* FACE · enroll or replace the portrait for an existing account (custom = email · seat = siteId|who) */
-  window.admFaceEnroll=function(siteId,who){
-    var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
-    var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
-    var cur=SRASec.faceOf(id);
-    if(cur&&!confirm('Replace the enrolled portrait for '+label+'?\n(Cancel keeps the current one · use CLEAR in the next prompt to remove it)'))return;
-    var f=document.getElementById('adm-face-file');if(!f){f=document.createElement('input');f.type='file';f.id='adm-face-file';f.accept='image/*';f.style.display='none';document.body.appendChild(f);}
-    f.value='';f.onchange=function(){var file=f.files&&f.files[0];if(!file)return;
-      try{hubToast('⬡ Reading portrait for '+label+'…','warn',2200);}catch(e){}
-      FACELIB.enroll(file).then(function(r){
-        if(!r){hubToast('⬡ No face found in that photo · try a closer, front-facing shot','warn',3200);return;}
-        SRASec.setFace(id,r);
-        try{ADMIN_CORE&&ADMIN_CORE.audit('FACE_ENROLL',isCustom?who:C.SITE[siteId][who].email,label+' · portrait enrolled by ADMIN');}catch(e){}
-        hubToast('⬡ Face enrolled for '+label+' · '+Math.round(r.score*100)+'% detection','ok',3000);
-      }).catch(function(e){hubToast('⬡ Face model unavailable · '+(e&&e.message||e),'warn',3600);});};
-    f.click();
-  };
-  window.admFaceClear=function(id){SRASec.setFace(id,null);};
-  window.admSetPhone=function(em){var a=SRASec.custom()[em];if(!a){toastWarn('Only provisioned accounts carry a cell number');return;}
-    var v=prompt('Cell phone for '+(a.name||em)+':\n(leave blank to clear)',a.phone||'');if(v===null)return;v=String(v).trim();
-    if(v&&!/^\+?[\d\s().-]{7,20}$/.test(v)){alert('That does not look like a phone number');return;}
-    SRASec.setPhone(em,v);try{C.audit('SET_PHONE',em,(a.name||em)+' · cell '+(v||'cleared'));}catch(e){}};
-  window.admSetSecurityKey=function(siteId,who){
-    var isCustom=siteId==='custom'; var id=isCustom?who:siteId+'|'+who;
-    var label=isCustom?((SRASec.custom()[who]||{}).name||who):(C.SITE[siteId][who].name+' ('+C.SITE[siteId].name+')');
-    var cur=isCustom?((SRASec.custom()[who]||{}).security||''):(C.acctState(siteId,who).security||'');
-    var key=prompt('6-digit security key for '+label+':\n(leave blank to clear · clearing deactivates the account)',cur);
-    if(key===null)return; key=String(key).replace(/\D/g,'');
-    if(key&&!/^\d{6}$/.test(key)){alert('Security key must be exactly 6 digits');return;}
-    SRASec.setKey(id,key);
-    var em=isCustom?who:C.SITE[siteId][who].email, sn=isCustom?((SRASec.custom()[who]||{}).station||''):C.SITE[siteId].name;
-    C.audit(key?'ACTIVATE_ACCOUNT':'DEACTIVATE_ACCOUNT',em,key?'security key set':'security key cleared');
-    toastOk(label+': '+(key?'key set · account ACTIVE':'key cleared · account PENDING'));
-    admPaintUsers(); admPaintStrip();
-  };
-  window.admCustomToggle=function(em){var o=SRASec.custom();if(!o[em])return;o[em].disabled=!o[em].disabled;SRASec.saveCustom(o);C.audit(o[em].disabled?'DISABLE_ACCOUNT':'ENABLE_ACCOUNT',em,o[em].station);toastOk(o[em].name+' '+(o[em].disabled?'disabled':'enabled'));admPaintUsers();admPaintStrip();};
-  window.admCustomDelete=function(em){var o=SRASec.custom();if(!o[em])return;if(!confirm('Delete account '+o[em].name+' <'+em+'>?'))return;delete o[em];SRASec.saveCustom(o);SRASec.endLive(em);C.audit('DELETE_ACCOUNT',em,'');toastOk('Account deleted');admPaintUsers();admPaintStrip();};
-  window.admEndLive=function(em){SRASec.endLive(em);C.audit('CMDR_KEY_LOGOUT',em,'');toastOk('Session ended');};
-  /* ══ WIPE DEVICE · remote self-destruct. KILL goes out three times over ~20 s (bus writes can be lost); the account is
-        marked REVOKED so any later contact from that phone is answered with KILL again. The PASS key (GitHub PAT) must be
-        revoked on GitHub separately — that layer works even if the phone never comes back online. ══ */
-  /* ── PING · sound a 10-second soft alarm on one commander's phone (bus, resent once; phone dedupes by id) ──
-     Instrumented: every stage is toasted + audited (transport → bus write → ACK / no answer), and a ping that goes
-     unanswered for 30 s surfaces the commander's cell number as the fallback. The phone is addressed by email AND by
-     a SHA-256 of its security key, so a keyring-fallback session (no email known) still recognizes its own ping. */
-  var PINGS={};
-  function sha256(str){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(str))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve('');}}
-  window.admPingUser=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em]||{};var name=m.name||em;
-    var id='pg'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-    var by=(window.ADMIN_SESSION&&(ADMIN_SESSION.name||ADMIN_SESSION.email))||'ADMIN';
-    var live=SRASec.isLive(em), lv=SRASec.live()[em]||{}, st=SRABus.status(), tr=st.transport||'?';
-    var phone=m.phone||(SRASec.custom()[em]||{}).phone||'';
-    PINGS[id]={em:em,name:name,phone:phone,t0:Date.now(),acked:false};
-    var stage1='transport '+tr+(tr==='github'?(st.connected?' · linked':' · NOT CONNECTED'):tr==='broadcast'?' · same-browser only':'')+' · target '+(live?'LIVE ('+(lv.via||'')+(lv.face?' · Face ID':'')+')':'not LIVE');
-    hubToast('⬡ PING 1/3 → '+name+' · '+stage1,live&&(tr!=='github'||st.connected)?'ok':'warn',3200);
-    try{C.audit('CMDR_PING',em,name+' · 10 s alarm sent by '+by+' · '+stage1);}catch(e){}
-    sha256(m.security||'').then(function(kh){
-      var p={node:'admin',app:'ie-SRS ADMIN',id:id,email:em,kh:kh,name:name,by:by,secs:10,ts:Date.now()};
-      function send(resend){try{return SRABus.publish('PING',Object.assign({},p,{resend:!!resend}),{site:'*'});}catch(e){return Promise.reject(e);}}
-      send(false).then(function(){setTimeout(function(){var s2=SRABus.status();var ok=tr!=='github'||s2.write==='ok'||s2.pending>0&&!s2.error;
-          hubToast('⬡ PING 2/3 · bus write '+(tr==='github'?(s2.write==='ok'?'OK':s2.write==='error'?'FAILED · '+(s2.error||''):(s2.pending?'pending ('+s2.pending+' queued)':'…')):'sent (BroadcastChannel)'),ok?'ok':'warn',3200);
-          try{C.audit('CMDR_PING_TX',em,name+' · id '+id+' · write '+(s2.write||'n/a')+(s2.error?' · '+s2.error:''));}catch(e){}},tr==='github'?2500:200);
-      }).catch(function(e){hubToast('⬡ PING 2/3 · publish threw · '+(e&&e.message||e),'warn',4000);});
-      setTimeout(function(){send(true);},6000);
-      setTimeout(function(){var r=PINGS[id];if(!r||r.acked)return;
-        hubToast('⬡ PING 3/3 · NO ANSWER from '+name+' in 30 s'+(phone?' · call '+phone:' · no cell on file'),'warn',8000);
-        try{C.audit('CMDR_PING_NOANSWER',em,name+' · no ACK in 30 s · '+(phone?'cell '+phone:'no cell on file'));}catch(e){}
-        try{if(phone&&confirm('No answer from '+name+' after 30 s.\n\nCall '+phone+' now?'))window.location.href='tel:'+phone.replace(/[^\d+]/g,'');}catch(e){}},30000);
-    });
-  };
-  window.admPingStatus=function(){return PINGS;};
-  window.admWipeDevice=function(em){var m=SRASec.keys()[em]||SRASec.custom()[em];if(!m){toastWarn('Account not found');return;}
-    if(!confirm('WIPE SONARmobile on '+(m.name||em)+"'s device?\n\nThe phone will erase every key, session and cached record and lock to a DEVICE REVOKED screen. The account stays REVOKED until you press RESTORE.\n\nRemember to also revoke the PASS key (GitHub PAT) on GitHub."))return;
-    var rec=SRASec.revoke(m,{by:(window.ADMIN_SESSION&&ADMIN_SESSION.email)||'admin'});
-    var kill={node:'admin',app:'ie-SRS ADMIN',email:em,dev:rec.dev||'',reason:'Device wiped by ADMIN'};
-    [0,6000,20000].forEach(function(d){setTimeout(function(){try{SRABus.publish('KILL',Object.assign({},kill,{resend:d>0}),{site:'*'});}catch(e){}},d);});
-    C.audit('CMDR_WIPE',em,(m.name||'')+' · remote wipe issued · dev '+(rec.dev||'?'));
-    try{if(typeof publishKeyring==='function')publishKeyring(true);}catch(e){}
-    toastWarn('WIPE sent to '+(m.name||em)+' · now revoke the PASS key on GitHub');
-    admPaintUsers();admPaintStrip();};
-  window.admRestoreDevice=function(em){var rec=SRASec.unrevoke(em);if(!rec)return;
-    var rs={node:'admin',app:'ie-SRS ADMIN',email:em,dev:rec.dev||''};
-    [0,6000].forEach(function(d){setTimeout(function(){try{SRABus.publish('RESTORE',Object.assign({},rs,{resend:d>0}),{site:'*'});}catch(e){}},d);});
-    C.audit('CMDR_RESTORE',em,(rec.name||'')+' · device restored · issue a new PASS key');
-    try{if(typeof publishKeyring==='function')publishKeyring(true);}catch(e){}
-    toastOk('Device restored · issue a new PASS key');admPaintUsers();admPaintStrip();};
-  window.admEndSipr=function(em){SRASec.endSipr(em);C.audit('CMDR_SIPR_REVOKE',em,'SIPR grant revoked by ADMIN');toastOk('SIPR revoked');try{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',siprRevoke:true,email:em});}catch(e){}};
+  window.admExportUsers=function(){var rows=userRows();var csv='installation,region,user,role,email,status,device,last_seen_min\n'+rows.map(function(r){return [r.site,r.region,r.name,r.role,r.email,r.status,r.device,r.seen].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');download('ie-sra-accounts.csv',csv,'text/csv');C.audit('EXPORT_ACCOUNTS','csv',rows.length+' rows');};
 
   /* ══ ADM-02 MESSAGE CENTER ══ */
   var MC={ch:'all'};
@@ -12959,8 +12250,6 @@ document.addEventListener("DOMContentLoaded",function(){
     var st={};try{st=JSON.parse(localStorage.getItem('adm_settings'))||{};}catch(e){}
     SET_KEYS.forEach(function(k){var el=$(k);if(el&&st[k]!=null)el.value=st[k];});
     var m=$('as-model'); if(m)m.value=window._selectedModel||'aria';
-    var em=$('as-email'); if(em&&!em.value&&window._inedApiEmail)em.value=window._inedApiEmail;
-    var dm=$('as-direct'); if(dm)dm.checked=!!window._directMode;
     $('as-keystatus').innerHTML=window._inedApiKey?'<span style="color:#4db88a">● KEY LOADED</span> <span style="color:#6e90b0">· session memory only · '+esc(me())+'</span>':'<span style="color:#d4a05a">○ NO KEY</span> <span style="color:#6e90b0">· ARIA will prompt on first use</span>';
     var s=C.summary();
     $('as-status').innerHTML=['Installations|'+s.sites,'Instances online|'+s.online+' / '+s.instances,'Users online|'+s.usersOnline,'Open SONAR alerts|'+s.openWO,'Audit events|'+C.listAudit().length,'Messages stored|'+C.listMsgs().length,'Hosting|Foundry ADVANA (enclave)','Build target|v2.4.1'].map(function(r){var p=r.split('|');return '<div class="row"><span>'+p[0]+'</span><span>'+p[1]+'</span></div>';}).join('');
@@ -12968,15 +12257,6 @@ document.addEventListener("DOMContentLoaded",function(){
     secApply($('overlay-adm-settings'));
   };
   window.admSettingsSave=function(){var st={};SET_KEYS.forEach(function(k){var el=$(k);if(el)st[k]=el.value;});try{localStorage.setItem('adm_settings',JSON.stringify(st));}catch(e){}C.audit('SETTINGS_SAVE','platform','channels + hosting');toastOk('Platform settings saved');};
-  window.admApplyCreds=function(){var k=($('as-apikey').value||'').trim(),e=($('as-email').value||'').trim();if(!k){toastWarn&&toastWarn('Enter an API key');return;}
-    window._inedApiKey=k;if(e)window._inedApiEmail=e;if(!window._selectedModel)window._selectedModel=$('as-model')?$('as-model').value:'aria';
-    try{var f=$('frame-analytics');if(f&&f.contentWindow)f.contentWindow.postMessage({type:'SET_CREDENTIALS',apiKey:k,model:window._selectedModel},'*');}catch(x){}
-    try{if(typeof pushBuilderCreds==='function')pushBuilderCreds();}catch(x){}
-    try{updateAiStatus();}catch(x){}C.audit('SETTINGS_API_KEY',e||'admin','API key applied · '+(window._selectedModel||'aria')+' · session memory only');
-    $('as-apikey').value='';admPaintSettings();hubToast('⬡ ARIA activated — API key accepted','ok',3000);};
-  window.admForgetKey=function(){window._inedApiKey=null;try{var f=$('frame-analytics');if(f&&f.contentWindow)f.contentWindow.postMessage({type:'SET_CREDENTIALS',apiKey:'',model:window._selectedModel||'aria'},'*');}catch(x){}try{updateAiStatus();}catch(x){}C.audit('SETTINGS_API_KEY','admin','API key forgotten');admPaintSettings();hubToast('API key forgotten','warn',2200);};
-  window.admSetDirect=function(on){window._directMode=!!on;C.audit('SETTINGS_DIRECT',on?'on':'off','browser-direct mode');};
-  window.admToggleKeyEye=function(){var i=$('as-apikey'),on=i.type==='password';i.type=on?'text':'password';$('as-eye').textContent=on?'HIDE':'SHOW';};
   window.admSetModel=function(v){window._selectedModel=v;var sel=$('sp-model-select');if(sel)sel.value=v;var badge=$('aria-model-badge');if(badge)badge.textContent={aria:'ARIA',gemini:'GEMINI · GOOGLE',capra:'CAPRA · CLASSIFIED'}[v]||'ARIA';C.audit('SETTINGS_MODEL',v,'');toastOk('AI provider set to '+v.toUpperCase());};
   window.admResetDemo=function(){if(!confirm('Reset all admin demo data (accounts overrides, messages, audit, dispatch log, rules, settings)?'))return;['adm_audit','adm_msgs','adm_acct_overrides','adm_wo_log','adm_rules','adm_settings','adm_enroll','adm_strategy_progress','adm_strategy_risks','adm_msg_sections','adm_hub_sections'].forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});toastWarn('Demo data cleared — reloading');setTimeout(function(){location.reload();},900);};
 
@@ -12985,7 +12265,7 @@ document.addEventListener("DOMContentLoaded",function(){
   window.openApp=function(id){
     _open(id);
     try{
-      if(id==='overlay-adm-users'){admPaintUsers();try{auSync();}catch(e){}}
+      if(id==='overlay-adm-users')admPaintUsers();
       else if(id==='overlay-adm-msg')admPaintMsgs();
       else if(id==='overlay-adm-routing')admPaintRouting();
       else if(id==='overlay-adm-health')admPaintHealth();
@@ -13272,33 +12552,6 @@ document.addEventListener("DOMContentLoaded",function(){
   window.strVoSpeak=function(key){var text=STR_VO[key||CUR];if(!text)return;
     if(VO.paused){VO.held=key||CUR;VO.queue=[];VO.pendId=null;if(window._tts)window._tts.cancel();voBars('paused');return;}
     strVoStop();VO.queue=voChunks(text);voNext();};
-  var VOL={v:90,premute:90};
-  function volPaint(){var r=$('str-vol-range'),o=$('str-vol-out'),w=$('str-vol-wrap'),b=$('str-mute-btn');
-    if(r)r.value=VOL.v;if(o)o.value=VOL.v;
-    var m=VOL.v===0;
-    if(w)w.classList.toggle('muted',m);
-    if(b){b.innerHTML=m?'&#128263;':'&#128264;';b.classList.toggle('muted',m);b.title=(m?'Unmute':'Mute')+' narration (M)';}}
-  window.strVoSetVol=function(v,fromUser){
-    v=Math.max(0,Math.min(100,Math.round(v/5)*5));VOL.v=v;
-    if(v>0)VOL.premute=v;
-    if(window._tts&&window._tts.setVolume)window._tts.setVolume(v/100);
-    try{localStorage.setItem('ie-srs-vo-vol',String(v));}catch(e){}
-    volPaint();
-    /* muting mid-sentence should go quiet now, not at the next chunk boundary */
-    if(fromUser&&v===0&&VO.speaking&&window._tts)window._tts.cancel();
-  };
-  window.strVoMute=function(){
-    var m=VOL.v===0;
-    strVoSetVol(m?(VOL.premute||90):0,true);
-    if(!m){VO.queue=[];VO.pendId=null;VO.speaking=false;voBars('idle');}
-    else{strVoSpeak(CUR);}
-    try{if(C&&C.audit)C.audit('STRATEGY_VO_MUTE',CUR,m?'narration unmuted':'narration muted');}catch(e){}
-  };
-  window.strVoNudge=function(d){strVoSetVol(VOL.v+d,true);};
-  (function initVol(){var v=90;try{var q=localStorage.getItem('ie-srs-vo-vol');if(q!==null&&q!=='')v=parseInt(q,10);}catch(e){}
-    if(!isFinite(v))v=90;
-    var r=$('str-vol-range');if(r)r.addEventListener('input',function(){strVoSetVol(+r.value,true);});
-    strVoSetVol(v,false);})();
   window.strVoReplay=function(){VO.paused=false;voPauseBtn(false);strVoStop();strVoSpeak(CUR);try{if(C&&C.audit)C.audit('STRATEGY_VO_REPLAY',CUR,'slide narration replayed');}catch(e){}};
   window.strVoPause=function(){VO.paused=!VO.paused;voPauseBtn(VO.paused);
     if(VO.paused){if(window._tts)window._tts.pause();voBars('paused');return;}
@@ -13307,7 +12560,7 @@ document.addEventListener("DOMContentLoaded",function(){
     if(VO.queue.length){voNext();return;}
     voBars('idle');};
   var _close=window.closeApp; window.closeApp=function(id){_close(id);if(id==='overlay-adm-strategy-mod'){try{VO.paused=false;voPauseBtn(false);strVoStop();}catch(e){}}};
-  document.addEventListener('keydown',function(e){var ov=$('overlay-adm-strategy-mod');if(!ov||!ov.classList.contains('visible'))return;if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown')strStep(1);else if(e.key==='ArrowLeft'||e.key==='PageUp')strStep(-1);else if(e.key===' '){e.preventDefault();strVoPause();}else if(e.key==='ArrowUp'){e.preventDefault();strVoNudge(5);}else if(e.key==='ArrowDown'){e.preventDefault();strVoNudge(-5);}else if(e.key==='m'||e.key==='M'){e.preventDefault();strVoMute();}});
+  document.addEventListener('keydown',function(e){var ov=$('overlay-adm-strategy-mod');if(!ov||!ov.classList.contains('visible'))return;if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown')strStep(1);else if(e.key==='ArrowLeft'||e.key==='PageUp')strStep(-1);else if(e.key===' '){e.preventDefault();strVoPause();}});
   var _open=window.openApp; window.openApp=function(id){_open(id);try{if(id==='overlay-adm-strategy')strPaintGrid();}catch(e){console.warn('strategy',e);}};
 })();
 
@@ -13326,7 +12579,7 @@ document.addEventListener("DOMContentLoaded",function(){
 <!-- ═══ OVERLAY: ADM-09 COMMS LOG ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-comms">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-comms')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#29d3c8;">ADM-09 // COMMS LOG</span>
   </div>
@@ -13370,48 +12623,11 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-cmdr .cm-log{font-family:'Share Tech Mono',monospace;font-size:9.5px;color:#9ab4cc;line-height:1.6;max-height:260px;overflow:auto}
 #overlay-adm-cmdr .cm-peer .act{display:flex;gap:6px}
 #overlay-adm-cmdr .cm-peer .act button{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 8px;border-radius:4px;border:1px solid rgba(110,144,176,.4);background:#132640;color:#cce0f2;cursor:pointer}
-
-/* ── LOCK / LOGOUT BUTTONS ── */
-#demo-chrome-btn,#lock-btn,#logout-btn{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--txd);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;transition:color .18s,border-color .18s,box-shadow .18s;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent}
-#logout-btn:hover{color:#f2f8ff;border-color:#e05555;box-shadow:0 0 12px rgba(224,85,85,.3)}
-#lock-btn:hover{color:#f2f8ff;border-color:#d4a05a;box-shadow:0 0 12px rgba(212,160,90,.3)}
-#lock-btn svg,#logout-btn svg{stroke:currentColor}
-#demo-chrome-btn:hover{color:#f2f8ff;border-color:#18d4f8;box-shadow:0 0 12px rgba(24,212,248,.3)}
-#gh-gate #demo-btn{z-index:10055}   /* play disc lives on the authentication screen, bottom-right */
-#demo-pick{z-index:10056}
-#demo-pick.chrome{right:16px;bottom:auto;top:44px}
-/* ── GUIDE BUTTON ── */
-#guide-btn {
-  display: flex; align-items: center; gap: 4px;
-  font-family: var(--mono);
-  font-size: 10px; letter-spacing: 1.5px;
-  color: var(--txd);
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 3px 10px;
-  cursor: pointer;
-  transition: color .18s, border-color .18s, box-shadow .18s;
-  flex-shrink: 0;
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
-}
-#guide-btn:hover {
-  color: var(--txh);
-  border-color: var(--sage);
-  box-shadow: 0 0 12px rgba(77, 184, 138, 0.25);
-}
-#guide-btn svg {
-  width: 11px; height: 11px;
-  stroke: currentColor;
-  stroke-width: 1.3;
-}
-
 </style>
 <!-- ═══ OVERLAY: ADM-10 CMDR MOBILE ═══ -->
 <div class="app-overlay overlay-duers" id="overlay-adm-cmdr">
   <div class="overlay-chrome">
-    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <div class="overlay-logo"><span class="overlay-logo-i">i<span class="overlay-logo-e">e</span></span><span class="overlay-logo-sr">SR</span><span class="overlay-logo-a">S</span></div>
     <button class="overlay-back" onclick="closeApp('overlay-adm-cmdr')">&#8592; ADMIN</button>
     <span class="overlay-app-name" style="color:#4db88a;">ADM-10 // CMDR MOBILE</span>
   </div>
@@ -13506,7 +12722,7 @@ window.SRABus=(function(){
 
   /* ── github contents adapter ── */
   function GitHub(){
-    var timer=null, sha=null, busy=false, queue=[], alive=true, onVis=null;
+    var timer=null, sha=null, busy=false, queue=[];
     function url(){return 'https://api.github.com/repos/'+cfg.repo+'/contents/'+cfg.path+'?ref='+encodeURIComponent(cfg.branch)+'&t='+Date.now();}
     function hdr(){var h={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};if(cfg.token)h['Authorization']='Bearer '+cfg.token;return h;}
     function b64dec(s){try{return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g,'')),function(c){return c.charCodeAt(0);}));}catch(e){return atob(s.replace(/\n/g,''));}}
@@ -13527,8 +12743,8 @@ window.SRABus=(function(){
     function describe(e){var m=String(e&&e.message||e);var c=e&&e.status;if(c===401)return m+' — token invalid or expired';if(c===403)return m+' — token cannot write this repo: check Resource owner = thompsonryane-collab and Contents = Read and write';if(c===404)return m+' — repo/branch/file path not found';if(!c&&/fetch/i.test(m))return 'network — no route to api.github.com';return m;}
     function poll(){
       if(busy)return;busy=true;
-      read().then(function(res){if(!alive)return;sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
-        .catch(function(e){if(!alive)return;setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
+      read().then(function(res){sha=res.sha;(res.doc.messages||[]).forEach(function(m){_recv(m);});setStatus({read:'ok',connected:st.write!=='error',error:st.write==='error'?st.error:'',lastSync:Date.now()});})
+        .catch(function(e){setStatus({read:'error',connected:false,error:'GitHub read '+describe(e)});})
         .then(function(){busy=false;flush();});
     }
     function flush(){
@@ -13547,14 +12763,8 @@ window.SRABus=(function(){
       })();
     }
     return {
-      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();
-        var ms=Math.max(3,cfg.poll|0)*1000;
-        /* Background tabs get their timers throttled to ~1/min by Chrome/Safari, which is long enough for a phone's sign-in to time out.
-           A Worker ticker is exempt from that throttling, so ADMIN keeps answering while the tab is not in front. */
-        try{var w=new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(1)},'+ms+')'],{type:'text/javascript'})));w.onmessage=function(){if(alive)poll();};timer={w:w};}
-        catch(e){timer=setInterval(poll,ms);}
-        onVis=function(){if(!document.hidden&&alive)poll();};document.addEventListener('visibilitychange',onVis);},
-      stop:function(){alive=false;if(timer&&timer.w)timer.w.terminate();else clearInterval(timer);timer=null;document.removeEventListener('visibilitychange',onVis);},
+      start:function(){setStatus({read:'',write:'',error:cfg.token?'':'No GitHub token'});poll();timer=setInterval(poll,Math.max(3,cfg.poll|0)*1000);},
+      stop:function(){clearInterval(timer);timer=null;},
       send:function(env){appendLog(env);queue.push(env);setStatus({pending:queue.length});flush();return Promise.resolve(true);}
     };
   }
@@ -13771,12 +12981,12 @@ window.SRABus=(function(){
 
   /* ── chip (status + shortcut to ADM-10) ── */
   var css=document.createElement('style');
-  css.textContent='#cl-chip{position:fixed;right:14px;top:calc((var(--chrome-h,40px) - 24px)/2);height:24px;z-index:9000;display:flex;align-items:center;gap:8px;padding:0 12px;border-radius:12px;background:rgba(8,16,28,.85);border:1px solid rgba(110,144,176,.35);color:#cce0f2;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1.4px;cursor:pointer;white-space:nowrap;backdrop-filter:blur(10px)}#chrome,#launcher-shell #chrome{padding-right:196px!important}'+
+  css.textContent='#cl-chip{position:fixed;right:16px;bottom:16px;z-index:9000;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:20px;background:rgba(8,16,28,.92);border:1px solid rgba(110,144,176,.35);color:#cce0f2;font-family:"Share Tech Mono",monospace;font-size:10px;letter-spacing:1.4px;cursor:pointer;backdrop-filter:blur(10px);box-shadow:0 8px 24px rgba(0,0,0,.45)}'+
   '#cl-chip i{width:8px;height:8px;border-radius:50%;background:#e05555;box-shadow:0 0 0 3px rgba(224,85,85,.2)}#cl-chip.on i{background:#4db88a;box-shadow:0 0 0 3px rgba(77,184,138,.2)}#cl-chip.warn i{background:#d4a05a}';
   document.head.appendChild(css);
   var chip=document.createElement('button');chip.id='cl-chip';chip.innerHTML='<i></i><span id="cl-txt">CMDR LINK</span>';chip.title='Open ADM-10 CMDR Mobile';chip.onclick=function(){if(typeof openApp==='function')openApp('overlay-adm-cmdr');};document.body.appendChild(chip);
   function paintPanel(){if(typeof admPaintCmdr==='function'&&$('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))try{admPaintCmdr();}catch(e){}}
-  window.admCmdrSave=function(o){if(o&&!o.token)delete o.token;try{delete $('cx-token').dataset.keep;}catch(e){}bus.configure(Object.assign({node:'admin',site:'*'},o));C.audit('SETTINGS_CMDR_LINK','transport',o.transport);toast('CMDR link: '+o.transport,'ok');bus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN'});};
+  window.admCmdrSave=function(o){bus.configure(Object.assign({node:'admin',site:'*'},o));C.audit('SETTINGS_CMDR_LINK','transport',o.transport);toast('CMDR link: '+o.transport,'ok');bus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN'});};
   window.admCmdrTest=function(siteId){
     var s=C.SITE[siteId]; if(!s)return;
     var rec={ts:Date.now(),site:s.id,siteName:s.name,code:'TEST-'+String(Date.now()).slice(-4),test:true,kind:'TEST',msg:'Test SONAR alert released by System Admin to CMDR mobile — no operational outage. Acknowledge on the phone to close the loop.',channels:'Base Commander: mobile+dash'};
@@ -13805,7 +13015,7 @@ window.SRABus=(function(){
   function hhmm(ts){var d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
   function ago(ts){var m=Math.round((Date.now()-ts)/60000);return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' hr ago';}
   function mini(l,v,c,s){return '<div class="adm-mini"><div class="l">'+l+'</div><div class="v" style="color:'+(c||'#cce0f2')+'">'+v+'</div>'+(s?'<div class="l" style="margin-top:2px;text-transform:none;letter-spacing:0">'+s+'</div>':'')+'</div>';}
-  function cmdrUrl(){try{return new URL('cmdr/',location.href).href;}catch(e){return 'https://thompsonryane-collab.github.io/cmdr/';}}
+  function cmdrUrl(){return new URL('cmdr/',location.href).href;}
   window.admCmdrGh=function(){var gh=$('cx-transport').value==='github';document.querySelectorAll('#overlay-adm-cmdr .cx-gh').forEach(function(e){e.style.display=gh?'':'none';});
     $('cx-note').textContent=gh?'Both ADMIN and the phone need the same token.':$('cx-transport').value==='off'?'Bus disabled.':'Works between tabs of this browser (e.g. Open in new window).';};
   function unacked(){return C.listWO().filter(function(w){return !w.ack&&w.origin!=='cmdr'&&(w.site&&C.SITE[w.site]);}).slice(0,12);}
@@ -13822,7 +13032,7 @@ window.SRABus=(function(){
     $('cx-peers').innerHTML=ks.length?ks.map(function(k){var p=peers[k],s=C.SITE[k];return '<div class="cm-peer"><div><b>'+esc(p.name||'Commander')+'</b><div class="s">'+esc(s?s.name:k)+' · '+esc(p.app||'')+' · hello '+ago(p.ts)+'</div></div><div class="act"><button onclick="admCmdrTest(\''+esc(k)+'\')">TEST ALERT</button><button onclick="CMDR_LINK.sendStatus(\''+esc(k)+'\');hubToast(\'STATUS → CMDR\',\'ok\',2000)">PUSH HEALTH</button></div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">No phone has linked yet. Open the app (preview at right, or the URL above on an iPhone) — it says hello automatically.</div>';
     $('cx-unacked-n').textContent=un.length?un.length+' open':'';
     $('cx-unacked').innerHTML=un.length?un.map(function(w){return '<div class="cm-peer"><div><b style="color:'+(w.test?'#18d4f8':'#e05555')+'">'+esc(w.code)+'</b> <span class="s">'+esc(w.siteName||w.site)+'</span><div class="s">'+esc(String(w.msg||'').slice(0,90))+'</div></div><div class="s">'+ago(w.ts)+'</div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">Every SONAR alert sent to mobile has been acknowledged.</div>';
-    if(document.activeElement!==$('cx-token')){$('cx-transport').value=c.transport;$('cx-repo').value=c.repo;$('cx-branch').value=c.branch;$('cx-path').value=c.path;if(!$('cx-token').dataset.keep)$('cx-token').value='';$('cx-token').placeholder=c.token?'key stored · leave blank to keep · paste to replace':'fine-grained PAT · Contents read/write';$('cx-poll').value=c.poll;admCmdrGh();}
+    if(document.activeElement!==$('cx-token')){$('cx-transport').value=c.transport;$('cx-repo').value=c.repo;$('cx-branch').value=c.branch;$('cx-path').value=c.path;$('cx-token').value=c.token;$('cx-poll').value=c.poll;admCmdrGh();}
     $('cx-log').innerHTML=(window.CMDR_LINK?CMDR_LINK.events():[]).map(esc).join('<br>')||'—';
     var ak=acked();$('cx-acked-n').textContent=ak.length?ak.length+' recent':'';
     $('cx-acked').innerHTML=ak.length?ak.map(function(w){return '<div class="cm-peer"><div><b style="color:#4db88a">'+esc(w.code)+'</b> <span class="s">'+esc(w.siteName||w.site)+'</span><div class="s">ack by '+esc(w.ack.by||'')+' · '+esc(w.ack.via||'')+' · RTT '+fmtMs(w.ack.ts-w.ts)+'</div></div><div class="s">'+ago(w.ack.ts)+'</div></div>';}).join(''):'<div class="adm-empty" style="padding:14px">No acknowledgments yet.</div>';
@@ -13835,10 +13045,7 @@ window.SRABus=(function(){
     if(b)b.textContent=Object.keys(peers).length+' device'+(Object.keys(peers).length===1?'':'s');
     if(d){d.textContent=un+' unacked';d.style.color=un?'#e05555':'';d.style.borderColor=un?'rgba(224,85,85,.5)':'';}}
   var _open=window.openApp;
-  var _paintCmdr=window.admPaintCmdr;
-  window.admPaintCmdr=function(){_paintCmdr.apply(this,arguments);try{if(!window.SRASec)return;var ll=SRASec.liveList();if(!ll.length)return;var el=$('cx-peers');var extra=ll.map(function(e){return '<div class="cm-peer"><div><b>'+esc(e.name)+'</b><div class="s">'+esc(e.site||'—')+' · '+esc(e.email)+' · key auth · '+(e.online?'<span style="color:#4db88a">LIVE</span>':'seen '+ago(e.ts))+(e.github?' · gh:'+esc(e.github):'')+'</div></div><div class="act">'+(e.siteId&&e.siteId!=='custom'?'<button onclick="admCmdrTest(\''+esc(e.siteId)+'\')">TEST ALERT</button>':'')+'<button onclick="admEndLive(\''+esc(e.email)+'\');admPaintCmdr()">END</button></div></div>';}).join('');
-    if(/adm-empty/.test(el.innerHTML))el.innerHTML=extra;else el.innerHTML+=extra;var n=(window.CMDR_LINK?Object.keys(CMDR_LINK.peers()).length:0)+ll.filter(function(e){return e.online;}).length;$('cx-peer-n').textContent=n?n+' linked':'';}catch(e){console.warn('cmdr key peers',e);}};
-  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr'){try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}}};
+  window.openApp=function(id){_open(id);if(id==='overlay-adm-cmdr')try{admPaintCmdr();}catch(e){console.warn('cmdr paint',e);}};
   bus.onStatus(paintCard);
   bus.subscribe(function(){paintCard();if($('overlay-adm-cmdr')&&$('overlay-adm-cmdr').classList.contains('visible'))try{admPaintCmdr();}catch(e){}});
   setTimeout(paintCard,800);setInterval(paintCard,30000);
@@ -13895,12 +13102,9 @@ window.SRABus=(function(){
   var ONLINE_MS=15*60*1000;
   function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function ago(ts){var m=Math.round((Date.now()-ts)/60000);return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' hr ago';}
-  function me(){return window._inedApiEmail||'sysadmin@example.mil';}
+  function me(){return window._inedApiEmail||'sysadmin@navy.mil';}
   function peers(){var p=(window.CMDR_LINK&&CMDR_LINK.peers())||{};return Object.keys(p).map(function(k){var s=C.SITE[k];return {site:k,siteName:s?s.name:k,name:p[k].name||'Base Commander',app:p[k].app||'ie-SRS CMDR',ts:p[k].ts||0,online:(Date.now()-(p[k].ts||0))<ONLINE_MS};}).sort(function(a,b){return b.ts-a.ts;});}
-  function keyPeers(){if(!window.SRASec)return [];return SRASec.liveList()
-    .filter(function(e){return e.via!=='admin-web';})   /* the web admin is already the 'you' row */
-    .map(function(e){return {site:'key:'+e.email,siteName:e.site||'—',name:e.name,app:'CMDR hub · key auth'+(e.github?' · gh:'+e.github:''),ts:e.ts,online:e.online,email:e.email,key:true};});}
-  window.admLivePresence=function(){var ps=peers().concat(keyPeers()).sort(function(a,b){return b.ts-a.ts;});return {admins:1,mobile:ps.filter(function(x){return x.online;}).length,peers:ps,total:1+ps.filter(function(x){return x.online;}).length};};
+  window.admLivePresence=function(){var ps=peers();return {admins:1,mobile:ps.filter(function(x){return x.online;}).length,peers:ps,total:1+ps.filter(function(x){return x.online;}).length};};
   window.admPaintPresence=function(){
     var q=($('am-uq')&&$('am-uq').value||'').toLowerCase();
     var lp=admLivePresence(); var st=window.SRABus?SRABus.status():{};
@@ -13908,7 +13112,7 @@ window.SRABus=(function(){
     if($('am-online-n'))$('am-online-n').textContent=lp.total;
     if($('am-online-badge'))$('am-online-badge').textContent=lp.total+' ONLINE · LIVE';
     var html='<div class="adm-usr" onclick="admSetChannel(\'admins\')"><span class="adm-dot" style="background:#18d4f8"></span><div style="min-width:0"><div>'+esc(me())+'</div><small>SYSTEM ADMIN · web · you</small></div></div>';
-    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>'+(x.key?'CMDR MOBILE · KEY AUTH':'CMDR MOBILE')+' · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
+    html+=list.map(function(x){var c=x.online?'#4db88a':'#3a5570';return '<div class="adm-usr" onclick="admSetChannel(\'site:'+esc(x.site)+'\')" style="'+(x.online?'':'opacity:.55')+'"><span class="adm-dot" style="background:'+c+'"></span><div style="min-width:0"><div>'+esc(x.name)+'</div><small>CMDR MOBILE · '+esc(x.siteName)+' · '+(x.online?'online':'last seen '+ago(x.ts))+'</small></div></div>';}).join('');
     if(!list.length)html+='<div class="adm-empty" style="padding:12px;text-align:left">No CMDR mobile device linked'+(st.transport==='github'?' via GitHub':'')+'. Phones appear here when they say hello (ADM-10).</div>';
     if($('am-users'))$('am-users').innerHTML=html;
   };
@@ -14055,293 +13259,6 @@ window.SRADropZone=(function(){
   /* ADM-08 scenarios released on ADMIN are filed to the drop zone too */
   if(typeof handleBuilderScenario==='function'){var _h=handleBuilderScenario;window.handleBuilderScenario=function(pl){try{window.SRADropZone.fromScenario(pl,{source:'admin-builder'});}catch(e){}return _h(pl);};}
 })();
-
 </script>
-
-
-<script>
-/* ══ CMDR KEY-AUTH RECEIVER (ADMIN side · no keypad UI here — the keypad lives on CMDR mobile) ══
-   Mobile authenticates with its 6-digit key and reports in via:
-     • window.postMessage({type:'CMDR_KEY_AUTH', key, github?})   (embedded preview / popup)
-     • SRABus HELLO envelope with payload.key                       (cross-device via GitHub transport)
-   ADMIN validates against SRASec.keys() and marks the account LIVE. */
-(function(){
-  window.addEventListener('message',function(ev){var d=ev.data||{};if(d.type!=='CMDR_KEY_AUTH'||!window.SRASec)return;
-    if(d.face){var fsrc=ev.source;FACEAUTH.handle({desc:d.face,img:d.faceImg||'',authId:d.authId||('pm'+Date.now()),site:d.site||'*',real:false,sipr:!!d.sipr,ts:Date.now(),
-      reply:function(ok,a,reason){try{fsrc&&fsrc.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',face:true,sipr:!!d.sipr,key:a.security,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',face:true,sipr:!!d.sipr,reason:reason||'Face not recognized'},'*');}catch(e){}}});return;}
-    if(!d.key)return;
-    var a=SRASec.validate(d.key);
-    if(a){try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview window · not marked LIVE');}catch(e){}try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' signed in on the preview (not LIVE)','ok',2600);}catch(e){}if(d.sipr){var src=ev.source;SIPRREQ.open({authId:d.authId||('pm'+Date.now()),acct:a,site:d.site||'*',real:false,key:d.key,ts:Date.now(),reply:function(ok,reason){try{src&&src.postMessage(ok?{type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,sipr:true}:{type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||'',sipr:true,reason:reason||''},'*');}catch(e){}}});return;}try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_OK',authId:d.authId||'',name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site},'*');}catch(e){}autoConnect(a,d.site||'*',d);}
-    else{try{ev.source&&ev.source.postMessage({type:'CMDR_KEY_AUTH_FAIL',authId:d.authId||''},'*');}catch(e){}}});
-  /* ── KEYRING: publish SHA-256 hashes of every enabled security key (never the key itself) so CMDR can reject a
-        non-matching key instantly, even before ADMIN answers. Re-published when User Accounts change or a phone says HELLO. */
-  /* ── AUTO-CONNECT: fires once a security key is verified. Only when ADMIN itself is on the GitHub link (so the phone can actually hear us). */
-  var lastAuto={};
-  function linkUp(){try{var c=SRABus.cfg(),st=SRABus.status();return c.transport==='github'&&!!c.token&&st.read==='ok'&&st.write!=='error';}catch(e){return false;}}
-  function autoConnect(acct,site,p){try{
-    var siteId=(acct&&acct.siteId&&acct.siteId!=='custom')?acct.siteId:(site&&site!=='*'?site:'nb-sd');
-    var k=acct.email+':'+siteId; if(lastAuto[k]&&Date.now()-lastAuto[k]<15000)return; lastAuto[k]=Date.now();   /* one burst per sign-in */
-    var via=p&&p.via||(p&&p.authId?'mobile':'window');
-    if(!linkUp()&&via!=='window'){try{hubToast('⬡ '+acct.name+' verified — ADMIN is not on the GitHub link, phone will not receive STATUS','warn',4200);}catch(e){}return;}
-    /* 1 · STATUS snapshot for the commander's installation */
-    try{window.CMDR_LINK&&CMDR_LINK.sendStatus(siteId);}catch(e){}
-    /* 2 · welcome line into the site channel (shows on the phone's Messages tab) */
-    try{var sName=(window.ADMIN_CORE&&ADMIN_CORE.SITE&&ADMIN_CORE.SITE[siteId]&&ADMIN_CORE.SITE[siteId].name)||acct.site||siteId;
-      SRABus.publish('MSG',{text:'Welcome '+acct.name+' — linked to ie-SRS ADMIN · '+sName+' · '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),ch:'site:'+siteId,from:'ADMIN',sys:true},{site:siteId});}catch(e){}
-    /* 3 · fresh keyring + open SONAR alerts for the site */
-    try{publishKeyring(false);}catch(e){}
-    try{if(window.CMDR_LINK&&CMDR_LINK.resend)CMDR_LINK.resend(siteId);}catch(e){}
-    /* 4 · ADMIN UI: audit, ADM-10 repaint, link chip green, toast */
-    try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_AUTOCONNECT',acct.email,acct.name+' · '+siteId+' · STATUS + welcome sent');}catch(e){}
-    try{if(typeof admPaintCmdr==='function')admPaintCmdr();}catch(e){}
-    try{var chip=document.getElementById('cl-chip');if(chip){chip.classList.add('on');chip.classList.remove('warn');}}catch(e){}
-    try{hubToast('⬡ '+acct.name+' connected · STATUS → '+siteId,'ok',3000);}catch(e){}
-  }catch(e){}}
-  var ringDigest='', ringLast=0;
-  function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
-  function publishKeyring(force){try{if(!window.SRABus||!window.SRASec||!window.crypto||!crypto.subtle)return;var m=SRASec.keys();var list=Object.keys(m).filter(function(e){return m[e].security&&!m[e].disabled&&!SRASec.isRevoked(e);}).map(function(e){return m[e];});
-    var digest=list.map(function(a){return a.email+':'+a.security;}).sort().join('|');
-    if(!force&&digest===ringDigest&&Date.now()-ringLast<60000)return;
-    Promise.all(list.map(function(a){return sha(a.security);})).then(function(hs){var ring=[];hs.forEach(function(h,i){if(h)ring.push({h:h,n:list[i].name,s:list[i].site||''});});
-      ringDigest=digest;ringLast=Date.now();SRABus.publish('KEYRING',{node:'admin',count:ring.length,ring:ring});});}catch(e){}}
-  window.publishKeyring=publishKeyring;
-  function hookBus(){try{if(!window.SRABus)return;setTimeout(function(){publishKeyring(true);},1500);setInterval(function(){publishKeyring(false);},5000);
-    SRABus.subscribe(function(env,replay){if(replay||!env||env.from!=='cmdr'||env.type!=='PING_ACK')return;var p=env.payload||{};
-      var r=window.admPingStatus?admPingStatus()[p.id]:null;var secs=r?((Date.now()-r.t0)/1000).toFixed(1)+' s':'';if(r)r.acked=true;
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PING_ACK',p.email||(r&&r.em)||'',(p.name||p.email||'phone')+' · '+(p.dismissed?'dismissed the ping':'ping sounded for 10 s')+(secs?' · round trip '+secs:'')+(p.sound===false?' · AUDIO BLOCKED on phone':''));}catch(e){}
-      try{hubToast('⬡ PING 3/3 · '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed':' received')+(secs?' · '+secs:'')+(p.sound===false?' · phone audio blocked (tap Ping pill on phone)':''),p.sound===false?'warn':'ok',4000);}catch(e){}});
-    SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
-    if(!window.SRASec)return;
-    /* ── FACE two-step: the phone sends a live face descriptor instead of a key; ADMIN matches it against enrolled portraits, then HOLDS it for the operator ── */
-    if(p.faceAuth&&p.authId&&p.face){   /* face wins even if a stale key rode along */
-      var fsite=env.site&&env.site!=='*'?env.site:'*', freal=!p.embedded&&(p.transport||'github')==='github', fage=Date.now()-(env.ts||0);
-      if(fage>10*60*1000)return;
-      FACEAUTH.handle({desc:p.face,img:p.faceImg||'',authId:p.authId,site:fsite,real:freal,sipr:!!p.sipr,github:p.github||'',dev:env.dev||p.dev||'',ts:env.ts||Date.now(),
-        reply:function(ok,a,reason){
-          var rp=ok?{node:'admin',app:'ie-SRS ADMIN',auth:'ok',face:true,sipr:!!p.sipr,authId:p.authId,key:a.security,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:freal?'admin-bus':'admin-bus-preview'}
-                  :{node:'admin',app:'ie-SRS ADMIN',auth:'fail',face:true,sipr:!!p.sipr,authId:p.authId,reason:reason||'Face not recognized'};
-          SRABus.publish('HELLO',rp,{site:fsite});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},rp,{resend:true}),{site:fsite});}catch(e){}},6000);
-          if(ok&&freal){try{autoConnect(a,fsite,p);}catch(e){}}
-        }});
-      return;}
-    if(!p.key)return;
-    var a=SRASec.validate(p.key), site=env.site&&env.site!=='*'?env.site:'*';
-    var real=!p.embedded&&(p.transport||'github')==='github';
-    if(a&&SRASec.isRevoked(a.email)&&!p.wiped){var rv=SRASec.revoked()[a.email]||{};
-      try{SRABus.publish('KILL',{node:'admin',app:'ie-SRS ADMIN',email:a.email,dev:env.dev||p.dev||rv.dev||'',reason:rv.reason||'Device wiped by ADMIN'},{site:'*'});}catch(e){}
-      if(p.authId){try{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:!!p.sipr,authId:p.authId,reason:'Device revoked by ADMIN · contact ADMIN'},{site:site});}catch(e){}}
-      try{if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_REVOKED_CONTACT',a.email,a.name+' · revoked device reached the link · KILL re-sent');}catch(e){}
-      return;}
-    var age=Date.now()-(env.ts||0); if(!p.authId&&age>5*60*1000)return;   /* heartbeat older than 5 min = history, not presence */           /* LIVE = a real phone on the cross-device link, never ADMIN's own preview */
-    if(a&&p.bye){try{SRASec.endLive(a.email);ADMIN_CORE&&ADMIN_CORE.audit('CMDR_BYE',a.email,a.name+' · logged out');}catch(e){}return;}
-    /* ── SIPR two-step request: same key check, then ADMIN accepts and lights the SIPR field green ── */
-    if(p.sipr&&p.authId){
-      if(a){if(age>10*60*1000)return;                                             /* stale replayed request: never pop for history */
-        SIPRREQ.open({authId:p.authId,acct:a,site:site,real:real,github:p.github||'',dev:env.dev||p.dev||'',key:p.key,ts:env.ts||Date.now(),reply:function(ok,reason){
-          var sp=ok?{node:'admin',app:'ie-SRS ADMIN',auth:'ok',sipr:true,authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:real?'admin-bus':'admin-bus-preview'}
-                   :{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:true,authId:p.authId,reason:reason||'SIPR request declined by ADMIN'};
-          SRABus.publish('HELLO',sp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},sp,{resend:true}),{site:site});}catch(e){}},6000);}});
-      }else{SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',sipr:true,authId:p.authId,reason:'SIPR denied · key not recognized in User Accounts'},{site:site});
-        try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
-      return;}
-    /* SIPR heartbeat: the phone still holds a grant — keep the light on (quiet, no audit) */
-    if(a&&p.siprLive&&real){try{SRASec.markSipr(a,{via:'cmdr-mobile',quiet:!!p.heartbeat});}catch(e){}}
-    if(a&&p.away&&real&&!p.authId){try{SRASec.markLive(a,{github:p.github||'',via:'cmdr-mobile',away:true,ts:Math.min(env.ts||Date.now(),Date.now())});if(!p.heartbeat)ADMIN_CORE&&ADMIN_CORE.audit('CMDR_LOCK',a.email,a.name+' · device locked · AWAY');}catch(e){}return;}
-    if(a&&!real){if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus-preview'},{site:site});
-        try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PREVIEW_AUTH',a.email,a.name+' · preview / same-browser · not marked LIVE');}catch(e){}}return;}
-    if(a){SRASec.markLive(a,{github:p.github||'',dev:env.dev||p.dev||'',via:'cmdr-mobile',ts:Math.min(env.ts||Date.now(),Date.now())});
-      if(p.authId){try{if(typeof hubToast==='function')hubToast('⬡ '+a.name+' LIVE on CMDR mobile','ok',2600);}catch(e){}
-        var okp={node:'admin',app:'ie-SRS ADMIN',auth:'ok',authId:p.authId,name:a.name,first:a.first||'',last:a.last||'',email:a.email,site:a.site,via:'admin-bus'};
-        SRABus.publish('HELLO',okp,{site:site});setTimeout(function(){try{SRABus.publish('HELLO',Object.assign({},okp,{resend:true}),{site:site});}catch(e){}},6000);   /* second copy survives a lost write */
-        autoConnect(a,site,p);}
-    }else if(p.authId){SRABus.publish('HELLO',{node:'admin',app:'ie-SRS ADMIN',auth:'fail',authId:p.authId,reason:'Invalid or disabled security key'},{site:site});
-      try{window.ADMIN_CORE&&ADMIN_CORE.audit('CMDR_KEY_REJECT',site,'key ending '+String(p.key).slice(-2));}catch(e){}}
-  });}catch(e){}}
-  document.addEventListener('DOMContentLoaded',function(){try{localStorage.removeItem('ie-srs-live');}catch(e){}hookBus();try{window.SRASec&&SRASec.storeKeys();}catch(e){}});
-})();
-</script>
-<script>
-/* ══ SIPRREQ · SIPR access request broker (ADM-01) ══
-   The phone's red two-step keypad sends HELLO{key,authId,sipr:true} (bus) or postMessage CMDR_KEY_AUTH{sipr:true} (preview).
-   ADMIN validates the key exactly as for NIPR, then HOLDS the request in a popup for the operator to ACCEPT or DECLINE.
-   Resends (12 s / 30 s) with the same authId never open a second popup; a decision already made is simply replayed. */
-window.SIPRREQ=(function(){
-  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000;
-  function $(i){return document.getElementById(i);}
-  function open(r){                                            /* r = {authId, acct, site, real, github, key, ts, reply(ok,reason)} */
-    if(decided[r.authId]){var d=decided[r.authId];if(Date.now()-d.ts<10*60*1000){try{r.reply(d.ok,d.reason);}catch(e){}}return;}   /* replay a made decision */
-    for(var i=0;i<q.length;i++)if(q[i].authId===r.authId){q[i].reply=r.reply;return;}                                             /* resend → keep the newest reply channel */
-    if(cur&&cur.authId===r.authId){cur.reply=r.reply;return;}
-    r.at=Date.now();q.push(r);
-    try{hubToast('⬡ '+r.acct.name+' is requesting SIPR access','warn',3200);}catch(e){}
-    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_REQUEST',r.acct.email,r.acct.name+' · '+(r.acct.site||'')+' · awaiting ADMIN decision');}catch(e){}
-    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
-    show();
-  }
-  function show(){
-    if(cur||!q.length){paintCount();return;}
-    cur=q.shift();
-    $('sr-name').textContent=cur.acct.name||cur.acct.email;
-    $('sr-site').textContent=cur.acct.site||cur.site||'—';
-    $('sr-email').textContent=cur.acct.email||'—';
-    $('sr-key').textContent='•••• '+String(cur.key||'').slice(-2);
-    $('sr-via').textContent=cur.real?'SONARmobile · cross-device link':'Preview / same browser';
-    $('sr-when').textContent=new Date(cur.at||Date.now()).toLocaleTimeString();
-    paintCount();$('sipr-req').classList.add('on');
-    clearInterval(tick);tick=setInterval(function(){var left=Math.max(0,Math.round((cur.at+EXPIRE-Date.now())/1000));$('sr-timer').textContent='EXPIRES IN '+left+' S';if(left<=0)expire();},500);
-    $('sr-timer').textContent='';
-  }
-  function paintCount(){var e=$('sr-count');if(e)e.textContent=q.length?('+'+q.length+' MORE QUEUED'):'';}
-  function close(){clearInterval(tick);cur=null;$('sipr-req').classList.remove('on');show();}
-  function expire(){if(!cur)return;try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_EXPIRED',cur.acct.email,cur.acct.name+' · no decision · request expired');}catch(e){}decided[cur.authId]={ok:false,reason:'SIPR request expired · ask again',ts:Date.now()};close();}
-  function decide(ok){if(!cur)return;var r=cur;
-    if(ok){
-      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',dev:r.dev||'',via:'cmdr-mobile',quiet:true});}catch(e){}
-      try{SRASec.markSipr(r.acct,{via:r.real?'cmdr-mobile':'preview'});}catch(e){}
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_AUTH',r.acct.email,r.acct.name+' · SIPR granted by ADMIN · '+(r.real?'mobile':'preview'));}catch(e){}
-      try{hubToast('⬡ '+r.acct.name+' · SIPR granted','ok',2600);}catch(e){}
-      decided[r.authId]={ok:true,ts:Date.now()};
-    }else{
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_SIPR_DECLINE',r.acct.email,r.acct.name+' · SIPR declined by ADMIN');}catch(e){}
-      try{hubToast('⬡ '+r.acct.name+' · SIPR declined','warn',2600);}catch(e){}
-      decided[r.authId]={ok:false,reason:'SIPR request declined by ADMIN',ts:Date.now()};
-    }
-    try{r.reply(ok,decided[r.authId].reason);}catch(e){}
-    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
-    close();
-  }
-  return {open:open,decide:decide,pending:function(){return (cur?1:0)+q.length;},current:function(){return cur;}};
-})();
-</script>
-<script>
-/* ══ FACELIB · face-api.js loader + descriptor helpers (shared shape with SONARmobile) ══
-   Models are lazy-loaded from face/models/ the first time a portrait is enrolled. Matching is pure math
-   (Euclidean distance between 128-d descriptors), so a face request never needs the model on ADMIN. */
-window.FACELIB=(function(){
-  var BASE='face/', ready=null, THRESHOLD=0.55;
-  function load(){if(ready)return ready;ready=new Promise(function(res,rej){
-    function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
-    if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face-api.min.js not found at '+BASE));};document.head.appendChild(sc);}
-  });return ready;}
-  function one(el,size,thr){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:size,scoreThreshold:thr})).withFaceLandmarks(true).withFaceDescriptor();}
-  function padded(el,f){var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;var m=Math.round(Math.max(w,h)*f);var c=document.createElement('canvas');c.width=w+2*m;c.height=h+2*m;var x=c.getContext('2d');x.fillStyle='#808080';x.fillRect(0,0,c.width,c.height);x.drawImage(el,m,m,w,h);c.__m=m;return c;}
-  function pack(r,m){m=m||0;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:{x:r.detection.box.x-m,y:r.detection.box.y-m,width:r.detection.box.width,height:r.detection.box.height},pass:r.__pass};}
-  /* still images get a multi-pass detector: close-up portraits can exceed the tiny model's largest anchor, so we retry
-     with a bigger input, a looser threshold, and finally a padded copy that shrinks the face relative to the frame */
-  function describe(el){var isVideo=el&&el.tagName==='VIDEO';return load().then(function(){
-    if(isVideo)return one(el,320,0.5).then(function(r){return r?pack(r):null;});
-    var passes=[[el,416,0.5,0,'416/.5'],[el,608,0.35,0,'608/.35'],[padded(el,0.5),416,0.35,null,'pad50/416'],[padded(el,1.0),608,0.3,null,'pad100/608']];
-    var i=0;function next(){if(i>=passes.length)return null;var p=passes[i++];var src=p[0],m=src.__m||0;return one(src,p[1],p[2]).then(function(r){if(r){r.__pass=p[4];return pack(r,m);}return next();});}
-    return next();});}
-  function thumb(el,box,size){size=size||112;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
-    var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
-    var bx=box?box.x:0,by=box?box.y:0,bw=box?box.width:w,bh=box?box.height:h,pad=Math.max(bw,bh)*0.35;
-    var sx=Math.max(0,bx-pad),sy=Math.max(0,by-pad*1.2),sw=Math.min(w-sx,bw+pad*2),sh=Math.min(h-sy,bh+pad*2.2),side=Math.max(sw,sh);
-    x.fillStyle='#0b1522';x.fillRect(0,0,size,size);x.drawImage(el,sx,sy,side,side,0,0,size,size);return c.toDataURL('image/jpeg',0.72);}
-  function fromFile(file){return new Promise(function(res,rej){var u=URL.createObjectURL(file);var im=new Image();im.onload=function(){res(im);};im.onerror=function(){rej(new Error('Could not read that image'));};im.src=u;});}
-  function enroll(file){return fromFile(file).then(function(im){return describe(im).then(function(r){if(!r)return null;return {d:r.d,img:thumb(im,r.box,112),score:r.score};});});}
-  function dist(a,b){var s=0,n=Math.min(a.length,b.length);for(var i=0;i<n;i++){var t=a[i]-b[i];s+=t*t;}return Math.sqrt(s);}
-  return {load:load,describe:describe,thumb:thumb,enroll:enroll,dist:dist,THRESHOLD:THRESHOLD,base:function(b){BASE=b;}};
-})();
-/* ══ FACEAUTH · face-auth request broker (ADM-01) ══
-   The phone's lock screen sends HELLO{faceAuth,face:[128],faceImg,authId} (bus) or postMessage CMDR_KEY_AUTH{face} (preview).
-   ADMIN finds the closest enrolled portrait; a miss is answered immediately, a hit is HELD in a popup showing the enrolled
-   portrait beside the live capture so the operator can ACCEPT or DECLINE. Resends with the same authId never open twice. */
-window.FACEAUTH=(function(){
-  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000;
-  function $(i){return document.getElementById(i);}
-  function handle(r){                                          /* r = {desc,img,authId,site,real,sipr,github,dev,ts,reply(ok,acct,reason)} */
-    if(decided[r.authId]){var d=decided[r.authId];if(Date.now()-d.ts<10*60*1000){try{r.reply(d.ok,d.acct,d.reason);}catch(e){}}return;}
-    for(var i=0;i<q.length;i++)if(q[i].authId===r.authId){q[i].reply=r.reply;return;}
-    if(cur&&cur.authId===r.authId){cur.reply=r.reply;return;}
-    var m=SRASec.faceMatch(r.desc);
-    if(!m||!m.enrolled){decided[r.authId]={ok:false,reason:'No portraits enrolled in ADMIN · User Accounts',ts:Date.now()};try{r.reply(false,null,decided[r.authId].reason);}catch(e){}
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REJECT',r.site,'face request · no portraits enrolled');}catch(e){}try{hubToast('⬡ Face sign-in refused · no portraits enrolled','warn',3000);}catch(e){}return;}
-    if(!m.acct||m.dist>FACELIB.THRESHOLD){decided[r.authId]={ok:false,reason:'Face not recognized · no enrolled portrait matched',ts:Date.now()};try{r.reply(false,null,decided[r.authId].reason);}catch(e){}
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REJECT',r.site,'face request · best distance '+m.dist.toFixed(2)+(m.acct?' ('+m.acct.name+')':'')+' > '+FACELIB.THRESHOLD);}catch(e){}
-      try{hubToast('⬡ Face sign-in refused · no match (closest '+m.dist.toFixed(2)+')','warn',3000);}catch(e){}return;}
-    r.acct=m.acct;r.dist=m.dist;r.at=Date.now();q.push(r);
-    try{hubToast('⬡ '+r.acct.name+' is signing in with Face ID','warn',3200);}catch(e){}
-    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REQUEST',r.acct.email,r.acct.name+' · distance '+m.dist.toFixed(2)+' · awaiting ADMIN decision');}catch(e){}
-    show();
-  }
-  function conf(d){return Math.max(0,Math.min(100,Math.round((1-d/(FACELIB.THRESHOLD*1.6))*100)));}
-  function show(){
-    if(cur||!q.length){paintCount();return;}
-    cur=q.shift();
-    $('fr-enrolled').src=(cur.acct.face&&cur.acct.face.img)||'';$('fr-live').src=cur.img||'';
-    $('fr-live').style.display=cur.img?'':'none';$('fr-live-lbl').style.display=cur.img?'':'none';
-    $('fr-name').textContent=cur.acct.name||cur.acct.email;
-    $('fr-site').textContent=cur.acct.site||cur.site||'—';
-    $('fr-email').textContent=cur.acct.email||'—';
-    $('fr-dist').textContent=cur.dist.toFixed(3)+' / '+FACELIB.THRESHOLD.toFixed(2);
-    $('fr-conf').textContent=conf(cur.dist)+'%';$('fr-bar').style.width=conf(cur.dist)+'%';
-    $('fr-via').textContent=(cur.real?'SONARmobile · cross-device link':'Preview / same browser')+(cur.sipr?' · SIPR':'');
-    $('fr-when').textContent=new Date(cur.at||Date.now()).toLocaleTimeString();
-    $('fr-accept').textContent=cur.sipr?'ACCEPT · UNLOCK SIPR':'ACCEPT · SIGN IN';
-    paintCount();$('face-req').classList.add('on');
-    clearInterval(tick);tick=setInterval(function(){var left=Math.max(0,Math.round((cur.at+EXPIRE-Date.now())/1000));$('fr-timer').textContent='EXPIRES IN '+left+' S';if(left<=0)expire();},500);
-    $('fr-timer').textContent='';
-  }
-  function paintCount(){var e=$('fr-count');if(e)e.textContent=q.length?('+'+q.length+' MORE QUEUED'):'';}
-  function close(){clearInterval(tick);cur=null;$('face-req').classList.remove('on');show();}
-  function expire(){if(!cur)return;try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_EXPIRED',cur.acct.email,cur.acct.name+' · no decision · face request expired');}catch(e){}decided[cur.authId]={ok:false,reason:'Face request expired · try again',ts:Date.now()};close();}
-  function decide(ok){if(!cur)return;var r=cur;
-    if(ok){
-      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',dev:r.dev||'',via:'cmdr-mobile',face:true});}catch(e){}
-      try{if(r.sipr)SRASec.markSipr(r.acct,{via:r.real?'cmdr-mobile':'preview'});}catch(e){}
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_AUTH',r.acct.email,r.acct.name+' · Face ID accepted by ADMIN · distance '+r.dist.toFixed(2)+' · '+(r.real?'mobile':'preview')+(r.sipr?' · SIPR':''));}catch(e){}
-      try{hubToast('⬡ '+r.acct.name+' · Face ID accepted'+(r.sipr?' · SIPR granted':''),'ok',2600);}catch(e){}
-      decided[r.authId]={ok:true,acct:r.acct,ts:Date.now()};
-    }else{
-      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_DECLINE',r.acct.email,r.acct.name+' · Face ID declined by ADMIN');}catch(e){}
-      try{hubToast('⬡ '+r.acct.name+' · Face ID declined','warn',2600);}catch(e){}
-      decided[r.authId]={ok:false,reason:'Face sign-in declined by ADMIN',ts:Date.now()};
-    }
-    try{r.reply(ok,r.acct,decided[r.authId].reason);}catch(e){}
-    try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
-    close();
-  }
-  return {handle:handle,decide:decide,pending:function(){return (cur?1:0)+q.length;},current:function(){return cur;}};
-})();
-</script>
-<!-- ══ FACE ID REQUEST POPUP · a commander's phone sent a live face; ADMIN sees the enrolled portrait beside it and accepts or declines ══ -->
-<div id="face-req" role="dialog" aria-modal="true" aria-label="Face ID sign-in request">
-  <div class="sr-card">
-    <div class="sr-h"><i></i>Face ID sign-in request<span class="n" id="fr-count"></span></div>
-    <div class="fr-pics">
-      <div class="fr-pic"><img id="fr-enrolled" alt=""><span>Enrolled portrait</span></div>
-      <div class="fr-arrow">⇄</div>
-      <div class="fr-pic"><img id="fr-live" alt=""><span id="fr-live-lbl">Live capture</span></div>
-    </div>
-    <div class="fr-match"><span style="color:#6e90b0">MATCH</span> <b id="fr-conf" style="color:#4db88a">—</b> <span style="color:#6e90b0">· DISTANCE</span> <span id="fr-dist" style="color:#18d4f8">—</span></div>
-    <div class="fr-bar"><i id="fr-bar" style="width:0"></i></div>
-    <div class="sr-b">
-      <div class="k">Commander</div><div class="v big" id="fr-name">—</div>
-      <div class="k">Installation</div><div class="v" id="fr-site">—</div>
-      <div class="k">Account</div><div class="v mono" id="fr-email" style="letter-spacing:.5px;font-size:11px">—</div>
-      <div class="k">Channel</div><div class="v" id="fr-via">—</div>
-      <div class="k">Requested</div><div class="v" id="fr-when">—</div>
-    </div>
-    <div class="sr-note">The phone matched a live face to this enrolled portrait on-device and sent only the 128-number descriptor. Accepting signs the commander in to SONARmobile exactly as a security key would. Distance below <b style="color:#18d4f8">0.55</b> is a match; lower is closer.</div>
-    <div class="sr-f"><span class="sr-t" id="fr-timer"></span><button class="adm-b warn" id="fr-decline" onclick="FACEAUTH.decide(false)">DECLINE</button><button class="adm-b ok" id="fr-accept" onclick="FACEAUTH.decide(true)">ACCEPT · SIGN IN</button></div>
-  </div>
-</div>
-<!-- ══ SIPR ACCESS REQUEST POPUP · shown when a commander's phone asks for SIPR; ADMIN accepts or declines ══ -->
-<div id="sipr-req" role="dialog" aria-modal="true" aria-label="SIPR access request">
-  <div class="sr-card">
-    <div class="sr-h"><i></i>SIPR access request<span class="n" id="sr-count"></span></div>
-    <div class="sr-b">
-      <div class="k">Commander</div><div class="v big" id="sr-name">—</div>
-      <div class="k">Installation</div><div class="v" id="sr-site">—</div>
-      <div class="k">Account</div><div class="v mono" id="sr-email" style="letter-spacing:.5px;font-size:11px">—</div>
-      <div class="k">Security key</div><div class="v mono" id="sr-key">••••••</div>
-      <div class="k">Channel</div><div class="v" id="sr-via">—</div>
-      <div class="k">Requested</div><div class="v" id="sr-when">—</div>
-    </div>
-    <div class="sr-note">Accepting unlocks the SIPR side of SONARmobile for this commander and lights the <b style="color:#4db88a">SIPR</b> field green in User Accounts. The grant stays until log out, END SESSION or END SIPR. Declining returns the phone to NIPR.</div>
-    <div class="sr-f"><span class="sr-t" id="sr-timer"></span><button class="adm-b warn" id="sr-decline" onclick="SIPRREQ.decide(false)">DECLINE</button><button class="adm-b ok" id="sr-accept" onclick="SIPRREQ.decide(true)">ACCEPT · UNLOCK SIPR</button></div>
-  </div>
-</div>
 </body>
 </html>
