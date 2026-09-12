@@ -2197,6 +2197,7 @@ updateAiContext();
         <div class="field"><label>Site name</label><input id="f-sitename" placeholder="Naval Base San Diego"></div>
         <div class="field"><label>Demo outages</label><button class="toggle" id="f-demo" onclick="this.classList.toggle('on')"></button></div>
         <div class="field"><label>Alerts</label><button class="toggle" id="f-notify" onclick="toggleNotify(this)"></button></div>
+        <div class="field"><label>Ping sound</label><button class="toggle" id="f-pingsound" onclick="this.classList.toggle('on')"></button></div>
         <div class="field"><label>Ping alarm</label><button type="button" onclick="PINGALARM.test()" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(255,179,64,.5);background:rgba(255,179,64,.1);color:#ffb340;font-weight:700">Test alarm (10 s)</button></div>
         <div class="field" style="align-items:flex-start"><label>Last pings</label><pre id="f-pinglog" style="margin:0;font-size:10px;line-height:1.5;color:var(--ink2);white-space:pre-wrap;max-height:120px;overflow:auto;flex:1"></pre></div>
       </div>
@@ -2572,12 +2573,14 @@ window.SRADropZone=(function(){
     }catch(e){}}
     function stop(){oscs.forEach(function(o){try{o.stop();}catch(e){}});oscs=[];clearInterval(tickT);tickT=null;try{navigator.vibrate&&navigator.vibrate(0);}catch(e){}$('ping-alarm').classList.remove('on');}
     var soundOk=null;
-    function ack(dismissed){try{bus.publish('PING_ACK',{node:'cmdr',id:cur&&cur.id,email:(LOCK.session()||{}).email||S.lastEmail||'',name:S.name,dismissed:!!dismissed,sound:soundOk});}catch(e){}}
+    function ack(dismissed){try{bus.publish('PING_ACK',{node:'cmdr',id:cur&&cur.id,email:(LOCK.session()||{}).email||S.lastEmail||'',name:S.name,dismissed:!!dismissed,sound:S.pingSound?soundOk:null,mode:S.pingSound?'sound+vibrate':(navigator.vibrate?'vibrate':'silent')});}catch(e){}}
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve('');}}
     function start(p){var secs=Math.max(3,Math.min(30,+p.secs||10));cur=p;
       $('pa-s').textContent=(p.by?'From '+p.by+' · ':'')+'check SONARmobile';$('pa-n').textContent=secs;$('ping-alarm').classList.add('on');
-      schedule(secs);
-      try{if(navigator.vibrate){var v=[];for(var i=0;i*1.2<secs;i++)v.push(120,60,120,60,120,60,120,540);navigator.vibrate(v);}}catch(e){}
+      if(S.pingSound)schedule(secs);else soundOk=null;
+      var canVib=!!navigator.vibrate;
+      try{if(canVib){var v=[];for(var i=0;i*1.2<secs;i++)v.push(120,60,120,60,120,60,120,540);navigator.vibrate(v);}}catch(e){}
+      if(!S.pingSound&&!canVib){var m0=$('pa-s');if(m0)m0.textContent+=' · silent (this phone cannot vibrate from a web app — turn on Ping sound in Link)';}
       try{if('Notification'in window&&Notification.permission==='granted'&&document.hidden)new Notification('ADMIN is pinging you',{body:'Open SONARmobile'});}catch(e){}
       endT=Date.now()+secs*1000;clearInterval(tickT);
       tickT=setInterval(function(){var left=Math.max(0,Math.ceil((endT-Date.now())/1000));$('pa-n').textContent=left;if(left<=0){stop();ack(false);cur=null;}},250);}
@@ -2706,7 +2709,7 @@ window.SRADropZone=(function(){
     var c=bus.cfg(), st=bus.status();
     $('f-transport').value=c.transport;$('f-repo').value=c.repo;$('f-branch').value=c.branch;$('f-path').value=c.path;$('f-token').value=c.token;$('f-poll').value=c.poll;
     $('f-name').value=S.name;$('f-site').value=c.site;$('f-sitename').value=S.siteName;
-    $('f-demo').classList.toggle('on',!!S.demo);$('f-notify').classList.toggle('on',!!S.notify);
+    $('f-demo').classList.toggle('on',!!S.demo);$('f-notify').classList.toggle('on',!!S.notify);$('f-pingsound').classList.toggle('on',!!S.pingSound);
     try{var pl=$('f-pinglog');if(pl){var lg=PINGALARM.log().slice(-6).reverse();pl.textContent=lg.length?lg.map(function(e){return new Date(e.t).toLocaleTimeString()+' · '+e.result+(e.for?' · for '+e.for:'');}).join('\n'):'none received yet · session '+((LOCK.session()||{}).email||'no email')+' · audio '+(actx?actx.state:'not unlocked (tap Ping pill)');}}catch(e){}
     onTransport();renderStat(st);
   }
@@ -2721,7 +2724,7 @@ window.SRADropZone=(function(){
   window.onTransport=function(){var gh=$('f-transport').value==='github';document.querySelectorAll('.field.gh').forEach(function(e){e.style.display=gh?'':'none';});
     $('transport-note').textContent=gh?'Cross-device demo: both ADMIN and SONARmobile read/write data/bus.json through api.github.com. Use a fine-grained PAT scoped to this repo with Contents read/write. Demo-only — the token lives in this browser.':$('f-transport').value==='off'?'Bus disabled.':'Zero-infra: works between tabs of the same browser (e.g. ADMIN in one tab, SONARmobile in another, or this app inside the ADMIN iframe preview).';};
   window.saveSettings=function(){
-    S.name=$('f-name').value.trim()||S.name;S.siteName=$('f-sitename').value.trim()||S.siteName;S.demo=$('f-demo').classList.contains('on');S.notify=$('f-notify').classList.contains('on');save();
+    S.name=$('f-name').value.trim()||S.name;S.siteName=$('f-sitename').value.trim()||S.siteName;S.demo=$('f-demo').classList.contains('on');S.notify=$('f-notify').classList.contains('on');S.pingSound=$('f-pingsound').classList.contains('on');save();
     bus.configure({transport:$('f-transport').value,repo:$('f-repo').value.trim(),branch:$('f-branch').value.trim()||'main',path:$('f-path').value.trim()||'data/bus.json',token:$('f-token').value.trim(),poll:parseInt($('f-poll').value,10)||5,site:$('f-site').value.trim()||'nb-sd',node:'cmdr'});
     cfg=bus.cfg();toast('Settings saved','Reconnecting on '+cfg.transport,'green');hello();renderAll();
   };
