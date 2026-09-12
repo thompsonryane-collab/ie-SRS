@@ -11889,15 +11889,15 @@ document.addEventListener("DOMContentLoaded",function(){
 .au-chk{accent-color:#18d4f8;width:13px;height:13px;margin:0;cursor:pointer;vertical-align:middle;}
 .adm-tbl tr.au-selrow td{background:rgba(224,85,85,.10)!important;}
 /* ── USER ACCOUNTS · taller rows, larger text, actions wrapped onto two lines ── */
-#overlay-adm-users .adm-tbl{font-size:25px}
-#overlay-adm-users .adm-tbl th{font-size:15px;padding:14px 12px}
-#overlay-adm-users .adm-tbl td{padding:16px 12px;line-height:1.4;font-size:25px!important}
+#overlay-adm-users .adm-tbl{font-size:13px}
+#overlay-adm-users .adm-tbl th{font-size:9.5px;padding:10px 10px}
+#overlay-adm-users .adm-tbl td{padding:13px 10px;line-height:1.5;font-size:12.5px!important}
 #overlay-adm-users .adm-tbl td:last-child{white-space:normal}
-#overlay-adm-users .au-act{width:400px;display:flex;flex-wrap:wrap;gap:8px 8px;align-items:center}
-#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:17px;padding:8px 16px;margin:0}
-#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:17px;padding:8px 16px}
-#overlay-adm-users .au-face{width:44px;height:44px;margin-right:12px}
-#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:scale(1.8);margin-right:10px}
+#overlay-adm-users .au-act{width:330px;display:flex;flex-wrap:wrap;gap:6px 6px;align-items:center}
+#overlay-adm-users .adm-tbl td:last-child .adm-b.sm{font-size:9.5px;padding:5px 10px;margin:0}
+#overlay-adm-users .adm-tbl td .adm-b.sm{font-size:9.5px;padding:5px 10px}
+#overlay-adm-users .au-face{width:28px;height:28px;margin-right:8px}
+#overlay-adm-users .adm-tbl td .sec-live-dot,#overlay-adm-users .adm-tbl td .adm-dot{transform:scale(1.15)}
 .adm-tbl tr.au-selrow td:first-child{box-shadow:inset 2px 0 0 #e05555;}
 .au-selcount{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#6e90b0;border:1px solid var(--border);border-radius:3px;padding:3px 8px;white-space:nowrap;}
 .au-selcount.on{color:#e05555;border-color:rgba(224,85,85,.45);}
@@ -14248,7 +14248,7 @@ window.FACELIB=(function(){
    ADMIN finds the closest enrolled portrait; a miss is answered immediately, a hit is HELD in a popup showing the enrolled
    portrait beside the live capture so the operator can ACCEPT or DECLINE. Resends with the same authId never open twice. */
 window.FACEAUTH=(function(){
-  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000;
+  var q=[], cur=null, decided={}, tick=null, EXPIRE=150000, AUTO_NIPR=true;   /* NIPR auto-unlocks on a match; SIPR always asks */
   function $(i){return document.getElementById(i);}
   function handle(r){                                          /* r = {desc,img,authId,site,real,sipr,github,dev,ts,reply(ok,acct,reason)} */
     if(decided[r.authId]){var d=decided[r.authId];if(Date.now()-d.ts<10*60*1000){try{r.reply(d.ok,d.acct,d.reason);}catch(e){}}return;}
@@ -14260,9 +14260,18 @@ window.FACEAUTH=(function(){
     if(!m.acct||m.dist>FACELIB.THRESHOLD){decided[r.authId]={ok:false,reason:'Face not recognized · no enrolled portrait matched',ts:Date.now()};try{r.reply(false,null,decided[r.authId].reason);}catch(e){}
       try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REJECT',r.site,'face request · best distance '+m.dist.toFixed(2)+(m.acct?' ('+m.acct.name+')':'')+' > '+FACELIB.THRESHOLD);}catch(e){}
       try{hubToast('⬡ Face sign-in refused · no match (closest '+m.dist.toFixed(2)+')','warn',3000);}catch(e){}return;}
-    r.acct=m.acct;r.dist=m.dist;r.at=Date.now();q.push(r);
-    try{hubToast('⬡ '+r.acct.name+' is signing in with Face ID','warn',3200);}catch(e){}
-    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REQUEST',r.acct.email,r.acct.name+' · distance '+m.dist.toFixed(2)+' · awaiting ADMIN decision');}catch(e){}
+    r.acct=m.acct;r.dist=m.dist;r.at=Date.now();
+    /* NIPR: an enrolled-portrait match unlocks on its own · SIPR still holds for the operator's ACCEPT */
+    if(AUTO_NIPR&&!r.sipr){decided[r.authId]={ok:true,acct:r.acct,ts:Date.now()};
+      try{if(r.real)SRASec.markLive(r.acct,{github:r.github||'',dev:r.dev||'',via:'cmdr-mobile',face:true});}catch(e){}
+      try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_AUTH',r.acct.email,r.acct.name+' · Face ID matched enrolled portrait · distance '+m.dist.toFixed(2)+' · auto-unlocked (NIPR) · '+(r.real?'mobile':'preview'));}catch(e){}
+      try{hubToast('⬡ '+r.acct.name+' · Face ID matched · signed in (NIPR)','ok',3000);}catch(e){}
+      try{r.reply(true,r.acct,'');}catch(e){}
+      try{if(typeof admPaintUsers==='function')admPaintUsers();}catch(e){}
+      return;}
+    q.push(r);
+    try{hubToast('⬡ '+r.acct.name+' is signing in with Face ID (SIPR)','warn',3200);}catch(e){}
+    try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_FACE_REQUEST',r.acct.email,r.acct.name+' · distance '+m.dist.toFixed(2)+' · SIPR · awaiting ADMIN decision');}catch(e){}
     show();
   }
   function conf(d){return Math.max(0,Math.min(100,Math.round((1-d/(FACELIB.THRESHOLD*1.6))*100)));}
