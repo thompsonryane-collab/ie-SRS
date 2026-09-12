@@ -14109,7 +14109,7 @@ window.SRADropZone=(function(){
     SRABus.subscribe(function(env,replay){if(replay||!env||env.from!=='cmdr'||env.type!=='PING_ACK')return;var p=env.payload||{};
       var r=window.admPingStatus?admPingStatus()[p.id]:null;var secs=r?((Date.now()-r.t0)/1000).toFixed(1)+' s':'';if(r)r.acked=true;
       try{ADMIN_CORE&&ADMIN_CORE.audit('CMDR_PING_ACK',p.email||(r&&r.em)||'',(p.name||p.email||'phone')+' · '+(p.dismissed?'dismissed the ping':'ping sounded for 10 s')+(secs?' · round trip '+secs:'')+(p.sound===false?' · AUDIO BLOCKED on phone':''));}catch(e){}
-      try{hubToast('⬡ PING 3/3 · '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed':' received')+(secs?' · '+secs:'')+(p.sound===false?' · phone audio blocked (tap Ping pill on phone)':''),p.sound===false?'warn':'ok',4000);}catch(e){}});
+      try{hubToast('⬡ PING 3/3 · '+(p.name||p.email||'Phone')+(p.dismissed?' dismissed':' received')+(secs?' · '+secs:'')+(p.mode?' · '+p.mode:'')+(p.sound===false?' · phone audio blocked (tap Ping pill on phone)':''),p.sound===false?'warn':'ok',4000);}catch(e){}});
     SRABus.subscribe(function(env,replay){if(replay||!env||env.type!=='HELLO'||env.from!=='cmdr')return;var p=env.payload||{};if(!p.heartbeat)publishKeyring(!p.keyAuth&&!p.authId);   /* full ring only for a phone that is not yet signed in; auth requests must not queue behind a ring write */
     if(!window.SRASec)return;
     /* ── FACE two-step: the phone sends a live face descriptor instead of a key; ADMIN matches it against enrolled portraits, then HOLDS it for the operator ── */
