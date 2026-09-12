@@ -240,6 +240,16 @@ body.onhome .homebtn{display:none}
 .bd.on{display:flex}
 
 /* toast + sheet */
+/* ── PING ALARM · full-screen card while ADMIN's 10-second alarm sounds ── */
+#ping-alarm{position:fixed;inset:0;z-index:9700;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;background:radial-gradient(120% 80% at 50% 0%,#3a2a08 0%,#040a12 60%);text-align:center}
+#ping-alarm.on{display:flex}
+#ping-alarm .pa-bell{width:96px;height:96px;border-radius:50%;background:rgba(255,179,64,.14);border:2px solid rgba(255,179,64,.7);display:flex;align-items:center;justify-content:center;animation:pabell .9s ease-in-out infinite}
+#ping-alarm .pa-bell svg{width:46px;height:46px;fill:none;stroke:#ffb340;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes pabell{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+#ping-alarm .pa-t{font-size:22px;font-weight:800;color:#fff;letter-spacing:.2px}
+#ping-alarm .pa-s{font-size:14px;color:var(--ink2);line-height:1.5}
+#ping-alarm .pa-n{font-size:52px;font-weight:800;color:#ffb340;font-variant-numeric:tabular-nums;line-height:1}
+#ping-alarm .pa-x{margin-top:8px;padding:14px 34px;border-radius:26px;background:#ffb340;color:#1a1200;font-size:16px;font-weight:800}
 .toast{position:absolute;top:calc(var(--sat) + 70px);left:12px;right:12px;z-index:20;border-radius:14px;padding:12px 14px;background:rgba(20,30,46,.96);border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.5);display:flex;gap:10px;align-items:center;transform:translateY(-20px);opacity:0;transition:transform .25s,opacity .25s;pointer-events:none}
 .toast.on{transform:none;opacity:1;pointer-events:auto}
 .toast i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--cyan)}
@@ -642,6 +652,14 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
   <div class="fc-ring"></div>
   <div class="fc-msg" id="fc-msg">Starting camera…</div>
   <button class="fc-cancel" onclick="FACE.cancel()">Cancel</button>
+</div>
+<!-- ══ PING ALARM · shown while ADMIN pings this phone (10 s soft alarm) ══ -->
+<div id="ping-alarm" role="alertdialog" aria-label="ADMIN is pinging you">
+  <div class="pa-bell"><svg viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z"/><path d="M10 21a2 2 0 0 0 4 0"/><path d="M4 6a9 9 0 0 1 2.5-3M20 6a9 9 0 0 0-2.5-3"/></svg></div>
+  <div class="pa-t">ADMIN is pinging you</div>
+  <div class="pa-s" id="pa-s">Check SONARmobile</div>
+  <div class="pa-n" id="pa-n">10</div>
+  <button class="pa-x" onclick="PINGALARM.dismiss()">Dismiss</button>
 </div>
 <div id="app">
   <div class="nav">
@@ -2179,6 +2197,8 @@ updateAiContext();
         <div class="field"><label>Site name</label><input id="f-sitename" placeholder="Naval Base San Diego"></div>
         <div class="field"><label>Demo outages</label><button class="toggle" id="f-demo" onclick="this.classList.toggle('on')"></button></div>
         <div class="field"><label>Alerts</label><button class="toggle" id="f-notify" onclick="toggleNotify(this)"></button></div>
+        <div class="field"><label>Ping alarm</label><button type="button" onclick="PINGALARM.test()" style="padding:8px 14px;border-radius:10px;border:1px solid rgba(255,179,64,.5);background:rgba(255,179,64,.1);color:#ffb340;font-weight:700">Test alarm (10 s)</button></div>
+        <div class="field" style="align-items:flex-start"><label>Last pings</label><pre id="f-pinglog" style="margin:0;font-size:10px;line-height:1.5;color:var(--ink2);white-space:pre-wrap;max-height:120px;overflow:auto;flex:1"></pre></div>
       </div>
     </div>
     <div style="display:flex;gap:8px">
@@ -2540,6 +2560,46 @@ window.SRADropZone=(function(){
       notes.forEach(function(f,i){var o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t+i*.16);g.gain.exponentialRampToValueAtTime(.35,t+i*.16+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*.16+.15);o.connect(g).connect(actx.destination);o.start(t+i*.16);o.stop(t+i*.16+.16);});
     }catch(e){}
   }
+  /* ══ PINGALARM · ADMIN's 10-second soft alarm · a gentle four-pulse chime every 1.2 s (like a phone alarm), vibration in step, then silence ══ */
+  window.PINGALARM=(function(){
+    var oscs=[], endT=null, tickT=null, cur=null, seen={};
+    function ctx(){actx=actx||new (window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended'){try{actx.resume();}catch(e){}}return actx;}
+    function note(c,f,at,dur,vol){var o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(vol,at+.03);g.gain.exponentialRampToValueAtTime(.0001,at+dur);
+      o.connect(g).connect(c.destination);o.start(at);o.stop(at+dur+.02);oscs.push(o);}
+    function schedule(secs){try{var c=ctx();soundOk=c.state==='running';setTimeout(function(){try{soundOk=actx.state==='running';var m=$('pa-s');if(m&&!soundOk)m.textContent=m.textContent+' · audio blocked — tap the Ping pill once to enable sound';}catch(e){}},400);var t0=c.currentTime+.05;
+      for(var i=0;i*1.2<secs;i++){var b=t0+i*1.2;[0,.18,.36,.54].forEach(function(off,k){note(c,k%2?987.8:783.99,b+off,.32,.22);});}   /* G5 · B5 · G5 · B5 — soft, rounded */
+    }catch(e){}}
+    function stop(){oscs.forEach(function(o){try{o.stop();}catch(e){}});oscs=[];clearInterval(tickT);tickT=null;try{navigator.vibrate&&navigator.vibrate(0);}catch(e){}$('ping-alarm').classList.remove('on');}
+    var soundOk=null;
+    function ack(dismissed){try{bus.publish('PING_ACK',{node:'cmdr',id:cur&&cur.id,email:(LOCK.session()||{}).email||S.lastEmail||'',name:S.name,dismissed:!!dismissed,sound:soundOk});}catch(e){}}
+    function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve('');}}
+    function start(p){var secs=Math.max(3,Math.min(30,+p.secs||10));cur=p;
+      $('pa-s').textContent=(p.by?'From '+p.by+' · ':'')+'check SONARmobile';$('pa-n').textContent=secs;$('ping-alarm').classList.add('on');
+      schedule(secs);
+      try{if(navigator.vibrate){var v=[];for(var i=0;i*1.2<secs;i++)v.push(120,60,120,60,120,60,120,540);navigator.vibrate(v);}}catch(e){}
+      try{if('Notification'in window&&Notification.permission==='granted'&&document.hidden)new Notification('ADMIN is pinging you',{body:'Open SONARmobile'});}catch(e){}
+      endT=Date.now()+secs*1000;clearInterval(tickT);
+      tickT=setInterval(function(){var left=Math.max(0,Math.ceil((endT-Date.now())/1000));$('pa-n').textContent=left;if(left<=0){stop();ack(false);cur=null;}},250);}
+    /* is this ping addressed to the commander signed in on this phone? email match, else SHA-256 of the security key (keyring sessions know no email) */
+    function mine(p){var em=String(p.email||'').toLowerCase();var s=LOCK.session();
+      if(em&&s&&s.email&&s.email.toLowerCase()===em)return Promise.resolve(true);
+      if(em&&S.lastEmail&&String(S.lastEmail).toLowerCase()===em)return Promise.resolve(true);
+      if(p.kh&&s&&s.key)return sha(s.key).then(function(h){return h===p.kh;});
+      return Promise.resolve(false);}
+    var LOGK='sonarmobile_ping_log';
+    function jot(e){try{var l=ls(LOGK,[]);l.push(Object.assign({t:Date.now()},e));lsSet(LOGK,l.slice(-20));}catch(x){}}
+    return {
+      onEnvelope:function(env,replay){var p=env.payload||{};if(!p.id)return;var age=Date.now()-(env.ts||0);
+        if(replay||age>5*60*1000){jot({id:p.id,for:p.email,result:replay?'ignored: replay/history':'ignored: stale '+Math.round(age/1000)+'s'});return;}
+        if(seen[p.id]){jot({id:p.id,for:p.email,result:'ignored: duplicate/resend'});return;}
+        mine(p).then(function(ok){if(!ok){jot({id:p.id,for:p.email,result:'ignored: not for this session ('+((LOCK.session()||{}).email||'no email')+')'});return;}
+          seen[p.id]=1;jot({id:p.id,for:p.email,result:'ALARM started'});if(cur)stop();start(p);});},
+      log:function(){return ls(LOGK,[]);},
+      dismiss:function(){if(!cur)return;stop();ack(true);cur=null;},
+      test:function(){start({id:'t'+Date.now(),by:'ADMIN',secs:10});}
+    };
+  })();
   function renderPing(){var p=$('pingpill');if(!p)return;p.className='link '+(S.notify?'ping':'off');$('pingtxt').textContent=S.notify?'Ping':'Off';var f=$('f-notify');if(f)f.classList.toggle('on',!!S.notify);}
   window.togglePing=function(){S.notify=!S.notify;save();renderPing();
     if(S.notify){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();}catch(e){}if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();ping('msg');toast('Notifications on','Sound + vibration for SONAR alerts and messages','amber');}
@@ -2647,6 +2707,7 @@ window.SRADropZone=(function(){
     $('f-transport').value=c.transport;$('f-repo').value=c.repo;$('f-branch').value=c.branch;$('f-path').value=c.path;$('f-token').value=c.token;$('f-poll').value=c.poll;
     $('f-name').value=S.name;$('f-site').value=c.site;$('f-sitename').value=S.siteName;
     $('f-demo').classList.toggle('on',!!S.demo);$('f-notify').classList.toggle('on',!!S.notify);
+    try{var pl=$('f-pinglog');if(pl){var lg=PINGALARM.log().slice(-6).reverse();pl.textContent=lg.length?lg.map(function(e){return new Date(e.t).toLocaleTimeString()+' · '+e.result+(e.for?' · for '+e.for:'');}).join('\n'):'none received yet · session '+((LOCK.session()||{}).email||'no email')+' · audio '+(actx?actx.state:'not unlocked (tap Ping pill)');}}catch(e){}
     onTransport();renderStat(st);
   }
   function renderStat(st){
@@ -3012,6 +3073,7 @@ window.SRADropZone=(function(){
   function handle(env,replay){
     var p=env.payload||{};
     if(env.from==='admin'&&(env.type==='KILL'||env.type==='RESTORE')){WIPE.onEnvelope(env);return;}
+    if(env.from==='admin'&&env.type==='PING'){PINGALARM.onEnvelope(env,replay);return;}
     if(env.from==='cmdr'){                                   /* another commander's device */
       if(env.dev===bus.dev())return;
       if(env.type==='MSG'){
@@ -3140,14 +3202,16 @@ window.SRADropZone=(function(){
       digits=key||'';
       /* the request body: a 6-digit key, or a 128-number face descriptor + thumbnail (never the key) */
       function body(extra){var b=face?{faceAuth:true,face:face.d,faceImg:face.img}:{key:digits,keyAuth:true};return Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',authId:pending.authId,sipr:!!siprMode},b,extra||{});}
+      /* a face request must never carry a key: hello() would stamp a lingering session's key onto it and ADMIN would take the keypad path (no key in its reply) */
+      function wire(p){p=hello(p);if(face){delete p.key;delete p.email;p.keyAuth=false;}return p;}
       /* 1 · bus (GitHub transport = cross-device · BroadcastChannel = same browser) */
-      try{bus.publish('HELLO',hello(body()));}catch(e){}
+      try{bus.publish('HELLO',wire(body()));}catch(e){}
       /* 2 · direct channel when opened from ADMIN (popup / embedded preview) */
       try{var tgt=window.opener||(window.parent!==window?window.parent:null);if(tgt)tgt.postMessage(Object.assign({type:'CMDR_KEY_AUTH',commander:S.name,site:cfg.site},body()),'*');}catch(e){}
       clearTimeout(waitT);clearTimeout(resendT);
       /* re-send once mid-way: a lost write (bus conflict) is the usual reason ADMIN never sees the request */
       function resend(){if(!pending)return;msg((pending.sipr?'SIPR · ':'')+(pending.face?'Face captured · ':'')+(pending.hit?'Key matches '+pending.hit.n+' · ':'')+(pending.sipr?'still waiting for ADMIN to accept\u2026 re-sending':'still waiting for ADMIN\u2026 re-sending'),'wait');
-        try{bus.publish('HELLO',hello(body({resend:true})));}catch(e){}}
+        try{bus.publish('HELLO',wire(body({resend:true})));}catch(e){}}
       resendT=setTimeout(function(){resend();resendT=setTimeout(resend,AUTH_RESEND2-AUTH_RESEND);},AUTH_RESEND);
       waitT=setTimeout(function(){if(!pending)return;
         if(pending.hit&&!pending.sipr){ /* keyring fallback: the hash matched an active account in the ring ADMIN itself published — unlock, keep asking ADMIN in the background */
