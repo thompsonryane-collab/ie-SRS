@@ -14223,8 +14223,16 @@ window.FACELIB=(function(){
     function go(){try{Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(BASE+'models'),faceapi.nets.faceLandmark68TinyNet.loadFromUri(BASE+'models'),faceapi.nets.faceRecognitionNet.loadFromUri(BASE+'models')]).then(function(){res(true);},function(e){ready=null;rej(e);});}catch(e){ready=null;rej(e);}}
     if(window.faceapi)go();else{var sc=document.createElement('script');sc.src=BASE+'face-api.min.js';sc.onload=go;sc.onerror=function(){ready=null;rej(new Error('face-api.min.js not found at '+BASE));};document.head.appendChild(sc);}
   });return ready;}
-  function describe(el){return load().then(function(){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.5})).withFaceLandmarks(true).withFaceDescriptor();})
-    .then(function(r){if(!r)return null;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:r.detection.box};});}
+  function one(el,size,thr){return faceapi.detectSingleFace(el,new faceapi.TinyFaceDetectorOptions({inputSize:size,scoreThreshold:thr})).withFaceLandmarks(true).withFaceDescriptor();}
+  function padded(el,f){var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;var m=Math.round(Math.max(w,h)*f);var c=document.createElement('canvas');c.width=w+2*m;c.height=h+2*m;var x=c.getContext('2d');x.fillStyle='#808080';x.fillRect(0,0,c.width,c.height);x.drawImage(el,m,m,w,h);c.__m=m;return c;}
+  function pack(r,m){m=m||0;return {d:Array.from(r.descriptor).map(function(x){return Math.round(x*10000)/10000;}),score:r.detection.score,box:{x:r.detection.box.x-m,y:r.detection.box.y-m,width:r.detection.box.width,height:r.detection.box.height},pass:r.__pass};}
+  /* still images get a multi-pass detector: close-up portraits can exceed the tiny model's largest anchor, so we retry
+     with a bigger input, a looser threshold, and finally a padded copy that shrinks the face relative to the frame */
+  function describe(el){var isVideo=el&&el.tagName==='VIDEO';return load().then(function(){
+    if(isVideo)return one(el,320,0.5).then(function(r){return r?pack(r):null;});
+    var passes=[[el,416,0.5,0,'416/.5'],[el,608,0.35,0,'608/.35'],[padded(el,0.5),416,0.35,null,'pad50/416'],[padded(el,1.0),608,0.3,null,'pad100/608']];
+    var i=0;function next(){if(i>=passes.length)return null;var p=passes[i++];var src=p[0],m=src.__m||0;return one(src,p[1],p[2]).then(function(r){if(r){r.__pass=p[4];return pack(r,m);}return next();});}
+    return next();});}
   function thumb(el,box,size){size=size||112;var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d');
     var w=el.videoWidth||el.naturalWidth||el.width,h=el.videoHeight||el.naturalHeight||el.height;
     var bx=box?box.x:0,by=box?box.y:0,bw=box?box.width:w,bh=box?box.height:h,pad=Math.max(bw,bh)*0.35;
