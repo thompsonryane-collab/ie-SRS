@@ -2476,6 +2476,12 @@ body.adm-locked > #demo-modal { z-index: 20000; }
 #sipr-req .sr-f .adm-b.ok{background:rgba(77,184,138,.16)}
 #sipr-req .sr-f .adm-b.warn{background:rgba(224,85,85,.12);border-color:rgba(224,85,85,.5);color:#ff8a7a}
 #sipr-req .sr-t{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;color:#6e90b0;margin-right:auto;align-self:center}
+#sipr-req .sr-pic{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 18px 4px}
+#sipr-req .sr-pic img{width:132px;height:132px;border-radius:14px;object-fit:cover;background:#1a0a0a;border:1px solid rgba(255,90,78,.55);box-shadow:0 0 22px rgba(255,90,78,.25);display:none}
+#sipr-req .sr-pic.has img{display:block}
+#sipr-req .sr-nopic{width:132px;height:132px;border-radius:14px;border:1px dashed rgba(255,90,78,.45);display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.4px;color:#8a5a55;line-height:1.6}
+#sipr-req .sr-pic.has .sr-nopic{display:none}
+#sipr-req .sr-picl{font-family:'Share Tech Mono',monospace;font-size:8.5px;letter-spacing:1.4px;color:#6e90b0;text-transform:uppercase}
 /* ── FACE · portrait enrollment + face-auth request ── */
 .ca-face{display:flex;gap:12px;align-items:center}
 .ca-face .pv{width:58px;height:58px;border-radius:50%;flex:none;background:#0b1522;border:1px solid rgba(24,212,248,.35);display:flex;align-items:center;justify-content:center;overflow:hidden;color:#3a5670;font-size:22px}
@@ -14182,6 +14188,9 @@ window.SIPRREQ=(function(){
     if(cur||!q.length){paintCount();return;}
     cur=q.shift();
     $('sr-name').textContent=cur.acct.name||cur.acct.email;
+    try{var f=(SRASec.keys()[cur.acct.email]||{}).face||cur.acct.face||null;var pw=document.querySelector('#sipr-req .sr-pic');
+      if(f&&f.img){$('sr-photo').src=f.img;pw.classList.add('has');$('sr-picl').textContent='Enrolled portrait · Face ID on file';}
+      else{$('sr-photo').removeAttribute('src');pw.classList.remove('has');$('sr-picl').textContent='No Face ID enrolled for this account';}}catch(e){}
     $('sr-site').textContent=cur.acct.site||cur.site||'—';
     $('sr-email').textContent=cur.acct.email||'—';
     $('sr-key').textContent='•••• '+String(cur.key||'').slice(-2);
@@ -14340,6 +14349,7 @@ window.FACEAUTH=(function(){
 <div id="sipr-req" role="dialog" aria-modal="true" aria-label="SIPR access request">
   <div class="sr-card">
     <div class="sr-h"><i></i>SIPR access request<span class="n" id="sr-count"></span></div>
+    <div class="sr-pic"><img id="sr-photo" alt=""><div class="sr-nopic" id="sr-nopic">NO PORTRAIT<br>ENROLLED</div><div class="sr-picl" id="sr-picl">Enrolled portrait</div></div>
     <div class="sr-b">
       <div class="k">Commander</div><div class="v big" id="sr-name">—</div>
       <div class="k">Installation</div><div class="v" id="sr-site">—</div>
