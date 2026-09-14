@@ -3293,6 +3293,27 @@ body.adm-locked > #demo-modal { z-index: 20000; }
           <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-adm-cmdr')">&#x2B21; &nbsp;ENTER</button>
         </div>
 
+        <!-- ── CARD ADM-11: Black Start Exercises ── -->
+        <div class="app-card card-adm-bs" id="card-adm-bs" onclick="openApp('overlay-adm-bs')" style="cursor:pointer;">
+          <div class="card-head">
+            <div style="position:relative;width:52px;height:52px;border:2px solid #ffb340;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:radial-gradient(circle at 32% 28%,rgba(255,179,64,.22),transparent 70%);box-shadow:0 0 0 3px rgba(14,24,36,.9),0 0 0 4px #ffb340,0 0 18px rgba(255,179,64,.35);">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v10" stroke="#ffb340" stroke-width="1.6" stroke-linecap="round"/><path d="M8.5 8.2a8 8 0 1 0 11 0" stroke="#ffb340" stroke-width="1.6" stroke-linecap="round"/><circle cx="14" cy="16" r="2" fill="#ffb340"><animate attributeName="opacity" values="1;.3;1" dur="1.6s" repeatCount="indefinite"/></circle></svg>
+              <span id="adm-bs-badge" style="position:absolute;bottom:-6px;right:-6px;min-width:22px;height:22px;padding:0 5px;background:#ffb340;color:#0e1824;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;border:2px solid rgba(14,24,36,.9);font-family:var(--mono);">0</span>
+            </div>
+            <div class="card-head-text">
+              <div class="card-badge">ADM-11</div>
+              <div class="card-title"><span style="color:#ffb340;">Black</span> <span style="color:#ffffff;">Start</span></div>
+            </div>
+          </div>
+          <div class="card-desc">
+            <em>Exercise planning &amp; commander authorization</em> &mdash; build the black start exercise record (10 USC 2920), critical-asset and mitigation lists, and findings; request CO approval and go / no-go on SONARmobile, track statutory count and the DoN five-year cadence, and push the exercise to the phone.
+          </div>
+          <div class="card-meta">
+            <span class="meta-pill" id="card-bs-fy">FY26 · 0/5</span><span class="meta-pill" id="card-bs-auth">CO · —</span><span class="meta-pill">10 USC 2920</span><span class="meta-pill">DoDI 4170.11</span>
+          </div>
+          <button class="launch-btn" onclick="event.stopPropagation();openApp('overlay-adm-bs')">&#x2B21; &nbsp;ENTER</button>
+        </div>
+
         <!-- ── CARD: ie-SRS Core Hub ── -->
         <div class="app-card card-hub" id="card-ie-srs-hub" onclick="window.location.href='ie-SRS.html';" style="cursor:pointer;">
           <div class="card-head">
@@ -13415,6 +13436,91 @@ document.addEventListener("DOMContentLoaded",function(){
 
 </style>
 <!-- ═══ OVERLAY: ADM-10 CMDR MOBILE ═══ -->
+<div class="app-overlay overlay-duers" id="overlay-adm-bs">
+  <div class="overlay-chrome">
+    <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
+    <button class="overlay-back" onclick="closeApp('overlay-adm-bs')">&#8592; ADMIN</button>
+    <span class="overlay-app-name" style="color:#ffb340;">ADM-11 // BLACK START</span>
+  </div>
+  <div class="adm-body">
+    <div class="adm-toolbar">
+      <select class="adm-sel" id="bs-ex-sel" onchange="ADM_BS.select(this.value)"></select>
+      <button class="adm-b" onclick="ADM_BS.create()">+ NEW EXERCISE</button>
+      <button class="adm-b" onclick="ADM_BS.dup()">DUPLICATE</button>
+      <button class="adm-b danger" onclick="ADM_BS.remove()">DELETE</button>
+      <span class="sp"></span>
+      <button class="adm-b ok" onclick="ADM_BS.push()">PUSH TO SONARMOBILE</button>
+      <button class="adm-b" onclick="ADM_BS.exportJson()">EXPORT JSON</button>
+      <button class="adm-b" onclick="ADM_BS.openDocs()">REFERENCE DOCS</button>
+    </div>
+    <div class="adm-scroll">
+      <div class="adm-strip2" id="bs-strip"></div>
+      <div class="bs-grid">
+        <div>
+          <div class="bs-box"><h4>EXERCISE RECORD <span id="bs-rec-id"></span></h4><div id="bs-form"></div></div>
+          <div class="bs-box"><h4>COMMANDER AUTHORIZATION <span style="color:#ffb340">SONARmobile</span></h4><div id="bs-auth"></div>
+            <div class="hint">Each request publishes a BSE_AUTH envelope to the installation channel. The commander answers from the Black start tile on SONARmobile; the reply (BSE_AUTH_ACK) lands here and in ADM-05 Audit and ADM-09 Comms Log.</div></div>
+          <div class="bs-box"><h4>&sect;2920 OBJECTIVES <span id="bs-obj-n"></span></h4><div id="bs-obj"></div></div>
+          <div class="bs-box"><h4>PLANNING MILESTONES <span id="bs-ms-n"></span></h4><div id="bs-ms"></div></div>
+        </div>
+        <div>
+          <div class="bs-box"><h4>CRITICAL ASSETS <span><button class="adm-b" onclick="ADM_BS.addAsset()">+ ASSET</button></span></h4>
+            <table class="adm-tbl" id="bs-assets"><thead><tr><th>Asset / facility</th><th>Tier</th><th>Owner</th><th>Backup</th><th>Rated kW</th><th>Fuel h</th><th>Start</th><th>Xfer</th><th>Carry</th><th></th></tr></thead><tbody></tbody></table>
+            <div class="hint">Tier per DoDI 3020.45 &middot; Start / Xfer / Carry are the &sect;2920(h)(2)(A) results &mdash; click to cycle pass / fail / untested.</div></div>
+          <div class="bs-box"><h4>FINDINGS &amp; CORRECTIVE ACTIONS <span><button class="adm-b" onclick="ADM_BS.addFinding()">+ FINDING</button></span></h4>
+            <table class="adm-tbl" id="bs-find"><thead><tr><th>Sev</th><th>Category</th><th>Finding</th><th>Corrective action</th><th>CAP owner</th><th>Funding</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+          <div class="bs-box"><h4>EXERCISE LOG <span id="bs-log-n"></span></h4><div class="bs-log" id="bs-log"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.card-adm-bs::before{background:linear-gradient(90deg,transparent,#ffb340,transparent);opacity:.6;}
+.card-adm-bs:hover{border-color:rgba(255,179,64,.45);box-shadow:var(--card-bevel),0 0 20px rgba(255,179,64,.14);}
+.card-adm-bs .card-badge{color:#ffb340;} .card-adm-bs .card-desc em{color:#ffd48a;}
+.card-adm-bs .meta-pill{border-color:rgba(255,179,64,.5);color:#ffd48a;background:rgba(255,179,64,.1);}
+.card-adm-bs .launch-btn{background:rgba(255,179,64,.12);color:#ffb340;border:1px solid rgba(255,179,64,.45);border-radius:10px;}
+.card-adm-bs .launch-btn:hover{background:rgba(255,179,64,.22);}
+#overlay-adm-bs .bs-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;align-items:start}
+@media (max-width:1200px){#overlay-adm-bs .bs-grid{grid-template-columns:1fr}}
+#overlay-adm-bs .bs-box{background:rgba(14,24,36,.75);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+#overlay-adm-bs .bs-box h4{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.6px;color:#6e90b0;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+#overlay-adm-bs .hint{font-size:10.5px;color:#6e90b0;margin-top:8px;line-height:1.45}
+#overlay-adm-bs .f-row{display:grid;grid-template-columns:118px 1fr;gap:8px;align-items:center;margin-bottom:7px;font-size:12px}
+#overlay-adm-bs .f-row label{color:#6e90b0;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px}
+#overlay-adm-bs .f-row .adm-in,#overlay-adm-bs .f-row .adm-sel{width:100%;min-width:0;box-sizing:border-box}
+#overlay-adm-bs .chk{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:#cce0f2}
+#overlay-adm-bs .chk label{display:flex;align-items:center;gap:4px;cursor:pointer}
+#overlay-adm-bs .au-row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(26,45,66,.6);font-size:12px}
+#overlay-adm-bs .au-row:last-of-type{border-bottom:0}
+#overlay-adm-bs .au-row .k{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.2px;color:#cce0f2}
+#overlay-adm-bs .au-row .k small{display:block;font-size:9px;letter-spacing:.8px;color:#6e90b0;margin-top:2px}
+#overlay-adm-bs .st{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.2px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);color:#6e90b0;text-transform:uppercase;white-space:nowrap}
+#overlay-adm-bs .st.pending{color:#ffb340;border-color:rgba(255,179,64,.5);background:rgba(255,179,64,.08)}
+#overlay-adm-bs .st.approved,#overlay-adm-bs .st.go,#overlay-adm-bs .st.accepted,#overlay-adm-bs .st.pass,#overlay-adm-bs .st.closed,#overlay-adm-bs .st.done{color:#4db88a;border-color:rgba(77,184,138,.5);background:rgba(77,184,138,.08)}
+#overlay-adm-bs .st.declined,#overlay-adm-bs .st.nogo,#overlay-adm-bs .st.aborted,#overlay-adm-bs .st.fail,#overlay-adm-bs .st.open{color:#e05555;border-color:rgba(224,85,85,.5);background:rgba(224,85,85,.08)}
+#overlay-adm-bs .st.partial,#overlay-adm-bs .st.funded{color:#ffb340;border-color:rgba(255,179,64,.5);background:rgba(255,179,64,.08)}
+#overlay-adm-bs .obj-row{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(26,45,66,.6);font-size:12px}
+#overlay-adm-bs .obj-row:last-child{border-bottom:0}
+#overlay-adm-bs .obj-row .k{font-family:'Orbitron',monospace;font-size:12px;color:#ffb340;font-weight:700}
+#overlay-adm-bs .obj-row small{display:block;color:#6e90b0;font-size:10.5px;margin-top:2px}
+#overlay-adm-bs .ms-row{display:grid;grid-template-columns:22px 70px 1fr;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid rgba(26,45,66,.6);font-size:11.5px;cursor:pointer}
+#overlay-adm-bs .ms-row:last-child{border-bottom:0}
+#overlay-adm-bs .ms-row .m{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:#6e90b0;padding-top:2px}
+#overlay-adm-bs .ms-row b{color:#cce0f2;font-weight:600}
+#overlay-adm-bs .ms-row .d{color:#6e90b0;font-size:10.5px}
+#overlay-adm-bs .ms-row .c{width:16px;height:16px;border-radius:4px;border:1px solid rgba(24,212,248,.35);display:flex;align-items:center;justify-content:center;color:#4db88a;font-size:11px}
+#overlay-adm-bs .ms-row.done .c{background:rgba(77,184,138,.15);border-color:rgba(77,184,138,.5)}
+#overlay-adm-bs .adm-tbl td{white-space:normal}
+#overlay-adm-bs .adm-tbl td input,#overlay-adm-bs .adm-tbl td select{width:100%;min-width:0;box-sizing:border-box;background:transparent;border:0;border-bottom:1px dashed rgba(24,212,248,.25);color:#cce0f2;font:inherit;padding:2px 0;outline:none}
+#overlay-adm-bs .adm-tbl td .lamp{cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);color:#6e90b0}
+#overlay-adm-bs .adm-tbl td .lamp.on{color:#4db88a;border-color:rgba(77,184,138,.5)} #overlay-adm-bs .adm-tbl td .lamp.bad{color:#e05555;border-color:rgba(224,85,85,.5)}
+#overlay-adm-bs .x{cursor:pointer;color:#e05555;font-size:14px;padding:0 4px}
+#overlay-adm-bs .bs-log{font-family:'Share Tech Mono',monospace;font-size:10.5px;line-height:1.55;color:#9fb8d0;max-height:260px;overflow:auto;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
+#overlay-adm-bs .bs-log .t{color:#6e90b0;margin-right:8px}
+#overlay-adm-bs .bs-log .ok{color:#4db88a} #overlay-adm-bs .bs-log .bad{color:#e05555} #overlay-adm-bs .bs-log .warn{color:#ffb340} #overlay-adm-bs .bs-log .info{color:#38e8ff}
+</style>
 <div class="app-overlay overlay-duers" id="overlay-adm-cmdr">
   <div class="overlay-chrome">
     <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
@@ -14362,5 +14468,145 @@ window.FACEAUTH=(function(){
     <div class="sr-f"><span class="sr-t" id="sr-timer"></span><button class="adm-b warn" id="sr-decline" onclick="SIPRREQ.decide(false)">DECLINE</button><button class="adm-b ok" id="sr-accept" onclick="SIPRREQ.decide(true)">ACCEPT · UNLOCK SIPR</button></div>
   </div>
 </div>
+<script>
+/* ══ ADM-11 BLACK START · exercise planning + commander authorization ══ */
+(function(){
+  var KEY='adm_blackstart', $=function(i){return document.getElementById(i);};
+  function C(){return window.ADMIN_CORE||null;}
+  function bus(){return window.SRABus||null;}
+  function esc(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function toast(m,t){if(typeof hubToast==='function')hubToast(m,t||'ok',3400);}
+  function audit(a,t,d){try{var c=C();if(c&&typeof c.audit==='function')c.audit(a,t,d);}catch(e){}}
+  function fy(){var d=new Date();return d.getFullYear()+(d.getMonth()>=9?1:0);}
+  var OBJ=[['A','Start independently, transfer and carry the load','until off-installation energy is restored'],['B','Align organizations with critical missions','tenant commands · PWD · EM · Mission Assurance'],['C','Validate mission operation plans','COOP and continuity procedures'],['D','Identify infrastructure interdependencies','comms · water · fuel · HVAC · access control'],['E','Verify backup electric power performance','start / transfer / carry · power quality']];
+  var MS=[['M1','Kickoff & planning','CO approval · interviews with infrastructure and mission personnel · tentative date and scope'],['M3','Mitigation planning','Align with other exercises · mission impacts · stage mitigations'],['M6','Outage planning','Finalize scope and scenario · notify utility · build outage/restoration sequence'],['M8','Final planning','Verify mitigations · finalize sequence · notify personnel'],['M9','Conduct & collect','Walk-through · comms check · metering · mission verification'],['M12','Findings & COAs','Compile findings · brief CO · Corrective Action Plan to CNIC / NAVFAC']];
+  var AUTH=[['approve','CO approval','kickoff · scope, notice, exclusions, tentative date','Request approval','approved','declined'],['go','Go / No-go','day of exercise · weather, ships in port, ops, utility','Request go / no-go','go','nogo'],['abort','Abort authority','during execution · commander may halt and restore','Arm abort','armed','aborted'],['aar','AAR acceptance','after action · findings and corrective-action priority','Request acceptance','accepted','returned']];
+  var TIERS=['DCA','TCA-1','TCA-2','TCA-3','TA-4'], BK=['GEN','GEN+UPS','UPS','MICROGRID','BESS','NONE'], FUND=['ERCIP','O&M','UESC','ESPC','UP','IEP'], SEV=['P1','P2','P3'], CAT=['Comms','HVAC / cold storage','Water / wastewater','Fuel / refueling','Backup location','Access / security','Key person','Equipment misconfig','Unidentified load'];
+  var S={list:[],sel:null};
+  function load(){try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&j.list)S=j;}catch(e){}if(!S.list.length){S.list=[seed()];S.sel=S.list[0].id;}if(!cur())S.sel=S.list[0].id;}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}paintCard();}
+  function cur(){return S.list.filter(function(e){return e.id===S.sel;})[0]||null;}
+  function nextId(){var n=S.list.length+1;return 'BSE-'+String(fy()).slice(-2)+'-'+(n<10?'0':'')+n;}
+  function seed(){return {id:'BSE-26-03',site:'nb-sd',siteName:'Naval Base San Diego',type:'BSE',date:'2026-10-14',durH:12,notice:'no-notice',scope:'whole-base',excl:{housing:true,commissary:true,exchange:true,mwr:true},utility:'SDG&E',observer:'MIT Lincoln Laboratory',fy:2026,statutory:true,status:'planned',phase:-1,
+      auth:{},obj:{},ms:[true,true,true,true,false,false],log:[],
+      assets:[{n:'Regional Ops Center',tier:'DCA',owner:'CNRSW N3',bk:'GEN+UPS',kw:750,fuel:96,r:[1,1,1]},{n:'Pier 8 substation · FDNF',tier:'TCA-1',owner:'Harbor Ops',bk:'GEN',kw:1500,fuel:48,r:[1,0,1]},{n:'Comms tower · Bldg 3389',tier:'TCA-1',owner:'NCTS',bk:'UPS',kw:60,fuel:0.5,r:[1,1,0]},{n:'Bulk fuel farm pumps',tier:'TCA-2',owner:'NAVSUP FLC',bk:'GEN',kw:220,fuel:72,r:[0,0,0]},{n:'Water / wastewater lift stn',tier:'TCA-3',owner:'PWD Utilities',bk:'GEN',kw:110,fuel:24,r:[1,1,1]},{n:'Branch health clinic',tier:'TA-4',owner:'NMRTC',bk:'GEN',kw:300,fuel:36,r:[1,1,1]}],
+      findings:[{sev:'P1',cat:'Comms',f:'Comms tower UPS ran 27 min · no generator behind it',ca:'Install 60 kW standby gen + ATS',owner:'NCTS / PWD',fund:'ERCIP',st:'open'},{sev:'P1',cat:'Fuel / refueling',f:'Fuel farm transfer pumps unpowered · no refuel plan past 48 h',ca:'Backup feed to pump house; written refuel sequence',owner:'NAVSUP FLC',fund:'O&M',st:'open'},{sev:'P2',cat:'Equipment misconfig',f:'Pier 8 ATS transferred at 41 s vs 10 s target',ca:'Replace ATS controller; monthly loaded test',owner:'PWD Utilities',fund:'O&M',st:'open'},{sev:'P2',cat:'Key person',f:'Only one tech can reset chiller plant after trip',ca:'Cross-train 3 operators; post reset SOP',owner:'PWD Ops',fund:'O&M',st:'funded'},{sev:'P3',cat:'Access / security',f:'Gate 32 access control fell back to manual',ca:'UPS + POE backup for ACS panels',owner:'NSF Security',fund:'UESC',st:'open'},{sev:'P3',cat:'Unidentified load',f:'Cold storage at galley not on critical list',ca:'Add to IEP critical load register',owner:'IEM',fund:'IEP',st:'closed'}]};}
+  function blank(){var c=C(),site=(c&&c.SITES&&c.SITES[0])||{id:'nb-sd',name:'Naval Base San Diego'};return {id:nextId(),site:site.id,siteName:site.name,type:'BSE',date:'',durH:8,notice:'limited',scope:'whole-base',excl:{housing:true,commissary:true,exchange:true,mwr:true},utility:'',observer:'',fy:fy(),statutory:true,status:'planned',phase:-1,auth:{},obj:{},ms:[false,false,false,false,false,false],log:[],assets:[],findings:[]};}
+  function logEv(e,cls,t){e.log=e.log||[];e.log.push({ts:Date.now(),c:cls||'info',t:t});if(e.log.length>200)e.log=e.log.slice(-200);}
+
+  /* ── stats ── */
+  function carried(e){if(!e.assets.length)return null;var ok=e.assets.filter(function(a){return a.r[2]===1;}),kw=ok.reduce(function(n,a){return n+(+a.kw||0);},0),tot=e.assets.reduce(function(n,a){return n+(+a.kw||0);},0);return tot?Math.round(kw/tot*100):null;}
+  function fyCount(){return S.list.filter(function(e){return e.statutory&&e.type==='BSE'&&+e.fy===fy()&&e.status!=='cancelled';}).length;}
+  function openCaps(e){return e.findings.filter(function(f){return f.st!=='closed';}).length;}
+
+  /* ── paint ── */
+  function paintCard(){var e=cur();var b=$('adm-bs-badge');if(b)b.textContent=S.list.length;var f=$('card-bs-fy');if(f)f.textContent='FY'+String(fy()).slice(-2)+' · '+fyCount()+'/5';var a=$('card-bs-auth');if(a)a.textContent='CO · '+(e&&e.auth.approve?e.auth.approve.state:'—');}
+  function opts(list,v){return list.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>';}).join('');}
+  function paint(){var e=cur();if(!e)return;
+    $('bs-ex-sel').innerHTML=S.list.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===S.sel?' selected':'')+'>'+esc(x.id)+' · '+esc(x.siteName)+' · '+esc(x.type)+' · '+esc(x.status)+'</option>';}).join('');
+    $('bs-rec-id').innerHTML='<span class="st '+(e.status==='closed'?'done':e.status==='in-progress'?'pending':'')+'">'+esc(e.status)+'</span>';
+    var c=carried(e),oc=openCaps(e),pass=OBJ.filter(function(o){return e.obj[o[0]]==='pass';}).length;
+    function mini(l,v,col){return '<div class="adm-mini"><div class="l">'+l+'</div><div class="v" style="color:'+(col||'#cce0f2')+'">'+v+'</div></div>';}
+    $('bs-strip').innerHTML=mini('DoN BSEs · FY'+String(fy()).slice(-2),fyCount()+' / 5',fyCount()>=5?'#4db88a':'#ffb340')+mini('Exercises on file',S.list.length)+mini('Critical load carried',c==null?'—':c+'%',c==null?'#6e90b0':c>=95?'#4db88a':c>=70?'#ffb340':'#e05555')+mini('§2920 objectives',pass+' / 5','#38e8ff')+mini('Open CAPs',oc,oc?'#e05555':'#4db88a')+mini('CO approval',e.auth.approve?e.auth.approve.state:'not requested',e.auth.approve&&e.auth.approve.state==='approved'?'#4db88a':'#ffb340');
+    /* record */
+    var c0=C(),sites=(c0&&c0.SITES)||[{id:e.site,name:e.siteName}];
+    function row(l,inner){return '<div class="f-row"><label>'+l+'</label>'+inner+'</div>';}
+    $('bs-form').innerHTML=row('EXERCISE ID','<input class="adm-in" value="'+esc(e.id)+'" onchange="ADM_BS.set(\'id\',this.value)">')+
+      row('INSTALLATION','<select class="adm-sel" onchange="ADM_BS.setSite(this.value)">'+sites.map(function(x){return '<option value="'+esc(x.id)+'"'+(x.id===e.site?' selected':'')+'>'+esc(x.name)+'</option>';}).join('')+'</select>')+
+      row('TYPE','<select class="adm-sel" onchange="ADM_BS.set(\'type\',this.value)">'+opts(['BSE','ERRE','ERTTX','CRRE'],e.type)+'</select>')+
+      row('DATE','<input class="adm-in" type="date" value="'+esc(e.date)+'" onchange="ADM_BS.set(\'date\',this.value)">')+
+      row('PLANNED DURATION','<input class="adm-in" type="number" min="1" max="120" value="'+esc(e.durH)+'" onchange="ADM_BS.set(\'durH\',+this.value)"> <span class="hint" style="margin:0">hours · statute caps 5 days</span>')+
+      row('NOTICE','<select class="adm-sel" onchange="ADM_BS.set(\'notice\',this.value)">'+opts(['no-notice','limited','announced'],e.notice)+'</select>')+
+      row('SCOPE','<select class="adm-sel" onchange="ADM_BS.set(\'scope\',this.value)">'+opts(['whole-base','feeder','facility-set'],e.scope)+'</select>')+
+      row('EXCLUDED','<div class="chk">'+['housing','commissary','exchange','mwr'].map(function(k){return '<label><input type="checkbox"'+(e.excl[k]?' checked':'')+' onchange="ADM_BS.excl(\''+k+'\',this.checked)">'+k.toUpperCase()+'</label>';}).join('')+'</div>')+
+      row('UTILITY PARTNER','<input class="adm-in" value="'+esc(e.utility)+'" onchange="ADM_BS.set(\'utility\',this.value)">')+
+      row('OBSERVER ORG','<input class="adm-in" value="'+esc(e.observer)+'" onchange="ADM_BS.set(\'observer\',this.value)">')+
+      row('FISCAL YEAR','<input class="adm-in" type="number" value="'+esc(e.fy)+'" onchange="ADM_BS.set(\'fy\',+this.value)">')+
+      row('STATUTORY COUNT','<div class="chk"><label><input type="checkbox"'+(e.statutory?' checked':'')+' onchange="ADM_BS.set(\'statutory\',this.checked)">Counts toward the 5-per-year DoN floor (10 USC 2920(d)) through FY2032</label></div>')+
+      row('STATUS','<select class="adm-sel" onchange="ADM_BS.set(\'status\',this.value)">'+opts(['planned','approved','in-progress','AAR-pending','closed','cancelled'],e.status)+'</select>');
+    /* auth */
+    $('bs-auth').innerHTML=AUTH.map(function(a){var st=e.auth[a[0]];var lab=st?st.state:'not requested';return '<div class="au-row"><span class="k">'+a[1]+'<small>'+a[2]+'</small></span><span><span class="st '+(st?st.state:'')+'">'+esc(lab)+'</span>'+(st&&st.by?' <span class="hint" style="margin:0;display:inline">'+esc(st.by)+' · '+new Date(st.ts).toLocaleString()+(st.note?' · '+esc(st.note):'')+'</span>':'')+'</span><span style="display:flex;gap:6px"><button class="adm-b" onclick="ADM_BS.request(\''+a[0]+'\')">'+a[3]+'</button><button class="adm-b ok" title="Record the decision manually (voice / in person)" onclick="ADM_BS.decide(\''+a[0]+'\',\''+a[4]+'\')">&#10003;</button><button class="adm-b danger" onclick="ADM_BS.decide(\''+a[0]+'\',\''+a[5]+'\')">&#10007;</button></span></div>';}).join('');
+    /* objectives */
+    $('bs-obj').innerHTML=OBJ.map(function(o){var v=e.obj[o[0]]||'';return '<div class="obj-row"><span class="k">'+o[0]+'</span><span>'+esc(o[1])+'<small>'+esc(o[2])+'</small></span><button class="st '+v+'" onclick="ADM_BS.cycleObj(\''+o[0]+'\')">'+(v||'score')+'</button></div>';}).join('');$('bs-obj-n').textContent=pass+' / 5 pass';
+    /* milestones */
+    $('bs-ms').innerHTML=MS.map(function(m,i){return '<div class="ms-row'+(e.ms[i]?' done':'')+'" onclick="ADM_BS.ms('+i+')"><span class="c">'+(e.ms[i]?'&#10003;':'')+'</span><span class="m">'+m[0]+'</span><span><b>'+esc(m[1])+'</b><div class="d">'+esc(m[2])+'</div></span></div>';}).join('');$('bs-ms-n').textContent=e.ms.filter(Boolean).length+' / 6';
+    /* assets */
+    function lamp(a,i,k){var v=a.r[k];return '<span class="lamp '+(v===1?'on':v===0?'bad':'')+'" onclick="ADM_BS.lamp('+i+','+k+')">'+(v===1?'PASS':v===0?'FAIL':'—')+'</span>';}
+    $('bs-assets').querySelector('tbody').innerHTML=e.assets.map(function(a,i){return '<tr><td><input value="'+esc(a.n)+'" onchange="ADM_BS.asset('+i+',\'n\',this.value)"></td><td><select onchange="ADM_BS.asset('+i+',\'tier\',this.value)">'+opts(TIERS,a.tier)+'</select></td><td><input value="'+esc(a.owner)+'" onchange="ADM_BS.asset('+i+',\'owner\',this.value)"></td><td><select onchange="ADM_BS.asset('+i+',\'bk\',this.value)">'+opts(BK,a.bk)+'</select></td><td><input type="number" value="'+esc(a.kw)+'" onchange="ADM_BS.asset('+i+',\'kw\',+this.value)"></td><td><input type="number" step="0.5" value="'+esc(a.fuel)+'" onchange="ADM_BS.asset('+i+',\'fuel\',+this.value)"></td><td>'+lamp(a,i,0)+'</td><td>'+lamp(a,i,1)+'</td><td>'+lamp(a,i,2)+'</td><td><span class="x" onclick="ADM_BS.delAsset('+i+')">&#10005;</span></td></tr>';}).join('')||'<tr><td colspan="10" class="hint">No critical assets yet · + ASSET</td></tr>';
+    /* findings */
+    $('bs-find').querySelector('tbody').innerHTML=e.findings.map(function(f,i){return '<tr><td><select onchange="ADM_BS.finding('+i+',\'sev\',this.value)">'+opts(SEV,f.sev)+'</select></td><td><select onchange="ADM_BS.finding('+i+',\'cat\',this.value)">'+opts(CAT,f.cat)+'</select></td><td><input value="'+esc(f.f)+'" onchange="ADM_BS.finding('+i+',\'f\',this.value)"></td><td><input value="'+esc(f.ca)+'" onchange="ADM_BS.finding('+i+',\'ca\',this.value)"></td><td><input value="'+esc(f.owner)+'" onchange="ADM_BS.finding('+i+',\'owner\',this.value)"></td><td><select onchange="ADM_BS.finding('+i+',\'fund\',this.value)">'+opts(FUND,f.fund)+'</select></td><td><button class="st '+f.st+'" onclick="ADM_BS.cycleFind('+i+')">'+f.st+'</button></td><td><span class="x" onclick="ADM_BS.delFinding('+i+')">&#10005;</span></td></tr>';}).join('')||'<tr><td colspan="8" class="hint">No findings yet · + FINDING</td></tr>';
+    /* log */
+    var lg=(e.log||[]).slice().reverse();$('bs-log').innerHTML=lg.map(function(l){return '<div><span class="t">'+new Date(l.ts).toLocaleTimeString()+'</span><span class="'+l.c+'">'+esc(l.t)+'</span></div>';}).join('')||'<div class="hint" style="margin:0">No events yet.</div>';$('bs-log-n').textContent=lg.length+' events';
+    paintCard();}
+
+  /* ── mutations ── */
+  function set(k,v){var e=cur();if(!e)return;if(k==='id'){v=String(v||'').trim();if(!v||S.list.some(function(x){return x!==e&&x.id===v;})){toast('Exercise ID must be unique','warn');paint();return;}S.sel=v;}e[k]=v;save();paint();}
+  function setSite(id){var e=cur(),c=C();if(!e)return;e.site=id;var s=c&&c.SITE&&c.SITE[id];e.siteName=s?s.name:id;save();paint();}
+  function excl(k,v){var e=cur();e.excl[k]=v;save();}
+  function cycleObj(k){var e=cur(),o=['','pass','partial','fail'],v=e.obj[k]||'';e.obj[k]=o[(o.indexOf(v)+1)%o.length];save();paint();}
+  function ms(i){var e=cur();e.ms[i]=!e.ms[i];logEv(e,'info',MS[i][0]+' '+MS[i][1]+(e.ms[i]?' complete':' reopened'));save();paint();}
+  function lamp(i,k){var e=cur(),a=e.assets[i];a.r[k]=a.r[k]===1?0:a.r[k]===0?null:1;save();paint();}
+  function asset(i,k,v){cur().assets[i][k]=v;save();}
+  function addAsset(){cur().assets.push({n:'New facility',tier:'TCA-2',owner:'',bk:'GEN',kw:0,fuel:0,r:[null,null,null]});save();paint();}
+  function delAsset(i){cur().assets.splice(i,1);save();paint();}
+  function finding(i,k,v){cur().findings[i][k]=v;save();}
+  function addFinding(){cur().findings.push({sev:'P2',cat:CAT[0],f:'',ca:'',owner:'',fund:'O&M',st:'open'});save();paint();}
+  function delFinding(i){cur().findings.splice(i,1);save();paint();}
+  function cycleFind(i){var f=cur().findings[i],o=['open','funded','closed'];f.st=o[(o.indexOf(f.st)+1)%o.length];save();paint();}
+  function create(){var e=blank();S.list.push(e);S.sel=e.id;logEv(e,'info','Exercise record created');audit('BSE_CREATE',e.siteName,e.id);save();paint();toast('New exercise '+e.id);}
+  function dup(){var e=cur();if(!e)return;var n=JSON.parse(JSON.stringify(e));n.id=nextId();n.status='planned';n.auth={};n.obj={};n.log=[];n.ms=n.ms.map(function(){return false;});n.assets.forEach(function(a){a.r=[null,null,null];});n.findings=[];S.list.push(n);S.sel=n.id;logEv(n,'info','Duplicated from '+e.id);save();paint();toast('Duplicated as '+n.id);}
+  function remove(){var e=cur();if(!e||S.list.length===1){toast('Keep at least one exercise','warn');return;}if(!confirm('Delete '+e.id+'?'))return;S.list=S.list.filter(function(x){return x!==e;});S.sel=S.list[0].id;audit('BSE_DELETE',e.siteName,e.id);save();paint();}
+  function select(id){S.sel=id;save();paint();}
+
+  /* ── commander authorization over the bus ── */
+  function snapshot(e){return {id:e.id,site:e.site,siteName:e.siteName,type:e.type,date:e.date,durH:e.durH,notice:e.notice,scope:e.scope,excl:e.excl,utility:e.utility,observer:e.observer,fy:e.fy,statutory:e.statutory,status:e.status,auth:e.auth,obj:e.obj,ms:e.ms,assets:e.assets.map(function(a){return {n:a.n,tier:a.tier,owner:a.owner,bk:a.bk,kw:a.kw,fuel:a.fuel,r:a.r};}),findings:e.findings};}
+  function request(kind){var e=cur();if(!e)return;var a=AUTH.filter(function(x){return x[0]===kind;})[0];e.auth[kind]={state:'pending',ts:Date.now()};logEv(e,'warn',a[1]+' requested from commander via SONARmobile');
+    try{var b=bus();if(b)b.publish('BSE_AUTH',{kind:kind,label:a[1],detail:a[2],exercise:snapshot(e),reqId:e.id+':'+kind+':'+Date.now()},{site:e.site});}catch(x){}
+    audit('BSE_AUTH_REQ',e.siteName,e.id+' · '+a[1]);save();paint();toast(a[1]+' request sent to SONARmobile','ok');}
+  function decide(kind,state,by,note){var e=cur();if(!e)return;var a=AUTH.filter(function(x){return x[0]===kind;})[0];e.auth[kind]={state:state,ts:Date.now(),by:by||'ADMIN (manual)',note:note||''};
+    if(kind==='approve'&&state==='approved'&&e.status==='planned')e.status='approved';if(kind==='go'&&state==='go')e.status='in-progress';if(kind==='abort'&&state==='aborted')e.status='AAR-pending';if(kind==='aar'&&state==='accepted')e.status='closed';
+    logEv(e,state==='approved'||state==='go'||state==='accepted'||state==='armed'?'ok':'bad',a[1]+' → '+state+' · '+(by||'recorded manually')+(note?' · '+note:''));audit('BSE_AUTH',e.siteName,e.id+' · '+a[1]+' → '+state+' · '+(by||'manual'));save();paint();}
+  function push(){var e=cur();if(!e)return;try{var b=bus();if(!b){toast('Bus not linked · connect in ADM-10','warn');return;}b.publish('BSE_PUSH',{exercise:snapshot(e)},{site:e.site});logEv(e,'info','Exercise pushed to SONARmobile');audit('BSE_PUSH',e.siteName,e.id);save();paint();toast(e.id+' pushed to SONARmobile');}catch(x){toast('Push failed · '+x.message,'warn');}}
+  function exportJson(){var e=cur();var blob=new Blob([JSON.stringify(snapshot(e),null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=e.id+'.json';a.click();}
+  function openDocs(){window.open('docs/blackstart/','_blank');}
+
+  /* inbound replies from SONARmobile */
+  function wire(){var b=bus();if(!b||wire.done)return;wire.done=true;
+    b.subscribe(function(env,replay){if(replay||!env||env.from!=='cmdr')return;var p=env.payload||{};
+      if(env.type==='BSE_AUTH_ACK'){var e=S.list.filter(function(x){return x.id===(p.exercise||'');})[0];if(!e)return;decide(p.kind,p.state,p.by||'Base Commander (SONARmobile)',p.note);toast('SONARmobile · '+p.kind+' → '+p.state+' · '+(p.by||'commander'),p.state==='declined'||p.state==='nogo'||p.state==='aborted'?'warn':'ok');}
+      else if(env.type==='BSE_EVENT'){var ex=S.list.filter(function(x){return x.id===(p.exercise||'');})[0];if(!ex)return;if(typeof p.phase==='number')ex.phase=p.phase;logEv(ex,p.cls||'info','SONARmobile · '+(p.text||''));save();if($('overlay-adm-bs').classList.contains('visible'))paint();}
+    });}
+  var _open=window.openApp;window.openApp=function(id){_open.apply(this,arguments);if(id==='overlay-adm-bs'){load();paint();}};
+  document.addEventListener('DOMContentLoaded',function(){load();paintCard();var t=setInterval(function(){wire();if(wire.done)clearInterval(t);},1500);});
+  window.ADM_BS={select:select,create:create,dup:dup,remove:remove,set:set,setSite:setSite,excl:excl,cycleObj:cycleObj,ms:ms,lamp:lamp,asset:asset,addAsset:addAsset,delAsset:delAsset,finding:finding,addFinding:addFinding,delFinding:delFinding,cycleFind:cycleFind,request:request,decide:decide,push:push,exportJson:exportJson,openDocs:openDocs,_S:function(){return S;}};
+})();
+</script>
+<script>
+/* ══ STICKY FEATURE BAR — clock + HOME/TILES/FULL/GUIDE/DEMO/LOCK/LOGOUT/LIGHT ride along into every tile ══ */
+(function(){
+  var IDS=['wall-clock','home-btn','tiles-btn','fs-btn','guide-btn','demo-chrome-btn','lock-btn','logout-btn','theme-toggle'];
+  var css=document.createElement('style');
+  css.textContent='#adm-sticky{position:fixed;top:0;right:212px;height:var(--chrome-h,40px);z-index:8000;display:none;align-items:center;gap:10px;padding:0 6px;pointer-events:none}'+
+    '#adm-sticky>*{pointer-events:auto}'+
+    'body.adm-overlay #adm-sticky{display:flex}'+
+    'body.adm-overlay .overlay-chrome{padding-right:900px}'+
+    '@media (max-width:1250px){body.adm-overlay .overlay-chrome{padding-right:14px} #adm-sticky{top:auto;bottom:10px;right:14px;height:34px;background:rgba(8,16,28,.9);border:1px solid rgba(110,144,176,.35);border-radius:17px;padding:0 10px;backdrop-filter:blur(10px)}}';
+  document.head.appendChild(css);
+  var bar=document.createElement('div');bar.id='adm-sticky';
+  function chrome(){return document.getElementById('chrome');}
+  function nodes(){return IDS.map(function(i){return document.getElementById(i);}).filter(Boolean);}
+  function anyOpen(){return !!document.querySelector('.app-overlay.visible');}
+  function sync(){var open=anyOpen();document.body.classList.toggle('adm-overlay',open);
+    var host=open?bar:chrome();if(!host)return;nodes().forEach(function(n){if(n.parentNode!==host)host.appendChild(n);});}
+  document.addEventListener('DOMContentLoaded',function(){document.body.appendChild(bar);sync();
+    var _o=window.openApp,_c=window.closeApp;
+    window.openApp=function(){var r=_o.apply(this,arguments);setTimeout(sync,0);return r;};
+    window.closeApp=function(){var r=_c.apply(this,arguments);setTimeout(sync,0);return r;};
+    /* HOME inside a tile = close every open tile */
+    var h=document.getElementById('home-btn');if(h){var _h=h.onclick;h.onclick=function(ev){if(anyOpen()){document.querySelectorAll('.app-overlay.visible').forEach(function(o){closeApp(o.id);});return;}if(_h)return _h.call(this,ev);};}
+    new MutationObserver(function(){sync();}).observe(document.body,{attributes:true,attributeFilter:['class'],subtree:true});
+  });
+})();
+</script>
 </body>
 </html>
