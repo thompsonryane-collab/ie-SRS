@@ -283,9 +283,9 @@ body.onhome .homebtn{display:none}
 .bs-find .meta{grid-column:2;font-size:11.5px;color:var(--ink2)}
 .bs-find .meta b{color:#fff;font-weight:600}
 .bs-find .bs-st{grid-row:1/3;grid-column:3}
-.bs-ms{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px}
+.bs-ms{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 0 4px}
 .bs-ms::-webkit-scrollbar{display:none}
-.bs-ms .m{flex:none;width:136px;border-radius:13px;background:var(--card);border:1px solid var(--line);padding:9px 10px;font-size:11.5px;line-height:1.3;color:var(--ink2)}
+.bs-ms .m{min-width:0;border-radius:13px;background:var(--card);border:1px solid var(--line);padding:9px 10px;font-size:11.5px;line-height:1.3;color:var(--ink2)}
 .bs-ms .m b{display:block;color:var(--cyan);font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:3px}
 .bs-ms .m strong{display:block;color:#fff;font-size:12.5px;margin-bottom:3px;font-weight:600}
 .bs-ms .m.done{border-color:rgba(79,217,138,.4)} .bs-ms .m.done b{color:var(--green)}
@@ -309,12 +309,12 @@ body.onhome .homebtn{display:none}
 #bs-docview .dvh .t{flex:1;min-width:0;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #bs-docview iframe{flex:1;width:100%;border:0;background:#fff}
 /* section tiles */
-.bs-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 6px;padding:6px 2px 2px}
+.bs-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 8px;padding:8px 2px 2px}
 .bs-tiles button{display:flex;flex-direction:column;align-items:center;gap:7px;color:#fff;position:relative;background:transparent}
-.bs-tiles .ic{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 14px rgba(0,0,0,.35)}
-.bs-tiles .ic svg{width:27px;height:27px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.bs-tiles .l{font-size:10.5px;font-weight:500;white-space:nowrap;line-height:1.1}
-.bs-tiles .nl{position:absolute;top:-5px;right:calc(50% - 33px);min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,59,48,.6)}
+.bs-tiles .ic{width:60px;height:60px;border-radius:17px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 14px rgba(0,0,0,.35)}
+.bs-tiles .ic svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bs-tiles .l{font-size:11.5px;font-weight:500;white-space:nowrap;line-height:1.1}
+.bs-tiles .nl{position:absolute;top:-5px;right:calc(50% - 36px);min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,59,48,.6)}
 .bs-tiles .nl.on{display:flex}
 .bs-tiles .nl.amber{background:var(--amber);color:#111;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,179,64,.6)}
 .bs-tiles .nl.green{background:var(--green);color:#052a14;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(79,217,138,.6)}
@@ -327,6 +327,19 @@ body.onhome .homebtn{display:none}
 .bs-back button{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--cyan);background:transparent;padding:4px 0}
 .bs-back button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .bs-back .crumb{font-size:12px;color:var(--ink3)}
+/* commander authorization request card */
+#bs-authcard{position:absolute;inset:0;z-index:45;background:rgba(3,10,20,.92);display:none;align-items:center;justify-content:center;padding:24px 18px}
+#bs-authcard.on{display:flex}
+#bs-authcard .ac{width:100%;max-width:360px;border-radius:22px;background:#101c2c;border:1px solid rgba(255,179,64,.5);box-shadow:0 0 0 4px rgba(255,179,64,.12),0 20px 50px rgba(0,0,0,.6);padding:18px 18px calc(18px + var(--sab))}
+#bs-authcard .ac .eyebrow{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--amber);font-weight:700}
+#bs-authcard .ac h3{font-size:22px;font-weight:700;letter-spacing:-.4px;margin:6px 0 4px}
+#bs-authcard .ac .d{font-size:13px;color:var(--ink2);line-height:1.4}
+#bs-authcard .ac .facts{margin:12px 0;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--line);padding:10px 12px;font-size:12.5px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+#bs-authcard .ac .facts span:nth-child(odd){color:var(--ink3)}
+#bs-authcard .ac textarea{width:100%;box-sizing:border-box;border-radius:11px;background:rgba(255,255,255,.07);border:1px solid var(--line);color:#fff;font:inherit;font-size:13px;padding:9px 11px;resize:none;margin-bottom:12px}
+#bs-authcard .ac .btns{display:flex;gap:8px}
+#bs-authcard .ac .btn.ok{background:var(--green);color:#052a14;border-color:var(--green)}
+#bs-authcard .ac .btn.no{background:rgba(255,90,78,.18);color:#ffb0a8;border-color:rgba(255,90,78,.5)}
 .bs-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .bs-kpis .kpi .l small{display:block;color:var(--ink3);font-size:9.5px;margin-top:1px}
 
@@ -770,7 +783,6 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
     </div>
     <div class="navr" style="display:flex;gap:6px;align-items:center">
       <button class="link homebtn" id="homebtn" onclick="go('home')" aria-label="Home"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
-      <button class="link docbtn" id="docbtn" onclick="BLACKSTART.openDocs()" aria-label="Reference documents" title="Reference documents"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/></svg></button>
       <div class="classify-wrap" id="classifyWrap" onclick="event.stopPropagation()">
         <button class="classify-btn" id="classifyBtn" onclick="SIPR.toggle(event)" aria-label="Network classification">
           <span id="classifyLabel">NIPR</span>
@@ -797,15 +809,15 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
   <div class="page home" id="p-home">
     <div class="sipr-banner">SIPR · secure session · only Log out is live</div>
     <div class="hgrid"><div class="qa">
+        <button onclick="go('msgs')" id="tile-msg"><span class="netpill" id="msg-net">NIPR</span><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
+        <button onclick="go('outages')"><span class="nl" id="hl-out"></span><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/><path d="M3 3l18 18"/></svg></div><div class="l">Outages</div></button>
+        <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
         <button onclick="go('health')"><div class="ic c-green"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3 10 2-7 1.5 2H21"/></svg></div><div class="l">Sys health</div></button>
         <button onclick="openImpact()"><div class="ic c-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div><div class="l">Mission impact</div></button>
         <button onclick="stub('Microgrid')"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M13 7l-4 6h6l-4 6"/></svg></div><div class="l">Microgrid</div></button>
         <button onclick="go('blackstart')" id="tile-bs"><div class="ic c-ink"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.5a8 8 0 1 0 10 0"/></svg></div><div class="l">Black start</div></button>
         <button onclick="openMap()" id="tile-map"><span class="nl" id="hl-map"></span><div class="ic c-green" style="background:linear-gradient(160deg,#5fd98a,#1f7a4c)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></div><div class="l">Live map</div></button>
         <button onclick="callEOC()"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div><div class="l">Call EOC</div></button>
-        <button onclick="go('msgs')" id="tile-msg"><span class="netpill" id="msg-net">NIPR</span><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
-        <button onclick="go('outages')"><span class="nl" id="hl-out"></span><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/><path d="M3 3l18 18"/></svg></div><div class="l">Outages</div></button>
-        <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
         <button onclick="openBuilder()" id="tile-builder"><div class="ic" style="background:linear-gradient(160deg,#e8a33d,#8a5a12)"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3.5"/><path d="M18 12.5v1M18 18.5v1M14.5 16h1M20.5 16h1"/></svg></div><div class="l">Scenario</div></button>
         <button onclick="go('drop')" id="tile-drop"><span class="nl" id="hl-drop"></span><div class="ic" style="background:linear-gradient(160deg,#b0b8c4,#4f5a68)"><svg viewBox="0 0 24 24"><path d="M12 3v11M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></div><div class="l">Drop Zone</div></button>
         <button onclick="openSonarMobileGuide()" id="tile-guide"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2z"/></svg></div><div class="l">Guide</div></button>
@@ -896,6 +908,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
       <div class="note">Sources: DoD &amp; Industry Black Start Exercises information paper (Castillo, Judson, Bose, Monken 2020); MIT LL ERRE overview (Judson, 11 Feb 2020). First draft template — data is representative, not an exercise record.</div>
     </div>
   </div>
+  <div id="bs-authcard" onclick="if(event.target===this)BLACKSTART.authClose()"><div class="ac"><div class="eyebrow" id="bs-ac-eye"></div><h3 id="bs-ac-t"></h3><div class="d" id="bs-ac-d"></div><div class="facts" id="bs-ac-f"></div><textarea id="bs-ac-note" rows="2" placeholder="Note to ADMIN (optional)"></textarea><div class="btns"><button class="btn no" id="bs-ac-no" onclick="BLACKSTART.authReply(false)">Decline</button><button class="btn ok" id="bs-ac-ok" onclick="BLACKSTART.authReply(true)">Approve</button></div></div></div>
 
   <!-- MESSAGES -->
   <div class="page" id="p-msgs" style="padding-bottom:calc(var(--sab) + 72px)">
@@ -2738,7 +2751,7 @@ window.SRADropZone=(function(){
       {t:'Resilience of Critical Missions for the DoD · ERRE Overview',m:'Judson · MIT Lincoln Laboratory · 11 Feb 2020 · Distribution A',f:'ERRE-Presentation-20200211INFORMS-Final-DistributionA.pdf'},
       {t:'Energy Resilience Tabletop Exercise (ERTTX) Framework',m:'OSD memorandum · signed 12 Nov 2020',f:'Energy-Resilience-Tabletop-Exercise-Framework_11122020_signed.pdf'},
       {t:'Framework for Planning and Executing Black Start Exercises',m:'OSD memorandum · 6 Aug 2020',f:'Memo-Framework-for-Planning-and-Executing-Black-Start-Exercises_08062020.pdf'},
-      {t:'10 U.S.C. § 2920 · Energy resilience and energy security of military installations',m:'Statute · FY21 NDAA as amended through FY26',url:'https://www.law.cornell.edu/uscode/text/10/2920'}
+      {t:'10 U.S.C. § 2920 · Energy resilience and energy security of military installations',m:'Statute · FY21 NDAA as amended through FY26',url:'https://uscode.house.gov/view.xhtml?req=granuleid%3AUSC-prelim-title10-section2920&num=0&edition=prelim'}
     ];
     var DOCBASE='../docs/blackstart/';
     function docIcon(){return '<svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/></svg>';}
@@ -2751,10 +2764,30 @@ window.SRADropZone=(function(){
     var ZONES=[['ET','America/New_York'],['PT','America/Los_Angeles'],['Z','UTC']];var zi=0;
     function wall(){try{return new Intl.DateTimeFormat('en-US',{timeZone:ZONES[zi][1],hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());}catch(e){return '--:--:--';}}
     function tz(){zi=(zi+1)%ZONES.length;try{localStorage.setItem(KEY+'_tz',zi);}catch(e){}var e=$('bs-tz');if(e)e.innerHTML='<b>'+ZONES[zi][0]+'</b>'+wall();}
+    var AUTHK={approve:['CO approval','Approve','Decline','approved','declined'],go:['Go / No-go','GO','NO-GO','go','nogo'],abort:['Abort authority','Arm abort','Decline','armed','aborted'],aar:['AAR acceptance','Accept AAR','Return','accepted','returned']};
+    var EX=null,pending=null;
+    function exLoad(){try{EX=JSON.parse(localStorage.getItem(KEY+'_ex')||'null');}catch(e){EX=null;}}
+    function exApply(ex){if(!ex||!ex.id)return;EX=ex;try{localStorage.setItem(KEY+'_ex',JSON.stringify(ex));}catch(e){}
+      if(ex.assets&&ex.assets.length){ASSETS=ex.assets.map(function(a,i){return {id:'a'+i,name:a.n,tier:a.tier,owner:a.owner,bk:a.bk,kw:+a.kw||0,fuel:+a.fuel||0,ms:[a.r[0]===1,a.r[1]===1,a.r[2]===1]};});}
+      if(ex.findings&&ex.findings.length){FIND=ex.findings.map(function(f,i){return {id:'f'+i,sev:f.sev,cat:f.cat,name:f.f,ca:f.ca,owner:f.owner,fund:f.fund};});if(st){st.find={};ex.findings.forEach(function(f,i){st.find['f'+i]=f.st||'open';});}}
+      if(ex.obj&&st)st.obj=Object.assign({},ex.obj);if(st)save();}
+    function exId(){return EX&&EX.id?EX.id:'BSE-26-03';}
+    function exMeta(){if(!EX)return 'No-notice · whole-base · housing, NEX and MWR excluded · utility SDG&E · observer MIT LL';var x=[];x.push(EX.notice||'');x.push(EX.scope||'');var ex=Object.keys(EX.excl||{}).filter(function(k){return EX.excl[k];});if(ex.length)x.push(ex.join(', ')+' excluded');if(EX.utility)x.push('utility '+EX.utility);if(EX.observer)x.push('observer '+EX.observer);return x.filter(Boolean).join(' · ');}
+    function authShow(p){pending=p;var k=AUTHK[p.kind]||['Authorization','Approve','Decline','approved','declined'];var ex=p.exercise||{};
+      $('bs-ac-eye').textContent='ADMIN requests · '+(ex.id||exId());$('bs-ac-t').textContent=k[0];$('bs-ac-d').textContent=p.detail||'';
+      $('bs-ac-f').innerHTML=[['Installation',ex.siteName],['Type',ex.type],['Date',ex.date||'TBD'],['Duration',ex.durH?ex.durH+' h':'—'],['Notice',ex.notice],['Scope',ex.scope],['Utility',ex.utility],['Observer',ex.observer]].filter(function(x){return x[1];}).map(function(x){return '<span>'+esc(x[0])+'</span><span>'+esc(x[1])+'</span>';}).join('');
+      $('bs-ac-ok').textContent=k[1];$('bs-ac-no').textContent=k[2];$('bs-ac-note').value='';$('bs-authcard').classList.add('on');try{toast('Black start',k[0]+' requested by ADMIN','amber');}catch(e){}}
+    function authClose(){$('bs-authcard').classList.remove('on');pending=null;}
+    function authReply(yes){if(!pending)return;var k=AUTHK[pending.kind]||['','','','approved','declined'];var state=yes?k[3]:k[4];var note=$('bs-ac-note').value.trim();
+      try{bus.publish('BSE_AUTH_ACK',{kind:pending.kind,state:state,exercise:(pending.exercise||{}).id||exId(),reqId:pending.reqId,by:S.name||'Base Commander',note:note},{site:cfg.site});}catch(e){}
+      if(pending.exercise){pending.exercise.auth=pending.exercise.auth||{};pending.exercise.auth[pending.kind]={state:state,ts:Date.now(),by:S.name||'Base Commander'};exApply(pending.exercise);}
+      toast('Black start',k[0]+' → '+state.toUpperCase(),yes?'green':'red');authClose();paint();}
+    function report(cls,text){try{bus.publish('BSE_EVENT',{exercise:exId(),phase:st?st.phase:-1,cls:cls,text:text},{site:cfg.site});}catch(e){}}
+    function onEnvelope(env){var p=env.payload||{};if(env.type==='BSE_AUTH'){if(p.exercise)exApply(p.exercise);authShow(p);}else if(env.type==='BSE_PUSH'){exApply(p.exercise);toast('Black start',(p.exercise&&p.exercise.id||'Exercise')+' received from ADMIN','');if($('p-blackstart')&&$('p-blackstart').classList.contains('on'))paint();}}
     var st=null,timer=null,tick=null;
     function lsGet(){try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){return null;}}
     function fresh(){return {phase:-1,t0:0,elapsed:0,logged:0,obj:{},find:{},fy:{done:3,floor:5},last:412,longest:14,target:336};}
-    function load(){st=lsGet()||fresh();try{zi=parseInt(localStorage.getItem(KEY+'_tz'))||0;}catch(e){}}
+    function load(){st=lsGet()||fresh();try{zi=parseInt(localStorage.getItem(KEY+'_tz'))||0;}catch(e){}exLoad();if(EX)exApply(EX);}
     function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
     function $(i){return document.getElementById(i);}
     function hms(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(x<10?'0':'')+x;}
@@ -2763,7 +2796,7 @@ window.SRADropZone=(function(){
     function carried(){if(st.phase<4)return null;var ok=ASSETS.filter(function(a){return a.ms[2];}),kw=ok.reduce(function(n,a){return n+a.kw;},0),tot=ASSETS.reduce(function(n,a){return n+a.kw;},0);return Math.round(kw/tot*100);}
     function hero(){var h=$('bs-hero');if(!h)return;var live=running(),done=st.phase>=5;h.className='hero bs'+(live?' live':done?' ok':'');
       var label=st.phase<0?'PLANNED':done?'AAR PENDING':'IN PROGRESS · '+PH[st.phase][1].toUpperCase();
-      h.innerHTML='<div class="lbl"><span style="display:flex;align-items:center;gap:8px"><span>BSE-26-03</span><button class="bs-tz" id="bs-tz" onclick="BLACKSTART.tz()" title="Tap to switch zone"><b>'+ZONES[zi][0]+'</b>'+wall()+'</button></span><span class="bs-clock" id="bs-clock">'+hms(elapsed())+'</span></div><div class="st"><span class="dot"></span>'+label+'</div><div class="sub">'+(st.phase<0?'No-notice · whole-base · housing, NEX and MWR excluded · utility SDG&E · observer MIT LL':done?'Exercise closed · '+ASSETS.filter(function(a){return a.ms[2];}).length+' of '+ASSETS.length+' critical assets carried full duration':'Grid open since T0 · '+ASSETS.length+' critical assets under observation')+'</div>';}
+      h.innerHTML='<div class="lbl"><span style="display:flex;align-items:center;gap:8px"><span>'+esc(exId())+'</span><button class="bs-tz" id="bs-tz" onclick="BLACKSTART.tz()" title="Tap to switch zone"><b>'+ZONES[zi][0]+'</b>'+wall()+'</button></span><span class="bs-clock" id="bs-clock">'+hms(elapsed())+'</span></div><div class="st"><span class="dot"></span>'+label+'</div><div class="sub">'+(st.phase<0?esc(exMeta()):done?'Exercise closed · '+ASSETS.filter(function(a){return a.ms[2];}).length+' of '+ASSETS.length+' critical assets carried full duration':'Grid open since T0 · '+ASSETS.length+' critical assets under observation')+'</div>';}
     function kpis(){var k=$('bs-kpis');if(!k)return;var c=carried();var fyOk=st.fy.done>=st.fy.floor,cad=st.last>1826;
       k.innerHTML='<div class="kpi '+(fyOk?'green':'amber')+'"><div class="n">'+st.fy.done+'<span style="font-size:13px;color:var(--ink3)">/'+st.fy.floor+'</span></div><div class="l">DoN BSEs FY26<small>5 / yr floor · FY32</small></div></div>'+
         '<div class="kpi '+(cad?'red':'cyan')+'"><div class="n">'+st.last+'</div><div class="l">Days since last<small>5-yr cadence</small></div></div>'+
@@ -2815,17 +2848,18 @@ window.SRADropZone=(function(){
       if(st.phase===4){st.longest=Math.max(st.longest,14);}
       if(st.phase>=5){st.elapsed+=0;clearInterval(timer);timer=null;st.longest=Math.max(st.longest,Math.round(elapsed()/3600000)||14);var c=carried();if(c!=null){st.obj.A=c>=95?'pass':c>=70?'partial':'fail';st.obj.E=ASSETS.every(function(a){return a.ms[0]&&a.ms[1];})?'pass':'partial';st.obj.D='pass';}toast('Black start','Exercise complete · resynced with utility · AAR pending','green');}
       else toast('Black start',PH[st.phase][0]+' · '+PH[st.phase][1],st.phase===0?'red':'');
+      report(st.phase>=5?'ok':st.phase===0?'warn':'info',PH[Math.min(st.phase,5)][0]+' · '+PH[Math.min(st.phase,5)][1]+(st.phase>=5?' · exercise complete':''));
       save();paint();clock();if(!$('p-blackstart').getAttribute('data-view'))view('seq');else focusSeq();}
     function auto(){if(timer){clearInterval(timer);timer=null;seq();return;}if(st.phase>=5)return;step();timer=setInterval(function(){if(st.phase>=5){clearInterval(timer);timer=null;seq();return;}step();},7000);seq();}
     function reset(){clearInterval(timer);timer=null;var keep=st.fy;st=fresh();st.fy=keep;shown=0;save();paint(true);clock();toast('Black start','Exercise reset · planned state');}
     function cycleObj(k){var o=['','pass','partial','fail'],v=st.obj[k]||'';st.obj[k]=o[(o.indexOf(v)+1)%o.length];save();obj();tiles();}
     function cycleFind(id){var o=['open','funded','closed'],v=st.find[id]||'open';st.find[id]=o[(o.indexOf(v)+1)%o.length];save();find();tiles();}
     function sendAAR(){var c=carried(),open=FIND.filter(function(f){return (st.find[f.id]||'open')!=='closed';}).length,pass=OBJ.filter(function(o){return st.obj[o[0]]==='pass';}).length;
-      var txt='[BSE-26-03 AAR] '+(S.siteName||'NBSD')+' · '+PH[Math.max(0,Math.min(st.phase,5))][1]+' · elapsed '+hms(elapsed())+' · critical load carried '+(c==null?'n/a':c+'%')+' · §2920 objectives '+pass+'/5 pass · '+open+' open corrective actions';
+      var txt='['+exId()+' AAR] '+(S.siteName||'NBSD')+' · '+PH[Math.max(0,Math.min(st.phase,5))][1]+' · elapsed '+hms(elapsed())+' · critical load carried '+(c==null?'n/a':c+'%')+' · §2920 objectives '+pass+'/5 pass · '+open+' open corrective actions';
       try{bus.publish('MSG',{text:txt,ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});}catch(e){}
       sheet('AAR summary sent',txt+'\n\nPublished to the site channel for ADMIN / NAVFAC. Full CAP export lands in Drop Zone in a later build.');}
     function render(){if(!st)load();shown=0;paint(true);clock();}
-    return {render:render,view:view,tz:tz,openDocs:openDocs,viewDoc:viewDoc,closeDoc:closeDoc,step:step,auto:auto,reset:reset,cycleObj:cycleObj,cycleFind:cycleFind,sendAAR:sendAAR,_st:function(){return st;}};
+    return {render:render,view:view,tz:tz,onEnvelope:onEnvelope,authShow:authShow,authClose:authClose,authReply:authReply,openDocs:openDocs,viewDoc:viewDoc,closeDoc:closeDoc,step:step,auto:auto,reset:reset,cycleObj:cycleObj,cycleFind:cycleFind,sendAAR:sendAAR,_st:function(){return st;}};
   })();
   window.stub=function(n){sheet(n,'This module opens the '+n+' view. In this build it is a placeholder; the live data path is the ADMIN hub → SONARmobile bus.');};
   window.callEOC=function(){sheet('Call EOC','Dials the installation Emergency Operations Center. On a phone this uses tel:; in the browser it is logged to the bus as a MSG.');bus.publish('MSG',{text:'[SONARmobile initiated call to EOC]',ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});};
@@ -3358,6 +3392,7 @@ window.SRADropZone=(function(){
     var p=env.payload||{};
     if(env.from==='admin'&&(env.type==='KILL'||env.type==='RESTORE')){WIPE.onEnvelope(env);return;}
     if(env.from==='admin'&&env.type==='PING'){PINGALARM.onEnvelope(env,replay);return;}
+    if(env.from==='admin'&&(env.type==='BSE_AUTH'||env.type==='BSE_PUSH')){if(!replay)BLACKSTART.onEnvelope(env);return;}
     if(env.from==='cmdr'){                                   /* another commander's device */
       if(env.dev===bus.dev())return;
       if(env.type==='MSG'){
