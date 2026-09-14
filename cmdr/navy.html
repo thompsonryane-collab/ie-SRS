@@ -3720,7 +3720,10 @@ window.SRADropZone=(function(){
     function hello(p){p.sector=S.sector||'DOD';if(S.sector==='UTILITY')p.utilType=S.utilType||'COOP';if(sess&&sess.key){p.key=sess.key;p.email=sess.email||'';p.keyAuth=true;}
       try{if(window.SIPR&&SIPR.session()&&!p.authId&&!p.bye)p.siprLive=true;}catch(e){}
       if(S.away&&!p.authId&&!p.bye)p.away=true;   /* away rides on heartbeats only — never on an auth request or a bye */
-      try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
+      try{p.transport=bus.cfg().transport;p.embedded=framedByAdmin();p.dev=bus.dev();}catch(e){}return p;}
+    /* embedded = ADMIN's own preview (popup, or framed by anything other than the cmdr/ carousel shell) — never a real phone in the shell */
+    function framedByAdmin(){try{if(window.opener)return true;if(window.parent===window)return false;return !(window.name==='sonarmobile-shell'&&window.parent===window.top);}catch(e){return true;}}
+    window.SM_FRAMED_BY_ADMIN=framedByAdmin;
     var RING_KEY='sonarmobile_keyring', FACE_KEY='sonarmobile_facecache', FACE_TTL=30*24*60*60*1000, FACE_THRESH=0.55;
     function faceCache(){var c=ls(FACE_KEY,null);return c&&c.list?c:{list:[]};}
     function faceRemember(desc,ss){if(!desc||!ss||!ss.key)return;var c=faceCache();var id=(ss.email||ss.name||'').toLowerCase();c.list=c.list.filter(function(e){return e.id!==id;});c.list.push({id:id,desc:desc,key:ss.key,email:ss.email||'',name:ss.name||'',first:ss.first||'',last:ss.last||'',site:ss.site||'',ts:Date.now()});c.list=c.list.slice(-6);lsSet(FACE_KEY,c);}
@@ -4002,7 +4005,7 @@ window.SRADropZone=(function(){
     /* ── Face ID at step 1 · bypasses PASS-key entry and the keypad ──
        The face request still has to reach ADMIN, so the phone needs a route: the PASS key saved on this device
        (re-armed silently), the same browser as ADMIN (BroadcastChannel), or ADMIN's preview window (postMessage). */
-    function face(){if(busy)return;var c=bus.cfg();var local=false;try{local=(window.parent!==window)||!!window.opener||c.transport==='broadcast';}catch(e){}
+    function face(){if(busy)return;var c=bus.cfg();var local=false;try{local=(window.SM_FRAMED_BY_ADMIN?SM_FRAMED_BY_ADMIN():((window.parent!==window)||!!window.opener))||c.transport==='broadcast';}catch(e){}
       if(c.token){bus.configure({transport:'github',token:c.token,node:'cmdr'});cfg=bus.cfg();}
       else if(!local){msg('Face ID needs the PASS key saved on this device first. Enter it once below — after that, Face ID alone signs you in.','bad');return;}
       $('gt-go').disabled=true;$('gt-face').disabled=true;msg('Face ID · opening camera…','wait');
