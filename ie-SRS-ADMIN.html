@@ -13460,17 +13460,19 @@ document.addEventListener("DOMContentLoaded",function(){
           <div class="bs-box"><h4>EXERCISE RECORD <span id="bs-rec-id"></span></h4><div id="bs-form"></div></div>
           <div class="bs-box"><h4>COMMANDER AUTHORIZATION <span style="color:#ffb340">SONARmobile</span></h4><div id="bs-auth"></div>
             <div class="hint">Each request publishes a BSE_AUTH envelope to the installation channel. The commander answers from the Black start tile on SONARmobile; the reply (BSE_AUTH_ACK) lands here and in ADM-05 Audit and ADM-09 Comms Log.</div></div>
-          <div class="bs-box"><h4>&sect;2920 OBJECTIVES <span id="bs-obj-n"></span></h4><div id="bs-obj"></div></div>
-          <div class="bs-box"><h4>PLANNING MILESTONES <span id="bs-ms-n"></span></h4><div id="bs-ms"></div></div>
         </div>
         <div>
           <div class="bs-box"><h4>CRITICAL ASSETS <span><button class="adm-b" onclick="ADM_BS.addAsset()">+ ASSET</button></span></h4>
             <table class="adm-tbl" id="bs-assets"><thead><tr><th>Asset / facility</th><th>Tier</th><th>Owner</th><th>Backup</th><th>Rated kW</th><th>Fuel h</th><th>Start</th><th>Xfer</th><th>Carry</th><th></th></tr></thead><tbody></tbody></table>
             <div class="hint">Tier per DoDI 3020.45 &middot; Start / Xfer / Carry are the &sect;2920(h)(2)(A) results &mdash; click to cycle pass / fail / untested.</div></div>
-          <div class="bs-box"><h4>FINDINGS &amp; CORRECTIVE ACTIONS <span><button class="adm-b" onclick="ADM_BS.addFinding()">+ FINDING</button></span></h4>
-            <table class="adm-tbl" id="bs-find"><thead><tr><th>Sev</th><th>Category</th><th>Finding</th><th>Corrective action</th><th>CAP owner</th><th>Funding</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
-          <div class="bs-box"><h4>EXERCISE LOG <span id="bs-log-n"></span></h4><div class="bs-log" id="bs-log"></div></div>
+          <div class="bs-box"><h4>&sect;2920 OBJECTIVES <span id="bs-obj-n"></span></h4><div id="bs-obj"></div></div>
+          <div class="bs-box"><h4>PLANNING MILESTONES <span id="bs-ms-n"></span></h4><div id="bs-ms"></div></div>
         </div>
+      </div>
+      <div class="bs-wide">
+        <div class="bs-box"><h4>FINDINGS &amp; CORRECTIVE ACTIONS <span><button class="adm-b" onclick="ADM_BS.addFinding()">+ FINDING</button></span></h4>
+            <table class="adm-tbl" id="bs-find"><thead><tr><th>Sev</th><th>Category</th><th>Finding</th><th>Corrective action</th><th>CAP owner</th><th>Funding</th><th>Status</th><th></th></tr></thead><tbody></tbody></table></div>
+        <div class="bs-box"><h4>EXERCISE LOG <span id="bs-log-n"></span></h4><div class="bs-log" id="bs-log"></div></div>
       </div>
     </div>
   </div>
@@ -13520,7 +13522,49 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-bs .bs-log{font-family:'Share Tech Mono',monospace;font-size:10.5px;line-height:1.55;color:#9fb8d0;max-height:260px;overflow:auto;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
 #overlay-adm-bs .bs-log .t{color:#6e90b0;margin-right:8px}
 #overlay-adm-bs .bs-log .ok{color:#4db88a} #overlay-adm-bs .bs-log .bad{color:#e05555} #overlay-adm-bs .bs-log .warn{color:#ffb340} #overlay-adm-bs .bs-log .info{color:#38e8ff}
+/* ── ADM-11 readability pass ── */
+#overlay-adm-bs .adm-body{font-size:14px}
+#overlay-adm-bs .adm-toolbar .adm-sel,#overlay-adm-bs .adm-toolbar .adm-b{font-size:11.5px;padding:8px 14px}
+#overlay-adm-bs .adm-mini .l{font-size:10px;letter-spacing:1.4px}
+#overlay-adm-bs .adm-mini .v{font-size:19px;margin-top:4px}
+#overlay-adm-bs .bs-box{padding:16px 18px}
+#overlay-adm-bs .bs-box h4{font-size:11px;letter-spacing:1.8px;margin-bottom:14px}
+#overlay-adm-bs .bs-box h4 .st,#overlay-adm-bs .bs-box h4 .adm-b{font-size:10.5px}
+#overlay-adm-bs .hint{font-size:12.5px;line-height:1.5;margin-top:10px}
+#overlay-adm-bs .f-row{grid-template-columns:150px 1fr;gap:10px;margin-bottom:9px;font-size:14px}
+#overlay-adm-bs .f-row label{font-size:11px;letter-spacing:1.4px}
+#overlay-adm-bs .f-row .adm-in,#overlay-adm-bs .f-row .adm-sel{font-size:13.5px;padding:8px 12px}
+#overlay-adm-bs .chk{font-size:13px;gap:14px}
+#overlay-adm-bs .chk input{width:15px;height:15px}
+#overlay-adm-bs .au-row{grid-template-columns:190px 1fr auto;padding:12px 0;font-size:13.5px}
+#overlay-adm-bs .au-row .k{font-size:12.5px;letter-spacing:1.2px}
+#overlay-adm-bs .au-row .k small{font-size:11px;letter-spacing:.6px;margin-top:3px;line-height:1.4}
+#overlay-adm-bs .au-row .adm-b{font-size:11px;padding:8px 14px}
+#overlay-adm-bs .st{font-size:11px;letter-spacing:1.2px;padding:5px 10px}
+#overlay-adm-bs .obj-row{grid-template-columns:32px 1fr auto;padding:10px 0;font-size:13.5px}
+#overlay-adm-bs .obj-row .k{font-size:14px}
+#overlay-adm-bs .obj-row small{font-size:12px;margin-top:3px}
+#overlay-adm-bs .ms-row{grid-template-columns:24px 64px 1fr;padding:9px 0;font-size:13.5px}
+#overlay-adm-bs .ms-row .m{font-size:11px}
+#overlay-adm-bs .ms-row .d{font-size:12px}
+#overlay-adm-bs .ms-row .c{width:18px;height:18px;font-size:12px}
+#overlay-adm-bs .adm-tbl{font-size:13.5px;table-layout:fixed}
+#overlay-adm-bs .adm-tbl th{font-size:10.5px;letter-spacing:1.4px;padding:10px 8px}
+#overlay-adm-bs .adm-tbl td{padding:10px 8px;line-height:1.4}
+#overlay-adm-bs .adm-tbl td input,#overlay-adm-bs .adm-tbl td select{font-size:13.5px;padding:4px 0;color:#e6f0fa}
+#overlay-adm-bs .adm-tbl td .lamp{font-size:10.5px;letter-spacing:1.2px;padding:4px 9px}
+#overlay-adm-bs .adm-tbl td .st{font-size:10.5px}
+#overlay-adm-bs .x{font-size:16px}
+#overlay-adm-bs #bs-assets th:nth-child(1){width:22%} #overlay-adm-bs #bs-assets th:nth-child(2){width:9%} #overlay-adm-bs #bs-assets th:nth-child(3){width:14%} #overlay-adm-bs #bs-assets th:nth-child(4){width:11%} #overlay-adm-bs #bs-assets th:nth-child(5),#overlay-adm-bs #bs-assets th:nth-child(6){width:8%} #overlay-adm-bs #bs-assets th:nth-child(7),#overlay-adm-bs #bs-assets th:nth-child(8),#overlay-adm-bs #bs-assets th:nth-child(9){width:7.5%} #overlay-adm-bs #bs-assets th:nth-child(10){width:4%}
+#overlay-adm-bs #bs-find th:nth-child(1){width:7%} #overlay-adm-bs #bs-find th:nth-child(2){width:15%} #overlay-adm-bs #bs-find th:nth-child(3){width:26%} #overlay-adm-bs #bs-find th:nth-child(4){width:22%} #overlay-adm-bs #bs-find th:nth-child(5){width:12%} #overlay-adm-bs #bs-find th:nth-child(6){width:8%} #overlay-adm-bs #bs-find th:nth-child(7){width:7%} #overlay-adm-bs #bs-find th:nth-child(8){width:3%}
+#overlay-adm-bs .bs-log{font-size:12.5px;line-height:1.6;padding:10px 12px;max-height:300px}
+#overlay-adm-bs .bs-wide{display:block}
+#overlay-adm-bs .bs-wide .adm-tbl td input{white-space:normal}
+#overlay-adm-bs #bs-find td:nth-child(3),#overlay-adm-bs #bs-find td:nth-child(4){white-space:normal}
+#overlay-adm-bs #bs-find td .ta{width:100%;min-width:0;box-sizing:border-box;background:transparent;border:0;border-bottom:1px dashed rgba(24,212,248,.25);color:#e6f0fa;font:inherit;font-size:13.5px;line-height:1.4;padding:4px 0;outline:none;resize:none;overflow:hidden;display:block}
+#overlay-adm-bs #bs-find th:nth-child(1){width:6%} #overlay-adm-bs #bs-find th:nth-child(2){width:14%} #overlay-adm-bs #bs-find th:nth-child(3){width:30%} #overlay-adm-bs #bs-find th:nth-child(4){width:26%} #overlay-adm-bs #bs-find th:nth-child(5){width:11%} #overlay-adm-bs #bs-find th:nth-child(6){width:6.5%} #overlay-adm-bs #bs-find th:nth-child(7){width:5%} #overlay-adm-bs #bs-find th:nth-child(8){width:2.5%}
 </style>
+
 <div class="app-overlay overlay-duers" id="overlay-adm-cmdr">
   <div class="overlay-chrome">
     <div class="overlay-logo wm"><span class="wm-ie">ie</span><span class="wm-dash">-</span><span class="wm-s">S</span>RS</div>
@@ -14534,7 +14578,8 @@ window.FACEAUTH=(function(){
     function lamp(a,i,k){var v=a.r[k];return '<span class="lamp '+(v===1?'on':v===0?'bad':'')+'" onclick="ADM_BS.lamp('+i+','+k+')">'+(v===1?'PASS':v===0?'FAIL':'—')+'</span>';}
     $('bs-assets').querySelector('tbody').innerHTML=e.assets.map(function(a,i){return '<tr><td><input value="'+esc(a.n)+'" onchange="ADM_BS.asset('+i+',\'n\',this.value)"></td><td><select onchange="ADM_BS.asset('+i+',\'tier\',this.value)">'+opts(TIERS,a.tier)+'</select></td><td><input value="'+esc(a.owner)+'" onchange="ADM_BS.asset('+i+',\'owner\',this.value)"></td><td><select onchange="ADM_BS.asset('+i+',\'bk\',this.value)">'+opts(BK,a.bk)+'</select></td><td><input type="number" value="'+esc(a.kw)+'" onchange="ADM_BS.asset('+i+',\'kw\',+this.value)"></td><td><input type="number" step="0.5" value="'+esc(a.fuel)+'" onchange="ADM_BS.asset('+i+',\'fuel\',+this.value)"></td><td>'+lamp(a,i,0)+'</td><td>'+lamp(a,i,1)+'</td><td>'+lamp(a,i,2)+'</td><td><span class="x" onclick="ADM_BS.delAsset('+i+')">&#10005;</span></td></tr>';}).join('')||'<tr><td colspan="10" class="hint">No critical assets yet · + ASSET</td></tr>';
     /* findings */
-    $('bs-find').querySelector('tbody').innerHTML=e.findings.map(function(f,i){return '<tr><td><select onchange="ADM_BS.finding('+i+',\'sev\',this.value)">'+opts(SEV,f.sev)+'</select></td><td><select onchange="ADM_BS.finding('+i+',\'cat\',this.value)">'+opts(CAT,f.cat)+'</select></td><td><input value="'+esc(f.f)+'" onchange="ADM_BS.finding('+i+',\'f\',this.value)"></td><td><input value="'+esc(f.ca)+'" onchange="ADM_BS.finding('+i+',\'ca\',this.value)"></td><td><input value="'+esc(f.owner)+'" onchange="ADM_BS.finding('+i+',\'owner\',this.value)"></td><td><select onchange="ADM_BS.finding('+i+',\'fund\',this.value)">'+opts(FUND,f.fund)+'</select></td><td><button class="st '+f.st+'" onclick="ADM_BS.cycleFind('+i+')">'+f.st+'</button></td><td><span class="x" onclick="ADM_BS.delFinding('+i+')">&#10005;</span></td></tr>';}).join('')||'<tr><td colspan="8" class="hint">No findings yet · + FINDING</td></tr>';
+    $('bs-find').querySelector('tbody').innerHTML=e.findings.map(function(f,i){return '<tr><td><select onchange="ADM_BS.finding('+i+',\'sev\',this.value)">'+opts(SEV,f.sev)+'</select></td><td><select onchange="ADM_BS.finding('+i+',\'cat\',this.value)">'+opts(CAT,f.cat)+'</select></td><td><textarea class="ta" rows="1" oninput="this.style.height=0;this.style.height=this.scrollHeight+\'px\'" onchange="ADM_BS.finding('+i+',\'f\',this.value)">'+esc(f.f)+'</textarea></td><td><textarea class="ta" rows="1" oninput="this.style.height=0;this.style.height=this.scrollHeight+\'px\'" onchange="ADM_BS.finding('+i+',\'ca\',this.value)">'+esc(f.ca)+'</textarea></td><td><input value="'+esc(f.owner)+'" onchange="ADM_BS.finding('+i+',\'owner\',this.value)"></td><td><select onchange="ADM_BS.finding('+i+',\'fund\',this.value)">'+opts(FUND,f.fund)+'</select></td><td><button class="st '+f.st+'" onclick="ADM_BS.cycleFind('+i+')">'+f.st+'</button></td><td><span class="x" onclick="ADM_BS.delFinding('+i+')">&#10005;</span></td></tr>';}).join('')||'<tr><td colspan="8" class="hint">No findings yet · + FINDING</td></tr>';
+    document.querySelectorAll('#bs-find .ta').forEach(function(t){t.style.height=0;t.style.height=t.scrollHeight+'px';});
     /* log */
     var lg=(e.log||[]).slice().reverse();$('bs-log').innerHTML=lg.map(function(l){return '<div><span class="t">'+new Date(l.ts).toLocaleTimeString()+'</span><span class="'+l.c+'">'+esc(l.t)+'</span></div>';}).join('')||'<div class="hint" style="margin:0">No events yet.</div>';$('bs-log-n').textContent=lg.length+' events';
     paintCard();}
@@ -14568,7 +14613,7 @@ window.FACEAUTH=(function(){
     logEv(e,state==='approved'||state==='go'||state==='accepted'||state==='armed'?'ok':'bad',a[1]+' → '+state+' · '+(by||'recorded manually')+(note?' · '+note:''));audit('BSE_AUTH',e.siteName,e.id+' · '+a[1]+' → '+state+' · '+(by||'manual'));save();paint();}
   function push(){var e=cur();if(!e)return;try{var b=bus();if(!b){toast('Bus not linked · connect in ADM-10','warn');return;}b.publish('BSE_PUSH',{exercise:snapshot(e)},{site:e.site});logEv(e,'info','Exercise pushed to SONARmobile');audit('BSE_PUSH',e.siteName,e.id);save();paint();toast(e.id+' pushed to SONARmobile');}catch(x){toast('Push failed · '+x.message,'warn');}}
   function exportJson(){var e=cur();var blob=new Blob([JSON.stringify(snapshot(e),null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=e.id+'.json';a.click();}
-  function openDocs(){window.open('docs/blackstart/','_blank');}
+  function openDocs(){window.open('docs/blackstart/index.html','_blank','noopener');}
 
   /* inbound replies from SONARmobile */
   function wire(){var b=bus();if(!b||wire.done)return;wire.done=true;
