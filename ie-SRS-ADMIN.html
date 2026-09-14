@@ -13564,6 +13564,41 @@ document.addEventListener("DOMContentLoaded",function(){
 #overlay-adm-bs .f-row label,#overlay-adm-bs .adm-tbl th,#overlay-adm-bs .au-row .k,#overlay-adm-bs .ms-row .m,#overlay-adm-bs .adm-mini .l,#overlay-adm-bs .chk label,#overlay-adm-bs .obj-row .k{color:var(--sand);font-weight:600}
 #overlay-adm-bs .au-row .k small,#overlay-adm-bs .obj-row small,#overlay-adm-bs .ms-row .d{color:#8fa8c4;font-weight:400}
 #overlay-adm-bs .adm-tbl th{opacity:.95}
+/* ── ADM-11 contrast pass: brighter ink, larger type, tidy authorization controls ── */
+#overlay-adm-bs{--ink:#eef4fb;--ink2:#c3d3e4;--ink3:#9fb3c9}
+#overlay-adm-bs .adm-body{font-size:15px;color:var(--ink)}
+#overlay-adm-bs .bs-box{background:rgba(18,30,46,.92);border-color:rgba(110,144,176,.35)}
+#overlay-adm-bs .bs-box h4{font-size:12px;color:var(--ink2)}
+#overlay-adm-bs .hint{font-size:13.5px;color:var(--ink3)}
+#overlay-adm-bs .f-row{font-size:15px}
+#overlay-adm-bs .f-row label{font-size:12px}
+#overlay-adm-bs .f-row .adm-in,#overlay-adm-bs .f-row .adm-sel{font-size:14.5px;color:var(--ink);background:#182333;border-color:rgba(24,212,248,.32)}
+#overlay-adm-bs .chk{font-size:13.5px;color:var(--ink)}
+#overlay-adm-bs .obj-row{font-size:15px;color:var(--ink);padding:12px 0}
+#overlay-adm-bs .obj-row .k{font-size:16px}
+#overlay-adm-bs .obj-row small,#overlay-adm-bs .ms-row .d,#overlay-adm-bs .au-row .k small{font-size:13px;color:var(--ink3)}
+#overlay-adm-bs .ms-row{font-size:15px;padding:11px 0}
+#overlay-adm-bs .ms-row b{color:var(--ink)}
+#overlay-adm-bs .ms-row .m{font-size:12px}
+#overlay-adm-bs .adm-tbl{font-size:14.5px;color:var(--ink)}
+#overlay-adm-bs .adm-tbl th{font-size:11.5px}
+#overlay-adm-bs .adm-tbl td input,#overlay-adm-bs .adm-tbl td select,#overlay-adm-bs #bs-find td .ta{font-size:14.5px;color:var(--ink);border-bottom-color:rgba(24,212,248,.35)}
+#overlay-adm-bs .adm-tbl td select{background:#182333}
+#overlay-adm-bs .st{font-size:11.5px}
+#overlay-adm-bs .bs-log{font-size:13.5px;color:var(--ink2)}
+#overlay-adm-bs .bs-log .t{color:var(--ink3)}
+#overlay-adm-bs .adm-mini .v{color:var(--ink)}
+/* authorization rows: title + sub on the left, status and controls stacked on the right, nothing wraps out of the box */
+#overlay-adm-bs .au-row{grid-template-columns:minmax(0,1fr) auto;gap:12px 16px;padding:14px 0;align-items:center}
+#overlay-adm-bs .au-row .k{font-size:15px;letter-spacing:.8px;line-height:1.3}
+#overlay-adm-bs .au-row .k small{margin-top:4px}
+#overlay-adm-bs .au-row>span:nth-child(2){display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;grid-column:2}
+#overlay-adm-bs .au-row>span:nth-child(3){grid-column:2;display:flex;gap:8px;justify-content:flex-end}
+#overlay-adm-bs .au-row .adm-b{font-size:11.5px;padding:9px 14px;white-space:nowrap}
+#overlay-adm-bs .au-row .adm-b.ok,#overlay-adm-bs .au-row .adm-b.danger{width:42px;padding:9px 0;text-align:center;font-size:13px}
+#overlay-adm-bs .au-row .st{font-size:11.5px;padding:6px 11px}
+#overlay-adm-bs .au-row .hint{margin:0;display:inline;font-size:12.5px}
+
 #overlay-adm-bs .bs-wide .adm-tbl td input{white-space:normal}
 #overlay-adm-bs #bs-find td:nth-child(3),#overlay-adm-bs #bs-find td:nth-child(4){white-space:normal}
 #overlay-adm-bs #bs-find td .ta{width:100%;min-width:0;box-sizing:border-box;background:transparent;border:0;border-bottom:1px dashed rgba(24,212,248,.25);color:#e6f0fa;font:inherit;font-size:13.5px;line-height:1.4;padding:4px 0;outline:none;resize:none;overflow:hidden;display:block}
