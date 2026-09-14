@@ -22,14 +22,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 #shell{position:fixed;inset:0;margin:0 auto;max-width:480px;background:var(--bg2);display:flex;flex-direction:column}
 @media (min-width:520px){#shell{border-left:1px solid #1e2633;border-right:1px solid #1e2633}}
 /* edition strip · sits inside the notch safe area, above the framed app */
-.strip{flex:none;height:calc(var(--sat) + 30px);padding:calc(var(--sat) + 4px) 10px 4px;display:flex;align-items:center;justify-content:center;gap:6px;background:linear-gradient(180deg,#0c1a2c,#0a1626);border-bottom:1px solid var(--line);z-index:5}
-.strip button{display:flex;align-items:center;gap:6px;height:22px;padding:0 10px;border-radius:11px;background:none;border:1px solid transparent;color:rgba(255,255,255,.45);font:inherit;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
-.strip button i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.6}
-.strip button.on{color:#fff;background:rgba(255,255,255,.1);border-color:var(--line)}
-.strip button.on[data-e="navy"]{color:var(--cyan)} .strip button.on[data-e="utility"]{color:var(--green)} .strip button.on[data-e="datacenter"]{color:var(--amber)}
-.strip .arrow{position:absolute;top:calc(var(--sat) + 4px);width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.35)}
-.strip .arrow.l{left:8px}.strip .arrow.r{right:8px}
-.strip .arrow svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.strip{position:relative;flex:none;height:calc(var(--sat) + 28px);padding:calc(var(--sat) + 3px) 10px 3px;display:flex;align-items:center;justify-content:center;gap:5px;background:linear-gradient(180deg,#0c1a2c,#0a1626);border-bottom:1px solid var(--line);z-index:5}
+.strip button{display:flex;align-items:center;gap:5px;height:22px;padding:0 10px;border-radius:11px;font:inherit;font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;background:none;border:1px solid transparent;transition:background .18s,border-color .18s,opacity .18s}
+.strip button i{width:5px;height:5px;border-radius:50%;background:currentColor}
+.strip button[data-e="navy"]{color:var(--cyan);border-color:rgba(63,214,255,.28);background:rgba(63,214,255,.07);opacity:.6}
+.strip button[data-e="utility"]{color:var(--green);border-color:rgba(79,217,138,.28);background:rgba(79,217,138,.07);opacity:.6}
+.strip button[data-e="datacenter"]{color:var(--amber);border-color:rgba(255,179,64,.28);background:rgba(255,179,64,.07);opacity:.6}
+.strip button.on{opacity:1}
+.strip button.on[data-e="navy"]{border-color:rgba(63,214,255,.7);background:rgba(63,214,255,.18);box-shadow:0 0 10px rgba(63,214,255,.22)}
+.strip button.on[data-e="utility"]{border-color:rgba(79,217,138,.7);background:rgba(79,217,138,.18);box-shadow:0 0 10px rgba(79,217,138,.22)}
+.strip button.on[data-e="datacenter"]{border-color:rgba(255,179,64,.7);background:rgba(255,179,64,.18);box-shadow:0 0 10px rgba(255,179,64,.22)}
+.strip .smp{flex:none;padding:3px 7px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);font-size:8px;font-weight:800;letter-spacing:.16em;color:rgba(255,255,255,.42);pointer-events:none}
 /* carousel */
 #track{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 #track::-webkit-scrollbar{display:none}
@@ -51,11 +54,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 <body>
 <div id="shell">
   <div class="strip" id="strip">
-    <span class="arrow l" id="arr-l"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span>
     <button data-e="navy" class="on" onclick="SHELL.show('navy')"><i></i>Navy</button>
     <button data-e="utility" onclick="SHELL.show('utility')"><i></i>Utility</button>
     <button data-e="datacenter" onclick="SHELL.show('datacenter')"><i></i>Data center</button>
-    <span class="arrow r" id="arr-r"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+    <span class="smp" id="smp" hidden>SAMPLE</span>
   </div>
   <div id="track">
     <div class="panel" data-e="navy"><div class="cover"><div class="wm">SONAR<span class="sub">mob<i class="i">i</i>le</span></div><div class="e">Navy</div><div class="spin"></div></div><iframe data-src="navy.html" title="SONARmobile · Navy" allow="camera; microphone; autoplay; fullscreen" allowfullscreen></iframe></div>
@@ -68,9 +70,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 var SHELL=(function(){
   var ORDER=['navy','utility','datacenter'], track=document.getElementById('track'), cur='navy', loaded={}, hintT=null;
   function panel(e){return track.querySelector('.panel[data-e="'+e+'"]');}
-  function mount(e){var p=panel(e);if(!p||loaded[e])return;var f=p.querySelector('iframe');f.addEventListener('load',function(){p.classList.add('ready');});f.src=f.getAttribute('data-src');loaded[e]=true;}
+  /* the shell has already eaten the notch inset — stop the framed app from
+     reserving it a second time, drop its SAMPLE watermark (the strip carries
+     that now), and clip the nav title so a long site name can't run under the
+     network chip */
+  var FIT=':root,html{--sat:0px!important}.sample-tag{display:none!important}'
+        + '.nav{padding-left:14px!important;padding-right:14px!important}'
+        + '.navtop{overflow:hidden!important;align-items:stretch!important}'
+        + '.navtop .t1,.navtop .nav-site{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
+  function fit(f){try{var d=f.contentDocument;if(!d||!d.head)return;if(d.getElementById('sm-shell-fit'))return;
+    var s=d.createElement('style');s.id='sm-shell-fit';s.textContent=FIT;d.head.appendChild(s);}catch(x){}}
+  function mount(e){var p=panel(e);if(!p||loaded[e])return;var f=p.querySelector('iframe');
+    f.addEventListener('load',function(){p.classList.add('ready');fit(f);setTimeout(function(){fit(f);},400);});
+    f.src=f.getAttribute('data-src');loaded[e]=true;}
   function paint(){document.querySelectorAll('.strip button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-e')===cur);});
-    var i=ORDER.indexOf(cur);document.getElementById('arr-l').style.visibility=i>0?'':'hidden';document.getElementById('arr-r').style.visibility=i<ORDER.length-1?'':'hidden';
+    document.getElementById('smp').hidden=(cur==='navy');
     try{history.replaceState(null,'',cur==='navy'?location.pathname:'#'+cur);}catch(x){}
     try{var f=panel(cur).querySelector('iframe');if(f.contentWindow)f.contentWindow.postMessage({type:'SM_SHOW'},'*');}catch(x){}}
   var pend=null,pendT=null;
