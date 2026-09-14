@@ -229,6 +229,107 @@ body.onhome .homebtn{display:none}
 .stat .k{font-size:11px;color:var(--ink3)}
 .stat .v{font-size:14px;font-weight:600;margin-top:2px;word-break:break-all}
 .note{font-size:12px;color:var(--ink3);line-height:1.45;padding:0 4px}
+/* ── BLACK START tile (BSE · 10 USC 2920) ── */
+#p-blackstart .hero.bs{background:linear-gradient(160deg,rgba(63,214,255,.2),rgba(63,214,255,.04));border-color:rgba(63,214,255,.35)}
+#p-blackstart .hero.bs .dot{background:var(--cyan);box-shadow:0 0 0 4px rgba(63,214,255,.25)}
+#p-blackstart .hero.bs.live{background:linear-gradient(160deg,rgba(255,179,64,.24),rgba(255,179,64,.06));border-color:rgba(255,179,64,.4)}
+#p-blackstart .hero.bs.live .dot{background:var(--amber);box-shadow:0 0 0 4px rgba(255,179,64,.25);animation:bsblink 1.1s infinite}
+@keyframes bsblink{50%{opacity:.35}}
+.bs-tz{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:#fff;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:9px;padding:3px 8px;display:inline-flex;gap:6px;align-items:center}
+.bs-tz b{font-size:9.5px;letter-spacing:1px;color:var(--cyan);font-weight:700}
+.bs-clock{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#fff;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:9px;padding:3px 8px}
+.bs-seq{display:flex;gap:4px;align-items:stretch}
+.bs-seq .ph{flex:1;border-radius:11px;background:var(--card);border:1px solid var(--line);padding:8px 4px 7px;text-align:center;font-size:10.5px;color:var(--ink3);line-height:1.15;position:relative}
+.bs-seq .ph b{display:block;font-size:12px;color:var(--ink2);margin-bottom:3px;font-weight:700}
+.bs-seq .ph.done{border-color:rgba(79,217,138,.5);background:rgba(79,217,138,.1);color:var(--ink2)}
+.bs-seq .ph.done b{color:var(--green)}
+.bs-seq .ph.now{border-color:rgba(255,179,64,.6);background:rgba(255,179,64,.14);color:#fff}
+.bs-seq .ph.now b{color:var(--amber)}
+.bs-ctl{display:flex;gap:8px}
+.bs-log{border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line);padding:8px 10px;max-height:196px;overflow-y:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.5;color:var(--ink2);-webkit-overflow-scrolling:touch}
+.bs-log .ln{display:grid;grid-template-columns:56px 1fr;gap:8px;padding:1px 0}
+.bs-log .ln .t{color:var(--ink3)}
+.bs-log .ln .m{color:var(--ink2)}
+.bs-log .ln.bs-ok .m{color:var(--green)} .bs-log .ln.bs-bad .m{color:var(--red)} .bs-log .ln.bs-warn .m{color:var(--amber)} .bs-log .ln.bs-info .m{color:var(--cyan)}
+.bs-obj{border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.bs-obj button{display:grid;grid-template-columns:32px 1fr 74px;gap:12px;align-items:center;width:100%;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);color:#fff;background:transparent}
+.bs-obj button:last-child{border-bottom:0}
+.bs-obj .bs-k{width:32px;height:32px;border-radius:10px;background:rgba(63,214,255,.16);color:var(--cyan);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.bs-obj .bs-n{min-width:0}
+.bs-obj .bs-n b{display:block;font-size:14px;font-weight:600;line-height:1.25}
+.bs-obj .bs-n small{display:block;font-size:11.5px;color:var(--ink3);font-weight:400;margin-top:3px;line-height:1.3}
+.bs-obj .bs-st{width:74px;text-align:center;padding:5px 0}
+.bs-st{font-size:11px;font-weight:700;letter-spacing:.6px;padding:4px 9px;border-radius:9px;border:1px solid var(--line);color:var(--ink3);text-transform:uppercase;flex:none;line-height:1.2}
+.bs-st.pass{color:var(--green);border-color:rgba(79,217,138,.5);background:rgba(79,217,138,.12)}
+.bs-st.partial{color:var(--amber);border-color:rgba(255,179,64,.5);background:rgba(255,179,64,.12)}
+.bs-st.fail{color:var(--red);border-color:rgba(255,90,78,.5);background:rgba(255,90,78,.12)}
+.bs-st.open{color:var(--red);border-color:rgba(255,90,78,.5);background:rgba(255,90,78,.12)}
+.bs-st.funded{color:var(--amber);border-color:rgba(255,179,64,.5);background:rgba(255,179,64,.12)}
+.bs-st.closed{color:var(--green);border-color:rgba(79,217,138,.5);background:rgba(79,217,138,.12)}
+.bs-asset .tier{font-size:10px;letter-spacing:.4px}
+.bs-asset .right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.bs-asset .lamp{display:flex;gap:4px}
+.bs-asset .lamp i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.15);display:block}
+.bs-asset .lamp i.on{background:var(--green);box-shadow:0 0 6px rgba(79,217,138,.6)} .bs-asset .lamp i.bad{background:var(--red);box-shadow:0 0 6px rgba(255,90,78,.6)} .bs-asset .lamp i.warn{background:var(--amber)}
+.bs-bvr{display:flex;flex-direction:column;gap:8px}
+.bs-bvr .pair{border-radius:14px;background:var(--card);border:1px solid var(--line);padding:10px 12px;display:grid;grid-template-columns:1fr 18px 1fr;gap:8px;align-items:center;font-size:12px;line-height:1.3}
+.bs-bvr .pair .b{color:var(--ink2)} .bs-bvr .pair .r{color:#fff;font-weight:600}
+.bs-bvr .pair .arw{color:var(--ink3);text-align:center;font-size:14px}
+.bs-find{border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.bs-find button{display:grid;grid-template-columns:34px 1fr auto;gap:2px 12px;align-items:center;width:100%;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);color:#fff;background:transparent}
+.bs-find button:last-child{border-bottom:0}
+.bs-find .sev{grid-row:1/3}
+.bs-find .name{grid-column:2;font-size:13.5px;font-weight:600;line-height:1.2}
+.bs-find .meta{grid-column:2;font-size:11.5px;color:var(--ink2)}
+.bs-find .meta b{color:#fff;font-weight:600}
+.bs-find .bs-st{grid-row:1/3;grid-column:3}
+.bs-ms{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px}
+.bs-ms::-webkit-scrollbar{display:none}
+.bs-ms .m{flex:none;width:136px;border-radius:13px;background:var(--card);border:1px solid var(--line);padding:9px 10px;font-size:11.5px;line-height:1.3;color:var(--ink2)}
+.bs-ms .m b{display:block;color:var(--cyan);font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:3px}
+.bs-ms .m strong{display:block;color:#fff;font-size:12.5px;margin-bottom:3px;font-weight:600}
+.bs-ms .m.done{border-color:rgba(79,217,138,.4)} .bs-ms .m.done b{color:var(--green)}
+.bs-ref{display:flex;flex-wrap:wrap;gap:6px}
+.bs-ref span{font-size:11px;padding:5px 9px;border-radius:9px;background:rgba(63,214,255,.1);border:1px solid rgba(63,214,255,.3);color:var(--cyan)}
+/* reference documents */
+.docbtn{color:var(--cyan);border-color:rgba(63,214,255,.4)}
+.bs-docs{border-radius:16px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.bs-docs button{display:grid;grid-template-columns:36px 1fr auto;gap:2px 12px;align-items:center;width:100%;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);color:#fff;background:transparent}
+.bs-docs button:last-child{border-bottom:0}
+.bs-docs .ico{grid-row:1/3;width:36px;height:36px;border-radius:10px;background:rgba(63,214,255,.14);display:flex;align-items:center;justify-content:center}
+.bs-docs .ico svg{width:18px;height:18px;fill:none;stroke:var(--cyan);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bs-docs .name{grid-column:2;font-size:13.5px;font-weight:600;line-height:1.25}
+.bs-docs .meta{grid-column:2;font-size:11.5px;color:var(--ink2)}
+.bs-docs .tag{grid-row:1/3;grid-column:3;font-size:10px;font-weight:700;letter-spacing:.7px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);color:var(--ink3);text-transform:uppercase}
+.bs-docs .tag.pdf{color:var(--cyan);border-color:rgba(63,214,255,.45)}
+.bs-docs .tag.link{color:var(--green);border-color:rgba(79,217,138,.45)}
+#bs-docview{position:absolute;inset:0;z-index:40;background:#07111f;display:none;flex-direction:column}
+#bs-docview.on{display:flex}
+#bs-docview .dvh{display:flex;align-items:center;gap:10px;padding:calc(var(--sat) + 12px) 14px 10px;border-bottom:1px solid var(--line);background:var(--bg2)}
+#bs-docview .dvh .t{flex:1;min-width:0;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bs-docview iframe{flex:1;width:100%;border:0;background:#fff}
+/* section tiles */
+.bs-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 6px;padding:6px 2px 2px}
+.bs-tiles button{display:flex;flex-direction:column;align-items:center;gap:7px;color:#fff;position:relative;background:transparent}
+.bs-tiles .ic{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 6px 14px rgba(0,0,0,.35)}
+.bs-tiles .ic svg{width:27px;height:27px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bs-tiles .l{font-size:10.5px;font-weight:500;white-space:nowrap;line-height:1.1}
+.bs-tiles .nl{position:absolute;top:-5px;right:calc(50% - 33px);min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,59,48,.6)}
+.bs-tiles .nl.on{display:flex}
+.bs-tiles .nl.amber{background:var(--amber);color:#111;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,179,64,.6)}
+.bs-tiles .nl.green{background:var(--green);color:#052a14;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(79,217,138,.6)}
+.bs-tiles .nl.cyan{background:var(--cyan);color:#04202b;box-shadow:0 0 0 2px var(--bg)}
+#p-blackstart .sec[data-bs]{display:none}
+#p-blackstart[data-view="seq"] .sec[data-bs="seq"],#p-blackstart[data-view="obj"] .sec[data-bs="obj"],#p-blackstart[data-view="assets"] .sec[data-bs="assets"],#p-blackstart[data-view="bvr"] .sec[data-bs="bvr"],#p-blackstart[data-view="find"] .sec[data-bs="find"],#p-blackstart[data-view="plan"] .sec[data-bs="plan"],#p-blackstart[data-view="auth"] .sec[data-bs="auth"]{display:flex}
+#p-blackstart[data-view] .bs-tiles,#p-blackstart[data-view] .bs-kpis{display:none}
+#p-blackstart:not([data-view]) .bs-back{display:none}
+.bs-back{display:flex;align-items:center;gap:8px;padding:0 2px}
+.bs-back button{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--cyan);background:transparent;padding:4px 0}
+.bs-back button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bs-back .crumb{font-size:12px;color:var(--ink3)}
+.bs-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bs-kpis .kpi .l small{display:block;color:var(--ink3);font-size:9.5px;margin-top:1px}
+
 .logbox{font-family:"SF Mono",Menlo,monospace;font-size:10.5px;color:var(--ink2);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap;line-height:1.45}
 
 /* tabs */
@@ -669,6 +770,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
     </div>
     <div class="navr" style="display:flex;gap:6px;align-items:center">
       <button class="link homebtn" id="homebtn" onclick="go('home')" aria-label="Home"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></button>
+      <button class="link docbtn" id="docbtn" onclick="BLACKSTART.openDocs()" aria-label="Reference documents" title="Reference documents"><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/></svg></button>
       <div class="classify-wrap" id="classifyWrap" onclick="event.stopPropagation()">
         <button class="classify-btn" id="classifyBtn" onclick="SIPR.toggle(event)" aria-label="Network classification">
           <span id="classifyLabel">NIPR</span>
@@ -698,7 +800,7 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
         <button onclick="go('health')"><div class="ic c-green"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-5 3 10 2-7 1.5 2H21"/></svg></div><div class="l">Sys health</div></button>
         <button onclick="openImpact()"><div class="ic c-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div><div class="l">Mission impact</div></button>
         <button onclick="stub('Microgrid')"><div class="ic c-cyan"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M13 7l-4 6h6l-4 6"/></svg></div><div class="l">Microgrid</div></button>
-        <button onclick="stub('Black start')"><div class="ic c-ink"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.5a8 8 0 1 0 10 0"/></svg></div><div class="l">Black start</div></button>
+        <button onclick="go('blackstart')" id="tile-bs"><div class="ic c-ink"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M7 6.5a8 8 0 1 0 10 0"/></svg></div><div class="l">Black start</div></button>
         <button onclick="openMap()" id="tile-map"><span class="nl" id="hl-map"></span><div class="ic c-green" style="background:linear-gradient(160deg,#5fd98a,#1f7a4c)"><svg viewBox="0 0 24 24"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></div><div class="l">Live map</div></button>
         <button onclick="callEOC()"><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></div><div class="l">Call EOC</div></button>
         <button onclick="go('msgs')" id="tile-msg"><span class="netpill" id="msg-net">NIPR</span><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
@@ -740,6 +842,59 @@ body.wiped #gate,body.wiped #lock,body.wiped #app{display:none!important}
     <div class="sec"><h2>Field users</h2><div class="list" id="h-users"></div></div>
     <div class="sec"><h2>Enterprise roll-up</h2><div class="kpis" id="h-ent"></div></div>
     <div class="note" id="h-note"></div>
+  </div>
+
+  <!-- BLACK START (BSE · 10 USC 2920 · DoN 5-yr exercise cadence) -->
+  <div class="page" id="p-blackstart">
+    <div class="hero bs" id="bs-hero"></div>
+    <div class="bs-kpis" id="bs-kpis"></div>
+    <div class="bs-tiles" id="bs-tiles"></div>
+    <div class="bs-back"><button onclick="BLACKSTART.view()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Black start</button><span class="crumb" id="bs-crumb"></span></div>
+
+    <div class="sec" data-bs="seq">
+      <h2>Exercise sequence <button onclick="BLACKSTART.reset()">Reset</button></h2>
+      <div class="bs-seq" id="bs-seq"></div>
+      <div class="bs-ctl">
+        <button class="btn pri" id="bs-run" onclick="BLACKSTART.step()">Disconnect commercial feed</button>
+        <button class="btn sm" onclick="BLACKSTART.auto()" id="bs-auto">Auto-run</button>
+      </div>
+      <div class="bs-log" id="bs-log"></div>
+      <div class="note">Sequence follows the OSD / MIT LL framework: disconnect from the utility → de-energize distribution → black start generation → transfer &amp; carry critical load → resync. Statute caps a live exercise at 5 days; typical DoD runs are 6–24 h.</div>
+    </div>
+
+    <div class="sec" data-bs="obj">
+      <h2>§2920 objectives <span style="font-size:12px;color:var(--ink3)" id="bs-obj-score"></span></h2>
+      <div class="bs-obj" id="bs-obj"></div>
+      <div class="note">Tap to score pass / partial / fail. These five objectives are mandatory for every black start exercise under 10 U.S.C. § 2920(h)(2)(A)–(E).</div>
+    </div>
+
+    <div class="sec" data-bs="assets">
+      <h2>Critical assets <span style="font-size:12px;color:var(--ink3)" id="bs-asset-sum"></span></h2>
+      <div class="list bs-asset" id="bs-assets"></div>
+      <div class="note">Lamps: start ≤ target · transfer ≤ target · carried full duration. Tier per DoDI 3020.45 (DCA / TCA 1–3 / TA 4). Loads are demo values for Naval Base San Diego.</div>
+    </div>
+
+    <div class="sec" data-bs="bvr">
+      <h2>Installation belief → exercise reality</h2>
+      <div class="bs-bvr" id="bs-bvr"></div>
+    </div>
+
+    <div class="sec" data-bs="find">
+      <h2>Findings &amp; corrective actions <button onclick="BLACKSTART.sendAAR()">Send AAR</button></h2>
+      <div class="bs-find" id="bs-find"></div>
+      <div class="note">Tap a finding to cycle open → funded → closed. Corrective Action Plans roll up to CNIC / NAVFAC and become ERCIP, O&amp;M, UESC or ESPC justification.</div>
+    </div>
+
+    <div class="sec" data-bs="plan">
+      <h2>12-month planning track</h2>
+      <div class="bs-ms" id="bs-ms"></div>
+    </div>
+
+    <div class="sec" data-bs="auth">
+      <h2>Authorities</h2>
+      <div class="bs-ref"><span>10 USC 2920</span><span>DoDI 4170.11</span><span>DoDI 3020.45</span><span>SECNAVINST 4101.3A</span><span>OPNAVINST 4100.5E</span><span>DON IE Resilience Strategy 2020</span><span>NAVFAC P-602</span><span>OSD BSE Framework 2020</span></div>
+      <div class="note">Sources: DoD &amp; Industry Black Start Exercises information paper (Castillo, Judson, Bose, Monken 2020); MIT LL ERRE overview (Judson, 11 Feb 2020). First draft template — data is representative, not an exercise record.</div>
+    </div>
   </div>
 
   <!-- MESSAGES -->
@@ -2543,9 +2698,135 @@ window.SRADropZone=(function(){
     if(p==='outages'){S.unreadWO=0;save();renderOutages();}
     if(p==='link'){renderLink();try{LOCK.boot;var s=LOCK.session();var el=$('lk-session');if(el)el.textContent=s?('Signed in as '+(s.name||s.email)+' · key ends '+s.key.slice(-2)):'Not signed in';}catch(e){}}
     if(p==='health')renderHealth();
+    if(p==='blackstart')BLACKSTART.render();
     if(p==='drop'){S.unreadDrop=0;save();renderBadges();dzMount();}
     renderBadges();
   };
+  /* ══ BLACK START · BSE tile · first draft template ══ */
+  window.BLACKSTART=(function(){
+    var KEY='sonarmobile_blackstart';
+    var PH=[['T0','Disconnect'],['T1','De-energize'],['T2','Black start'],['T3','Transfer load'],['T4','Carry load'],['T5','Resync']];
+    var OBJ=[['A','Start independently, transfer and carry the load','until off-installation energy is restored'],['B','Align organizations with critical missions','tenant commands · PWD · EM · Mission Assurance'],['C','Validate mission operation plans','COOP and continuity procedures'],['D','Identify infrastructure interdependencies','comms · water · fuel · HVAC · access control'],['E','Verify backup electric power performance','start / transfer / carry · power quality']];
+    var ASSETS=[
+      {id:'roc',name:'Regional Ops Center',tier:'DCA',owner:'CNRSW N3',bk:'GEN+UPS',kw:750,fuel:96,ms:[true,true,true]},
+      {id:'p8',name:'Pier 8 substation · FDNF',tier:'TCA-1',owner:'Harbor Ops',bk:'GEN',kw:1500,fuel:48,ms:[true,false,true]},
+      {id:'com',name:'Comms tower · Bldg 3389',tier:'TCA-1',owner:'NCTS',bk:'UPS',kw:60,fuel:0.5,ms:[true,true,false]},
+      {id:'fuel',name:'Bulk fuel farm pumps',tier:'TCA-2',owner:'NAVSUP FLC',bk:'GEN',kw:220,fuel:72,ms:[false,false,false]},
+      {id:'h2o',name:'Water / wastewater lift stn',tier:'TCA-3',owner:'PWD Utilities',bk:'GEN',kw:110,fuel:24,ms:[true,true,true]},
+      {id:'clinic',name:'Branch health clinic',tier:'TA-4',owner:'NMRTC',bk:'GEN',kw:300,fuel:36,ms:[true,true,true]}
+    ];
+    var BVR=[['12 substation generators cover 140% of peak load','9 operational generators carry ~70% of peak'],['Generators can re-energize the distribution loop','Protection relays block generator re-energization'],['Intertie pushes power between substations','Intertie untested and under-maintained'],['Bulk fuel supports 200 days of operation','46–57 days sustainable; most facilities hold 7 days']];
+    var FIND=[
+      {id:'f1',sev:'P1',cat:'Comms',name:'Comms tower UPS ran 27 min · no generator behind it',ca:'Install 60 kW standby gen + ATS',owner:'NCTS / PWD',fund:'ERCIP'},
+      {id:'f2',sev:'P1',cat:'Fuel',name:'Fuel farm transfer pumps unpowered · no refuel plan past 48 h',ca:'Backup feed to pump house; written refuel sequence',owner:'NAVSUP FLC',fund:'O&M'},
+      {id:'f3',sev:'P2',cat:'Equipment',name:'Pier 8 ATS transferred at 41 s vs 10 s target',ca:'Replace ATS controller; monthly loaded test',owner:'PWD Utilities',fund:'O&M'},
+      {id:'f4',sev:'P2',cat:'Key person',name:'Only one tech can reset chiller plant after trip',ca:'Cross-train 3 operators; post reset SOP',owner:'PWD Ops',fund:'O&M'},
+      {id:'f5',sev:'P3',cat:'Access',name:'Gate 32 access control fell back to manual',ca:'UPS + POE backup for ACS panels',owner:'NSF Security',fund:'UESC'},
+      {id:'f6',sev:'P3',cat:'Unidentified load',name:'Cold storage at galley not on critical list',ca:'Add to IEP critical load register',owner:'IEM',fund:'IEP'}
+    ];
+    var MS=[['Month 1','Kickoff & planning','CO approval · interviews · tentative date and scope'],['Month 3','Mitigation planning','Align with other exercises · mission impacts · mitigations'],['Month 6','Outage planning','Finalize scope · notify utility (SDG&E) · outage/restoration sequence'],['Month 8','Final planning','Verify mitigations · finalize sequence · notify personnel'],['Month 9','Conduct & collect','Walk-through · comms check · meter data · mission verification'],['Month 12','Findings & COAs','Compile findings · brief CO · CAP to CNIC / NAVFAC']];
+    var LS=[
+      [0,'info','Utility notified · SDG&E confirms isolation at 69 kV tie'],[0,'ok','Commercial feed opened · installation dark'],
+      [1,'ok','Distribution loop de-energized · 14 feeders open'],[1,'warn','Lighting at thermal plant on backup · plant will not meet demand'],
+      [2,'ok','ROC generators started 6 s · UPS bridged'],[2,'ok','Pier 8 gensets started 9 s'],[2,'bad','Fuel farm pump-house generator failed to start · fuel solenoid'],[2,'ok','Clinic and lift station generators online'],
+      [3,'warn','Pier 8 ATS transferred at 41 s · target 10 s'],[3,'ok','ROC · clinic · lift station transferred within target'],[3,'bad','Comms tower has no generator · UPS only'],
+      [4,'ok','Carry checkpoint 1 h · 5 of 6 critical assets on backup'],[4,'bad','Comms tower UPS exhausted at 27 min · tower dark'],[4,'warn','Chiller plant tripped · single tech recalled to reset'],[4,'ok','Carry checkpoint · generators on carried assets loaded ~73% of rated'],[4,'info','Fuel on hand supports 46–57 days · most facilities hold 7 days'],
+      [5,'ok','Feeders restored in sequence · 3 of 14 early'],[5,'ok','Resynced with SDG&E · frequency 60.00 Hz · exercise complete']
+    ];
+    var DOCS=[
+      {t:'DoD & Industry Black Start Exercises · Information Paper',m:'Castillo (DoD) · Judson (MIT LL) · Bose (DOE-OE) · Monken (Converge) · 2020',f:'DoD-and-Industry-Black-Start-Exercise-Information-Paper.pdf'},
+      {t:'Resilience of Critical Missions for the DoD · ERRE Overview',m:'Judson · MIT Lincoln Laboratory · 11 Feb 2020 · Distribution A',f:'ERRE-Presentation-20200211INFORMS-Final-DistributionA.pdf'},
+      {t:'Energy Resilience Tabletop Exercise (ERTTX) Framework',m:'OSD memorandum · signed 12 Nov 2020',f:'Energy-Resilience-Tabletop-Exercise-Framework_11122020_signed.pdf'},
+      {t:'Framework for Planning and Executing Black Start Exercises',m:'OSD memorandum · 6 Aug 2020',f:'Memo-Framework-for-Planning-and-Executing-Black-Start-Exercises_08062020.pdf'},
+      {t:'10 U.S.C. § 2920 · Energy resilience and energy security of military installations',m:'Statute · FY21 NDAA as amended through FY26',url:'https://www.law.cornell.edu/uscode/text/10/2920'}
+    ];
+    var DOCBASE='../docs/blackstart/';
+    function docIcon(){return '<svg viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/></svg>';}
+    function openDocs(){var body=DOCS.map(function(d,i){var ext=d.url?'link':'pdf';return '<button onclick="BLACKSTART.viewDoc('+i+')"><span class="ico">'+docIcon()+'</span><span class="name">'+esc(d.t)+'</span><span class="meta">'+esc(d.m)+'</span><span class="tag '+ext+'">'+ext+'</span></button>';}).join('');
+      $('sheet-t').textContent='Reference documents';$('sheet-b').innerHTML='<div class="bs-docs">'+body+'</div><div class="note" style="margin-top:8px">PDFs are served from docs/blackstart/ in the ie-SRS repo. Tap a row to read it in-app; Open hands it to Safari or Files.</div>';$('sheet').classList.add('on');}
+    function viewDoc(i){var d=DOCS[i];if(!d)return;var src=d.url||(DOCBASE+d.f);$('sheet').classList.remove('on');
+      var v=$('bs-docview');if(!v){v=document.createElement('div');v.id='bs-docview';v.innerHTML='<div class="dvh"><button class="btn sm" onclick="BLACKSTART.closeDoc()">Close</button><span class="t" id="bs-dv-t"></span><a class="btn sm" id="bs-dv-open" target="_blank" rel="noopener">Open</a></div><iframe id="bs-dv-f" title="Reference document"></iframe>';document.getElementById('app').appendChild(v);}
+      $('bs-dv-t').textContent=d.t;$('bs-dv-open').href=src;$('bs-dv-f').src=src;v.classList.add('on');}
+    function closeDoc(){var v=$('bs-docview');if(v){v.classList.remove('on');$('bs-dv-f').src='about:blank';}}
+    var ZONES=[['ET','America/New_York'],['PT','America/Los_Angeles'],['Z','UTC']];var zi=0;
+    function wall(){try{return new Intl.DateTimeFormat('en-US',{timeZone:ZONES[zi][1],hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());}catch(e){return '--:--:--';}}
+    function tz(){zi=(zi+1)%ZONES.length;try{localStorage.setItem(KEY+'_tz',zi);}catch(e){}var e=$('bs-tz');if(e)e.innerHTML='<b>'+ZONES[zi][0]+'</b>'+wall();}
+    var st=null,timer=null,tick=null;
+    function lsGet(){try{return JSON.parse(localStorage.getItem(KEY)||'null');}catch(e){return null;}}
+    function fresh(){return {phase:-1,t0:0,elapsed:0,logged:0,obj:{},find:{},fy:{done:3,floor:5},last:412,longest:14,target:336};}
+    function load(){st=lsGet()||fresh();try{zi=parseInt(localStorage.getItem(KEY+'_tz'))||0;}catch(e){}}
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+    function $(i){return document.getElementById(i);}
+    function hms(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(x<10?'0':'')+x;}
+    function running(){return st.phase>=0&&st.phase<5;}
+    function elapsed(){return st.phase<0?0:running()?st.elapsed+(Date.now()-st.t0):st.elapsed;}
+    function carried(){if(st.phase<4)return null;var ok=ASSETS.filter(function(a){return a.ms[2];}),kw=ok.reduce(function(n,a){return n+a.kw;},0),tot=ASSETS.reduce(function(n,a){return n+a.kw;},0);return Math.round(kw/tot*100);}
+    function hero(){var h=$('bs-hero');if(!h)return;var live=running(),done=st.phase>=5;h.className='hero bs'+(live?' live':done?' ok':'');
+      var label=st.phase<0?'PLANNED':done?'AAR PENDING':'IN PROGRESS · '+PH[st.phase][1].toUpperCase();
+      h.innerHTML='<div class="lbl"><span style="display:flex;align-items:center;gap:8px"><span>BSE-26-03</span><button class="bs-tz" id="bs-tz" onclick="BLACKSTART.tz()" title="Tap to switch zone"><b>'+ZONES[zi][0]+'</b>'+wall()+'</button></span><span class="bs-clock" id="bs-clock">'+hms(elapsed())+'</span></div><div class="st"><span class="dot"></span>'+label+'</div><div class="sub">'+(st.phase<0?'No-notice · whole-base · housing, NEX and MWR excluded · utility SDG&E · observer MIT LL':done?'Exercise closed · '+ASSETS.filter(function(a){return a.ms[2];}).length+' of '+ASSETS.length+' critical assets carried full duration':'Grid open since T0 · '+ASSETS.length+' critical assets under observation')+'</div>';}
+    function kpis(){var k=$('bs-kpis');if(!k)return;var c=carried();var fyOk=st.fy.done>=st.fy.floor,cad=st.last>1826;
+      k.innerHTML='<div class="kpi '+(fyOk?'green':'amber')+'"><div class="n">'+st.fy.done+'<span style="font-size:13px;color:var(--ink3)">/'+st.fy.floor+'</span></div><div class="l">DoN BSEs FY26<small>5 / yr floor · FY32</small></div></div>'+
+        '<div class="kpi '+(cad?'red':'cyan')+'"><div class="n">'+st.last+'</div><div class="l">Days since last<small>5-yr cadence</small></div></div>'+
+        '<div class="kpi '+(c==null?'':c>=90?'green':c>=70?'amber':'red')+'"><div class="n">'+(c==null?'—':c+'%')+'</div><div class="l">Critical load carried<small>§2920(a) 99.9%</small></div></div>'+
+        '<div class="kpi '+(st.longest>=st.target?'green':'amber')+'"><div class="n">'+st.longest+'<span style="font-size:13px;color:var(--ink3)">h</span></div><div class="l">Longest off-grid<small>DoN target 14 d</small></div></div>';}
+    function seq(){var e=$('bs-seq');if(!e)return;e.innerHTML=PH.map(function(p,i){return '<div class="ph'+(i<st.phase||st.phase>=5?' done':i===st.phase?' now':'')+'"><b>'+p[0]+'</b>'+p[1]+'</div>';}).join('');
+      var b=$('bs-run');if(b){b.disabled=st.phase>=5;b.textContent=st.phase<0?'Disconnect commercial feed':st.phase>=5?'Exercise complete':'Advance to '+PH[st.phase+1][1];}
+      var a=$('bs-auto');if(a){a.textContent=timer?'Stop':'Auto-run';a.disabled=st.phase>=5;}}
+    var logT=null,shown=0;
+    function logLine(l,i){return '<div class="ln bs-'+l[1]+'"><span class="t">'+PH[l[0]][0]+' +'+(i*4<10?'0':'')+(i*4)+'m</span><span class="m">'+esc(l[2])+'</span></div>';}
+    function log(instant){var e=$('bs-log');if(!e)return;clearTimeout(logT);logT=null;var rows=LS.filter(function(l){return l[0]<=st.phase;});
+      if(!rows.length){shown=0;e.innerHTML='<div class="ln"><span class="t">&mdash;</span><span class="m">Standing by &middot; tap Disconnect to open the utility feed</span></div>';return;}
+      if(instant||shown>rows.length){shown=rows.length;e.innerHTML=rows.map(logLine).join('');e.scrollTop=e.scrollHeight;return;}
+      e.innerHTML=rows.slice(0,shown).map(logLine).join('');e.scrollTop=e.scrollHeight;
+      (function next(){if(shown>=rows.length)return;var d=document.createElement('div');d.innerHTML=logLine(rows[shown],shown);e.appendChild(d.firstChild);shown++;e.scrollTo({top:e.scrollHeight,behavior:'smooth'});logT=setTimeout(next,1100);})();}
+    function obj(){var e=$('bs-obj');if(!e)return;var n=0;e.innerHTML=OBJ.map(function(o){var v=st.obj[o[0]]||'';if(v==='pass')n++;return '<button onclick="BLACKSTART.cycleObj(\''+o[0]+'\')"><span class="bs-k">'+o[0]+'</span><span class="bs-n"><b>'+esc(o[1])+'</b><small>'+esc(o[2])+'</small></span><span class="bs-st '+v+'">'+(v||'score')+'</span></button>';}).join('');var sc=$('bs-obj-score');if(sc)sc.textContent=n+' of 5 pass';}
+    function assets(){var e=$('bs-assets');if(!e)return;var ph=st.phase;var meas=0;
+      e.innerHTML=ASSETS.map(function(a){var lamps=a.ms.map(function(v,i){var vis=ph>=[2,3,4][i];return '<i class="'+(vis?(v?'on':'bad'):'')+'"></i>';}).join('');var m=ph>=4?Math.round(a.kw*(a.ms[2]?0.73:0)):null;if(m)meas+=m;var tc=a.tier==='DCA'?'var(--red)':a.tier.indexOf('TCA')===0?'var(--amber)':'var(--blue)';
+        return '<div class="irow"><div class="dotc tier" style="background:rgba(255,255,255,.08);color:'+tc+'">'+esc(a.tier)+'</div><div class="name">'+esc(a.name)+'</div><div class="meta">'+esc(a.owner)+' · '+esc(a.bk)+' · <b>'+a.kw+' kW</b> rated · fuel <b>'+a.fuel+' h</b></div><div class="right"><b>'+(m==null?'—':m+' kW')+'</b><span class="lamp">'+lamps+'</span></div></div>';}).join('');
+      var s=$('bs-asset-sum');if(s)s.textContent=ASSETS.length+' assets · '+ASSETS.reduce(function(n,a){return n+a.kw;},0)+' kW rated'+(ph>=4?' · '+meas+' kW measured':'');}
+    function bvr(){var e=$('bs-bvr');if(!e)return;e.innerHTML=BVR.map(function(p){return '<div class="pair"><span class="b">'+esc(p[0])+'</span><span class="arw">→</span><span class="r">'+esc(p[1])+'</span></div>';}).join('');}
+    function find(){var e=$('bs-find');if(!e)return;e.innerHTML=FIND.map(function(f){var v=st.find[f.id]||'open';return '<button onclick="BLACKSTART.cycleFind(\''+f.id+'\')"><span class="sev '+f.sev.toLowerCase()+'">'+f.sev+'</span><span class="name">'+esc(f.name)+'</span><span class="meta"><b>'+esc(f.cat)+'</b> · '+esc(f.ca)+' · '+esc(f.owner)+' · '+esc(f.fund)+'</span><span class="bs-st '+v+'">'+v+'</span></button>';}).join('');}
+    function ms(){var e=$('bs-ms');if(!e)return;e.innerHTML=MS.map(function(m,i){return '<div class="m'+(i<4?' done':'')+'"><b>'+esc(m[0])+'</b><strong>'+esc(m[1])+'</strong>'+esc(m[2])+'</div>';}).join('');}
+    var TILES=[
+      ['seq','Sequence','c-amber','<path d="M4 12h4l3-7 4 14 3-7h2"/>'],
+      ['obj','Objectives','c-cyan','<path d="M5 13l4 4L19 7"/><rect x="3" y="3" width="18" height="18" rx="3"/>'],
+      ['assets','Assets','c-green','<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/><path d="M13 7l-2 3h3l-2 3"/>'],
+      ['bvr','Belief vs reality','c-violet','<path d="M4 12h6M14 12h6"/><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/>'],
+      ['find','Findings','c-red','<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'],
+      ['plan','Planning','c-teal','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 15h3"/>'],
+      ['auth','Authorities','c-slate','<path d="M12 3 4 7v6c0 4.5 3.5 7.5 8 8 4.5-.5 8-3.5 8-8V7z"/><path d="M9.5 12l2 2 3.5-4"/>'],
+      ['docs','Documents','c-ink','<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h7"/>']
+    ];
+    var NAMES={seq:'Exercise sequence',obj:'§2920 objectives',assets:'Critical assets',bvr:'Belief vs reality',find:'Findings & CAPs',plan:'Planning track',auth:'Authorities'};
+    function badge(id){var c=carried();
+      if(id==='seq')return st.phase<0?null:st.phase>=5?['DONE','green']:[PH[st.phase][0],'amber'];
+      if(id==='obj'){var n=OBJ.filter(function(o){return st.obj[o[0]]==='pass';}).length;return n?[n+'/5','cyan']:null;}
+      if(id==='assets'){if(st.phase<2)return null;var bad=ASSETS.filter(function(a){return !a.ms[0]||(st.phase>=3&&!a.ms[1])||(st.phase>=4&&!a.ms[2]);}).length;return bad?[bad,'']:['OK','green'];}
+      if(id==='find'){var o=FIND.filter(function(f){return (st.find[f.id]||'open')==='open';}).length;return o?[o,'']:['0','green'];}
+      if(id==='plan')return ['M9','cyan'];
+      if(id==='docs')return [DOCS.length,'cyan'];
+      return null;}
+    function tiles(){var e=$('bs-tiles');if(!e)return;e.innerHTML=TILES.map(function(t){var b=badge(t[0]);return '<button onclick="BLACKSTART.'+(t[0]==='docs'?'openDocs()':'view(\''+t[0]+'\')')+'">'+(b?'<span class="nl on '+b[1]+'">'+b[0]+'</span>':'')+'<div class="ic '+t[2]+'"><svg viewBox="0 0 24 24">'+t[3]+'</svg></div><div class="l">'+t[1]+'</div></button>';}).join('');}
+    function view(id){var pg=$('p-blackstart');if(!pg)return;if(id){pg.setAttribute('data-view',id);var c=$('bs-crumb');if(c)c.textContent='· '+(NAMES[id]||id);}else{pg.removeAttribute('data-view');tiles();}pg.scrollTop=0;}
+    function paint(instant){hero();kpis();tiles();seq();log(instant);obj();assets();bvr();find();ms();}
+    function focusSeq(){try{var pg=$('p-blackstart'),e=$('bs-seq');if(!pg||!e)return;var top=e.getBoundingClientRect().top-pg.getBoundingClientRect().top+pg.scrollTop-84;pg.scrollTo({top:top,behavior:'smooth'});}catch(x){}}
+    function clock(){clearInterval(tick);tick=null;tick=setInterval(function(){var z=$('bs-tz');if(z)z.innerHTML='<b>'+ZONES[zi][0]+'</b>'+wall();var c=$('bs-clock');if(c&&running())c.textContent=hms(elapsed());if(!$('p-blackstart')||!$('p-blackstart').classList.contains('on')){clearInterval(tick);tick=null;}},1000);}
+    function step(){if(st.phase>=5)return;if(st.phase<0){st.t0=Date.now();st.elapsed=0;st.phase=0;}else{st.elapsed+=Date.now()-st.t0;st.t0=Date.now();st.phase++;}
+      if(st.phase===4){st.longest=Math.max(st.longest,14);}
+      if(st.phase>=5){st.elapsed+=0;clearInterval(timer);timer=null;st.longest=Math.max(st.longest,Math.round(elapsed()/3600000)||14);var c=carried();if(c!=null){st.obj.A=c>=95?'pass':c>=70?'partial':'fail';st.obj.E=ASSETS.every(function(a){return a.ms[0]&&a.ms[1];})?'pass':'partial';st.obj.D='pass';}toast('Black start','Exercise complete · resynced with utility · AAR pending','green');}
+      else toast('Black start',PH[st.phase][0]+' · '+PH[st.phase][1],st.phase===0?'red':'');
+      save();paint();clock();if(!$('p-blackstart').getAttribute('data-view'))view('seq');else focusSeq();}
+    function auto(){if(timer){clearInterval(timer);timer=null;seq();return;}if(st.phase>=5)return;step();timer=setInterval(function(){if(st.phase>=5){clearInterval(timer);timer=null;seq();return;}step();},7000);seq();}
+    function reset(){clearInterval(timer);timer=null;var keep=st.fy;st=fresh();st.fy=keep;shown=0;save();paint(true);clock();toast('Black start','Exercise reset · planned state');}
+    function cycleObj(k){var o=['','pass','partial','fail'],v=st.obj[k]||'';st.obj[k]=o[(o.indexOf(v)+1)%o.length];save();obj();tiles();}
+    function cycleFind(id){var o=['open','funded','closed'],v=st.find[id]||'open';st.find[id]=o[(o.indexOf(v)+1)%o.length];save();find();tiles();}
+    function sendAAR(){var c=carried(),open=FIND.filter(function(f){return (st.find[f.id]||'open')!=='closed';}).length,pass=OBJ.filter(function(o){return st.obj[o[0]]==='pass';}).length;
+      var txt='[BSE-26-03 AAR] '+(S.siteName||'NBSD')+' · '+PH[Math.max(0,Math.min(st.phase,5))][1]+' · elapsed '+hms(elapsed())+' · critical load carried '+(c==null?'n/a':c+'%')+' · §2920 objectives '+pass+'/5 pass · '+open+' open corrective actions';
+      try{bus.publish('MSG',{text:txt,ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});}catch(e){}
+      sheet('AAR summary sent',txt+'\n\nPublished to the site channel for ADMIN / NAVFAC. Full CAP export lands in Drop Zone in a later build.');}
+    function render(){if(!st)load();shown=0;paint(true);clock();}
+    return {render:render,view:view,tz:tz,openDocs:openDocs,viewDoc:viewDoc,closeDoc:closeDoc,step:step,auto:auto,reset:reset,cycleObj:cycleObj,cycleFind:cycleFind,sendAAR:sendAAR,_st:function(){return st;}};
+  })();
   window.stub=function(n){sheet(n,'This module opens the '+n+' view. In this build it is a placeholder; the live data path is the ADMIN hub → SONARmobile bus.');};
   window.callEOC=function(){sheet('Call EOC','Dials the installation Emergency Operations Center. On a phone this uses tel:; in the browser it is logged to the bus as a MSG.');bus.publish('MSG',{text:'[SONARmobile initiated call to EOC]',ch:'site:'+cfg.site,by:S.name,sys:true},{site:cfg.site});};
   function sheet(t,b){$('sheet-t').textContent=t;$('sheet-b').textContent=b;$('sheet').classList.add('on');}
