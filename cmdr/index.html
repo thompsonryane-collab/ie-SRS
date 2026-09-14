@@ -3497,7 +3497,11 @@ window.SRADropZone=(function(){
       try{if(window.SIPR&&SIPR.session()&&!p.authId&&!p.bye)p.siprLive=true;}catch(e){}
       if(S.away&&!p.authId&&!p.bye)p.away=true;   /* away rides on heartbeats only — never on an auth request or a bye */
       try{p.transport=bus.cfg().transport;p.embedded=(window.parent!==window)||!!window.opener;p.dev=bus.dev();}catch(e){}return p;}
-    var RING_KEY='sonarmobile_keyring';
+    var RING_KEY='sonarmobile_keyring', FACE_KEY='sonarmobile_facecache', FACE_TTL=30*24*60*60*1000, FACE_THRESH=0.55;
+    function faceCache(){var c=ls(FACE_KEY,null);return c&&c.list?c:{list:[]};}
+    function faceRemember(desc,ss){if(!desc||!ss||!ss.key)return;var c=faceCache();var id=(ss.email||ss.name||'').toLowerCase();c.list=c.list.filter(function(e){return e.id!==id;});c.list.push({id:id,desc:desc,key:ss.key,email:ss.email||'',name:ss.name||'',first:ss.first||'',last:ss.last||'',site:ss.site||'',ts:Date.now()});c.list=c.list.slice(-6);lsSet(FACE_KEY,c);}
+    function faceLocal(desc){var c=faceCache(),best=null;c.list.forEach(function(e){if(Date.now()-e.ts>FACE_TTL)return;var d=FACELIB.dist(desc,e.desc);if(d<=FACE_THRESH&&(!best||d<best.d))best={e:e,d:d};});return best;}
+    function faceForget(id){var c=faceCache();c.list=c.list.filter(function(e){return !id||e.id!==id;});lsSet(FACE_KEY,c);}
     function sha(s){try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(s))).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}catch(e){return Promise.resolve(null);}}
     function reject(t){pending=null;busy=false;digits='';dots();$('lk-dots').classList.add('err');msg(t,'bad');padOn(true);try{if(FACE.active())FACE.cancel();}catch(e){}if(gateMode){gateMode=false;try{GATE.faceIdle();}catch(e){}}}
     function submit(){
@@ -3546,7 +3550,14 @@ window.SRADropZone=(function(){
       if(busy)return;busy=true;gateMode=!!fromGate;if(fromGate)siprMode=!!sipr;padOn(false);msg('Face ID · opening camera…','wait');
       FACE.open(function(cap,err){
         if(!cap){busy=false;padOn(true);msg(err&&err!=='cancelled'?err:'','bad');if(gateMode){gateMode=false;try{GATE.faceIdle();}catch(e){}}return;}
-        ask('',null,cap);if(pending)pending.gate=!!fromGate;
+        /* local first: a cached descriptor from a previous ADMIN-verified Face ID on this device signs in without ADMIN (NIPR only) */
+        if(!siprMode){var lm=null;try{lm=faceLocal(cap.d);}catch(e){}
+          if(lm){var e0=lm.e;sess={key:e0.key,email:e0.email,name:e0.name||S.name,first:e0.first,last:e0.last,site:e0.site||S.siteName,ts:Date.now(),via:'face-local'};lsSet(AUTH_KEY,sess);S.away=false;if(e0.name)S.name=e0.name;if(e0.email)S.lastEmail=e0.email;save();
+            busy=false;msg('\u2713 '+sess.name+' \u00b7 Face ID matched on this device \u00b7 LIVE','ok');
+            /* tell ADMIN (if any is listening) so the sign-in is audited and LIVE lights up; no reply is awaited */
+            try{bus.publish('HELLO',(function(p){p=hello(Object.assign({node:'cmdr',commander:S.name,siteName:S.siteName,app:'SONARmobile v0.5',faceLocal:true,face:cap.d,faceImg:cap.img,distance:Math.round(lm.d*100)/100,email:sess.email}));delete p.key;return p;})());}catch(e){}
+            setTimeout(function(){hide();if(fromGate){gateMode=false;try{GATE.faceDone();}catch(e){}}renderAll();autoLink();announce();toast('Face ID',sess.name+' \u00b7 matched on device \u00b7 distance '+(Math.round(lm.d*100)/100),'green');},650);return;}}
+        ask('',null,cap);if(pending){pending.gate=!!fromGate;pending.faceD=cap.d;}
       });
     }
     function lateConfirm(p){ if(pending||!sess||sess.via!=='keyring'||p.auth!=='ok'||!p.name)return; sess=Object.assign({},sess,{email:p.email||sess.email,name:p.name,first:p.first||'',last:p.last||'',site:p.site||sess.site,via:p.via||'admin'});lsSet(AUTH_KEY,sess);toast('ADMIN confirmed',sess.name+' \u00b7 LIVE','green');renderAll(); }
@@ -3562,10 +3573,12 @@ window.SRADropZone=(function(){
         if(!pending.key&&!/^\d{6}$/.test(String(p.key||''))){reject('ADMIN accepted the face but sent no security key · update ADMIN');return;}
         sess={key:pending.key||p.key,email:p.email||'',name:p.name||S.name,first:p.first||'',last:p.last||'',site:p.site||S.siteName,ts:Date.now(),via:p.via||(pending.face?'admin-face':'admin')};
         lsSet(AUTH_KEY,sess); S.away=false; if(p.name){S.name=p.name;} if(sess.email)S.lastEmail=sess.email; save();
-        var viaFace=pending.face,viaGate=pending.gate;pending=null;busy=false;msg('✓ '+sess.name+' · '+(viaFace?'Face ID accepted · ':'')+'LIVE','ok');
+        if(pending.face&&pending.faceD){try{faceRemember(pending.faceD,sess);}catch(e){}}
+        var viaFace=pending.face,viaGate=pending.gate;pending=null;busy=false;msg('✓ '+sess.name+' · '+(viaFace?'Face ID accepted · cached for offline sign-in · ':'')+'LIVE','ok');
         setTimeout(function(){hide();if(viaGate){gateMode=false;try{GATE.faceDone();}catch(e){}}renderAll();autoLink();announce();},650);
       }else{
         reject(p.reason||'Key not recognized · no match in ADMIN · User Accounts');
+        if(/face|portrait|revoked|disabled/i.test(p.reason||'')){try{faceForget();}catch(e){}}
         if(/revoked|wiped/i.test(p.reason||'')){try{WIPE.run(p.reason,Date.now());}catch(e){}return;}
         if(pending===null&&siprMode&&/declined|expired/i.test(p.reason||'')){setTimeout(function(){try{SIPR.cancel();}catch(e){}},2200);}
       }
@@ -3583,6 +3596,8 @@ window.SRADropZone=(function(){
       wait:function(t){msg(t||'','wait');padOn(false);},
       keyring:function(ring,ts){lsSet(RING_KEY,{ring:ring,ts:ts||Date.now()});},
       ringInfo:function(){var r=ls(RING_KEY,null);return r?{count:r.ring.length,ts:r.ts}:null;},
+      faceInfo:function(){var c=faceCache();return {count:c.list.length,ts:c.list.length?c.list[c.list.length-1].ts:0};},
+      faceForget:faceForget,
       press:function(d){if(busy||digits.length>=6)return;digits+=String(d);dots();msg('');if(digits.length===6)setTimeout(submit,110);},
       back:function(){if(busy)return;digits=digits.slice(0,-1);dots();},
       clear:function(){if(busy)return;digits='';dots();msg('');},
