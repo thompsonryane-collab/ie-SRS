@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png?v=20260910">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png?v=20260910">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=20260910">
-<link rel="manifest" href="manifest.json?v=20260911b">
+<link rel="manifest" href="manifest.json?v=20260920">
 <meta name="apple-mobile-web-app-title" content="SONARmobile">
 <style>
 :root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--bg:#07111f;--bg2:#0c1a2c;--line:rgba(255,255,255,.12);--cyan:#3fd6ff;--green:#4fd98a;--amber:#ffb340}
@@ -32,6 +32,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 .strip button.on[data-e="navy"]{border-color:rgba(63,214,255,.7);background:rgba(63,214,255,.18);box-shadow:0 0 10px rgba(63,214,255,.22)}
 .strip button.on[data-e="utility"]{border-color:rgba(79,217,138,.7);background:rgba(79,217,138,.18);box-shadow:0 0 10px rgba(79,217,138,.22)}
 .strip button.on[data-e="datacenter"]{border-color:rgba(255,179,64,.7);background:rgba(255,179,64,.18);box-shadow:0 0 10px rgba(255,179,64,.22)}
+.strip.splash button,.strip.splash .smp{visibility:hidden;pointer-events:none}
 .strip .smp{flex:none;padding:3px 7px;border-radius:9px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);font-size:8px;font-weight:800;letter-spacing:.16em;color:rgba(255,255,255,.42);pointer-events:none}
 /* carousel */
 #track{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -53,7 +54,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
 </head>
 <body>
 <div id="shell">
-  <div class="strip" id="strip">
+  <div class="strip splash" id="strip">
     <button data-e="navy" class="on" onclick="SHELL.show('navy')"><i></i>Navy</button>
     <button data-e="utility" onclick="SHELL.show('utility')"><i></i>Utility</button>
     <button data-e="datacenter" onclick="SHELL.show('datacenter')"><i></i>Data center</button>
@@ -64,11 +65,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue"
     <div class="panel" data-e="utility"><div class="cover"><div class="wm">SONAR<span class="sub">mob<i class="i">i</i>le</span></div><div class="e">Utility · sample</div><div class="spin"></div></div><iframe data-src="utility.html" title="SONARmobile · Utility sample" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
     <div class="panel" data-e="datacenter"><div class="cover"><div class="wm">SONAR<span class="sub">mob<i class="i">i</i>le</span></div><div class="e">Data center · sample</div><div class="spin"></div></div><iframe data-src="datacenter.html" title="SONARmobile · Data center sample" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
   </div>
-  <div class="hint" id="hint">Swipe for the Utility and Data center editions</div>
+  <div class="hint" id="hint">Swipe for the Navy and Utility editions</div>
 </div>
 <script>
 var SHELL=(function(){
-  var ORDER=['navy','utility','datacenter'], track=document.getElementById('track'), cur='navy', loaded={}, hintT=null;
+  var ORDER=['navy','utility','datacenter'], track=document.getElementById('track'), cur='navy', loaded={}, hintT=null, DEFAULT='datacenter';
   function panel(e){return track.querySelector('.panel[data-e="'+e+'"]');}
   /* the shell has already eaten the notch inset — stop the framed app from
      reserving it a second time, drop its SAMPLE watermark (the strip carries
@@ -80,17 +81,26 @@ var SHELL=(function(){
         + '.navtop .t1,.navtop .nav-site{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}';
   function fit(f){try{var d=f.contentDocument;if(!d||!d.head)return;if(d.getElementById('sm-shell-fit'))return;
     var s=d.createElement('style');s.id='sm-shell-fit';s.textContent=FIT;d.head.appendChild(s);}catch(x){}}
+  /* splash · while the current panel is still on its loading cover, or the framed app shows its PASS-key gate or
+     security-key lock, the edition pills are hidden and edition switching is off; they return the moment the app is
+     past login (polled, same-origin). The samples have no login, so their pills appear as soon as they are in. */
+  var strip=document.getElementById('strip'),splash=true;
+  function onSplash(e){var p=panel(e||cur);if(!p||!loaded[e||cur]||!p.classList.contains('ready'))return true;var f=p.querySelector('iframe');
+    try{var d=f.contentDocument;if(!d||!d.body)return true;var g=d.getElementById('gate'),l=d.getElementById('lock');
+      return !!((g&&g.classList.contains('on'))||(l&&l.classList.contains('on')));}catch(x){return true;}}
+  function pollSplash(){var v=onSplash();if(v!==splash){splash=v;strip.classList.toggle('splash',v);}}
+  setInterval(pollSplash,300);
   function mount(e){var p=panel(e);if(!p||loaded[e])return;var f=p.querySelector('iframe');
-    f.addEventListener('load',function(){p.classList.add('ready');fit(f);setTimeout(function(){fit(f);},400);});
+    f.addEventListener('load',function(){p.classList.add('ready');fit(f);setTimeout(function(){fit(f);},400);pollSplash();});
     f.src=f.getAttribute('data-src');loaded[e]=true;}
   function paint(){document.querySelectorAll('.strip button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-e')===cur);});
-    document.getElementById('smp').hidden=(cur==='navy');
-    try{history.replaceState(null,'',cur==='navy'?location.pathname:'#'+cur);}catch(x){}
+    document.getElementById('smp').hidden=(cur==='navy');pollSplash();
+    try{history.replaceState(null,'',cur===DEFAULT?location.pathname:'#'+cur);}catch(x){}
     try{var f=panel(cur).querySelector('iframe');if(f.contentWindow)f.contentWindow.postMessage({type:'SM_SHOW'},'*');}catch(x){}}
   var pend=null,pendT=null;
   function goTo(instant){var x=ORDER.indexOf(cur)*track.clientWidth;track.scrollTo({left:x,behavior:instant?'auto':'smooth'});}
-  function show(e,instant){if(ORDER.indexOf(e)<0)return;mount(e);cur=e;pend=e;clearTimeout(pendT);goTo(instant);requestAnimationFrame(function(){goTo(true);});pendT=setTimeout(function(){pend=null;goTo(true);},instant?120:700);paint();}
-  function step(d){var i=ORDER.indexOf(cur)+d;if(i<0||i>=ORDER.length)return;show(ORDER[i]);}
+  function show(e,instant){if(ORDER.indexOf(e)<0)return;if(splash&&loaded[cur]&&e!==cur&&!instant)return;mount(e);cur=e;pend=e;clearTimeout(pendT);goTo(instant);requestAnimationFrame(function(){goTo(true);});pendT=setTimeout(function(){pend=null;goTo(true);},instant?120:700);paint();}
+  function step(d){if(splash&&loaded[cur])return;var i=ORDER.indexOf(cur)+d;if(i<0||i>=ORDER.length)return;show(ORDER[i]);}
   /* native swipe on the strip / any un-framed area snaps the track; settle → update current */
   var st=null;track.addEventListener('scroll',function(){if(pend)return;clearTimeout(st);st=setTimeout(function(){var i=Math.round(track.scrollLeft/track.clientWidth);var e=ORDER[Math.max(0,Math.min(ORDER.length-1,i))];if(e!==cur){cur=e;mount(e);paint();}},80);},{passive:true});
   /* swipes forwarded from inside the framed apps, plus ADMIN ⇄ Navy relay when this shell is itself framed (ADMIN preview) */
@@ -104,8 +114,10 @@ var SHELL=(function(){
   window.addEventListener('load',function(){goTo(true);});
   document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
   /* boot · Navy first, deep link via #utility / #datacenter, samples mount lazily on first visit */
+  var FRAMED=(window.parent!==window);DEFAULT=FRAMED?'navy':'datacenter';
   var h=(location.hash||'').replace('#','');
-  show(ORDER.indexOf(h)>=0?h:'navy',true);
+  show(ORDER.indexOf(h)>=0?h:DEFAULT,true);
+  if(FRAMED)mount('navy');
   if(ORDER.indexOf(h)<0){try{if(!localStorage.getItem('sonarmobile_shell_hint')){var hint=document.getElementById('hint');setTimeout(function(){hint.classList.add('on');},1200);setTimeout(function(){hint.classList.remove('on');},5200);localStorage.setItem('sonarmobile_shell_hint','1');}}catch(x){}}
   return {show:show,step:step,current:function(){return cur;}};
 })();
