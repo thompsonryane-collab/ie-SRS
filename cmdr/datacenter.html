@@ -469,6 +469,51 @@ body.onhome .homebtn{display:none}
 #p-builder{position:absolute;inset:0;z-index:27;background:#07111f;display:none}
 #p-builder.on{display:block}
 #p-builder iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#07111f}
+/* ── GUIDE · new-user training ── */
+#p-home .hgrid .nl.gd{display:flex;background:linear-gradient(135deg,#ffd27a,#ff8a5c);color:#2a1200;font-family:"Share Tech Mono",Menlo,monospace;font-size:10px;letter-spacing:.8px;animation:none;box-shadow:0 0 0 2px var(--bg),0 0 10px rgba(255,180,90,.55)}
+#p-home .hgrid .nl.gd.done{background:linear-gradient(135deg,#4fd98a,#1f9c62);color:#052a14}
+.c-gd{background:linear-gradient(160deg,#ffd27a,#c96a1e)}
+#p-guide .hero.gd{background:radial-gradient(120% 90% at 30% 0%,rgba(255,210,122,.24),rgba(255,210,122,.03) 60%);border-color:rgba(255,210,122,.45)}
+#p-guide .hero .dot{background:#ffd27a;box-shadow:0 0 0 4px rgba(255,210,122,.25)}
+.gd-prog{height:8px;border-radius:4px;background:rgba(0,0,0,.3);overflow:hidden;margin-top:10px}.gd-prog i{display:block;height:100%;background:linear-gradient(90deg,#ffd27a,#4fd98a);transition:width .4s}
+.gd-ctl{display:flex;gap:8px}
+#p-guide .btn{border-radius:20px}
+#p-guide .btn.pri{background:#ffd27a;border-color:#ffd27a;color:#2a1200}
+.gd-list{border-radius:20px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.gd-list button{display:grid;grid-template-columns:40px 1fr auto;gap:2px 12px;align-items:center;width:100%;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);color:#fff}
+.gd-list button:last-child{border-bottom:0}
+.gd-list .ic{grid-row:1/3;width:40px;height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:"Share Tech Mono",Menlo,monospace;font-size:12px;font-weight:700;color:#2a1200;background:#ffd27a}
+.gd-list .ic.done{background:var(--green);color:#052a14}
+.gd-list .n{font-size:14px;font-weight:600}.gd-list .m{grid-column:2;font-size:11.5px;color:var(--ink2);line-height:1.3}
+.gd-list .st{grid-row:1/3;grid-column:3;font-family:"Share Tech Mono",Menlo,monospace;font-size:9.5px;letter-spacing:1px;color:var(--ink3)}
+.gd-list .st.done{color:var(--green)}
+.gd-ch{border-radius:20px;background:var(--card);border:1px solid var(--line);overflow:hidden}
+.gd-ch .hd{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;width:100%;text-align:left;padding:12px 14px;color:#fff;background:transparent}
+.gd-ch .hd .car{width:28px;height:28px;border-radius:14px;background:rgba(255,210,122,.14);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.gd-ch .hd .car svg{width:15px;height:15px;fill:none;stroke:#ffd27a;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.gd-ch.open .hd .car{transform:rotate(90deg)}
+.gd-ch .hd .t{font-size:15px;font-weight:700}.gd-ch .hd .t small{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:1px}
+.gd-ch .hd .ct{font-family:"Share Tech Mono",Menlo,monospace;font-size:10.5px;letter-spacing:1px;color:var(--ink3);padding:4px 8px;border-radius:9px;border:1px solid var(--line)}
+.gd-ch .hd .ct.done{color:var(--green);border-color:rgba(79,217,138,.5)}
+.gd-ch .body{display:none;border-top:1px solid var(--line)}
+.gd-ch.open .body{display:block}
+.gd-ch .gd-list{border-radius:0;border:0;background:transparent}
+/* coach-mark overlay */
+#coach{position:fixed;inset:0;z-index:8000;display:none}
+#coach.on{display:block}
+#coach .spot{position:absolute;border-radius:26px;box-shadow:0 0 0 9999px rgba(3,8,16,.78),0 0 0 3px #ffd27a,0 0 24px rgba(255,210,122,.6);transition:all .35s ease;cursor:pointer}
+#coach .spot.none{box-shadow:0 0 0 9999px rgba(3,8,16,.78);border-radius:0;width:0;height:0;left:50%;top:40%}
+#coach .card{position:absolute;left:12px;right:12px;border-radius:22px;background:#101c2c;border:1px solid rgba(255,210,122,.55);box-shadow:0 20px 50px rgba(0,0,0,.6);padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+#coach .card .ey{display:flex;justify-content:space-between;font-family:"Share Tech Mono",Menlo,monospace;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:#ffd27a}
+#coach .card h3{font-size:19px;font-weight:700;letter-spacing:-.3px;margin:0}
+#coach .card .d{font-size:13.5px;color:var(--ink2);line-height:1.45}
+#coach .card .d b{color:#fff}
+#coach .card .tip{font-size:12px;color:#ffd27a;font-family:"Share Tech Mono",Menlo,monospace;letter-spacing:.3px}
+#coach .card .btns{display:flex;gap:8px;margin-top:4px}
+#coach .card .btn{height:40px;border-radius:20px;font-size:13.5px}
+#coach .card .btn.pri{background:#ffd27a;border-color:#ffd27a;color:#2a1200}
+#coach .card .btn.ghost{background:transparent;flex:none;padding:0 14px}
+#coach .card .dots{display:flex;gap:4px;justify-content:center}#coach .card .dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18)}#coach .card .dots i.on{background:#ffd27a}#coach .card .dots i.done{background:var(--green)}
 /* ── BATTLECAT · autonomous assessment fleet ── */
 #p-home .hgrid .nl.bc{display:flex;right:calc(50% - min(12vw,48px) - 10px);top:-7px;min-width:44px;height:22px;padding:0 8px;border-radius:0;clip-path:polygon(12% 0,88% 0,100% 50%,88% 100%,12% 100%,0 50%);background:linear-gradient(135deg,#3fd6ff,#4fd98a);color:#04202b;font-family:"Share Tech Mono",Menlo,monospace;font-size:10px;letter-spacing:.8px;animation:none;box-shadow:none;filter:drop-shadow(0 0 6px rgba(63,214,255,.55))}
 #p-home .hgrid .nl.bc.out{background:linear-gradient(135deg,#ffb340,#ff5a4e);color:#1a0a05;animation:blink 1.1s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,120,60,.7))}
@@ -964,6 +1009,7 @@ body.locked #app{visibility:visible}
   <div class="page home" id="p-home">
     <div class="sipr-banner" id="sipr-banner">OT · control network session · only Log out is live</div>
     <div class="hgrid"><div class="qa">
+        <button onclick="go('guide')" id="tile-guide"><span class="nl gd" id="hl-guide">NEW</span><div class="ic c-gd"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5V5.5"/><path d="M9 8h7M9 11.5h5"/></svg></div><div class="l">Guide</div></button>
         <button onclick="go('msgs')" id="tile-msg"><span class="netpill" id="msg-net">CORP</span><span class="nl" id="hl-msg"></span><div class="ic c-teal"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></div><div class="l">Message</div></button>
         <button onclick="go('outages')"><span class="nl" id="hl-out"></span><div class="ic c-red"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/><path d="M3 3l18 18"/></svg></div><div class="l">Outages</div></button>
         <button onclick="openSonar()"><div class="ic" style="background:linear-gradient(160deg,#ff8a5c,#d9442f)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><path d="M6.5 6.5a7.8 7.8 0 0 0 0 11M17.5 6.5a7.8 7.8 0 0 1 0 11"/><path d="M3.5 3.5a12 12 0 0 0 0 17M20.5 3.5a12 12 0 0 1 0 17"/></svg></div><div class="l">SONAR</div></button>
@@ -1049,6 +1095,15 @@ body.locked #app{visibility:visible}
     <div class="sec"><h2>SLA &amp; compliance <button onclick="COMP.reset()">Reset</button></h2><div class="list" id="cp-list"></div></div>
     <div class="note">Tap an item to cycle open → in progress → complete. Event-driven clocks (SLA notices, SOC 2 availability incident, EPA run-hour log) start from the qualifying event. Dates are demo values.</div>
   </div>
+  <!-- GUIDE · new-user training -->
+  <div class="page" id="p-guide">
+    <div class="hero gd" id="gd-hero"></div>
+    <div class="gd-ctl"><button class="btn pri" onclick="GUIDE.tour()" id="gd-tour">Start the guided tour</button><button class="btn sm" onclick="GUIDE.reset()">Reset</button></div>
+    <div class="note">Every lesson reads the app as it is right now — live outages, the BattleCat fleet, the drill clock — spotlights the tile, opens the real feature, and gives you something to try. Tap any lesson to jump in.</div>
+    <div id="gd-lists"></div>
+  </div>
+  <div id="coach" onclick="if(event.target===this)GUIDE.close()"><div class="spot" id="coach-spot" onclick="GUIDE.openStep()"></div><div class="card" id="coach-card"></div></div>
+
   <!-- BATTLECAT · autonomous outage assessment fleet -->
   <div class="page" id="p-battlecat">
     <div class="hero bc" id="bc-hero"></div>
@@ -2969,9 +3024,96 @@ window.SRADropZone=(function(){
     if(p==='comp')COMP.render();
     if(p==='blackstart')BLACKSTART.render();
     if(p==='battlecat')BATTLECAT.render();
+    if(p==='guide')GUIDE.render();
     if(p==='drop'){S.unreadDrop=0;save();renderBadges();dzMount();}
     renderBadges();
   };
+  /* ══ GUIDE · dynamic new-user training · lessons read live state, spotlight tiles, open the real feature ══ */
+  window.GUIDE=(function(){
+    var KEY='sonarmobile_dc_guide';var st={done:{},started:0};
+    try{st=Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){}
+    function $(i){return document.getElementById(i);}
+    function saveG(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+    function n(f){try{return f();}catch(e){return null;}}
+    function tile(sel){return document.querySelector('#p-home .hgrid button[onclick^="'+sel+'"]');}
+    function closeAll(){try{closeMap();}catch(e){}try{closeImpact();}catch(e){}try{closeBuilder();}catch(e){}try{closeSonar();}catch(e){}try{$('sheet').classList.remove('on');}catch(e){}}
+    /* lessons · d() and tip() are computed at show time so the copy tracks the app */
+    var L=[
+      {id:'home',g:'Basics',t:'The home screen',sel:"go('outages')",target:function(){return document.querySelector('#p-home .hgrid');},
+        d:function(){var o=n(outages)||[];return 'Every tile is a job. Badges are live: red counts need a decision, amber counts are waiting on someone else, the hex chip on BattleCat is fleet state. Right now <b>'+o.length+' outage'+(o.length===1?'':'s')+'</b> are open and the network pill on Message reads <b>'+(document.body.classList.contains('sipr')?'OT':'CORP')+'</b>.';},
+        tip:function(){return 'Swipe left or right on the header to switch SONARmobile editions.';}},
+      {id:'outages',g:'Respond',t:'Outages and SONAR alerts',sel:"go('outages')",open:function(){go('outages');},
+        d:function(){var p=n(pendingWO)||[],o=n(outages)||[];return 'Outages lists what is down, what is on backup, and the ETR. SONAR alerts released by ADMIN or another manager land here first and must be <b>acknowledged</b> — the red badge is the count waiting on you. Today: <b>'+o.length+' active</b>, <b>'+p.length+' unacknowledged</b>.';},
+        tip:function(){return 'Try it: tap an alert, then Acknowledge. The ack goes over the bus to ADMIN with your name.';}},
+      {id:'sonar',g:'Respond',t:'Release a SONAR alert',sel:"openSonar()",open:function(){openSonar();},
+        d:function(){return 'SONAR is the Site Outage Notification, Analysis &amp; Response. You pick the type, location, tenants affected and ETR; it routes to the NOC, tenants and the utility per the routing rules and is logged as yours under <b>Released by you</b>.';},
+        tip:function(){return 'Try it: release a test alert — flip Exercise on so it is tagged as a drill.';}},
+      {id:'msgs',g:'Respond',t:'Message the NOC',sel:"go('msgs')",open:function(){go('msgs');},
+        d:function(){var m=(S.msgs||[]).length;return 'The site channel is where ADMIN, the NOC and BattleCat assessments talk. Quick-reply chips post standard responses; the <b>'+(document.body.classList.contains('sipr')?'OT':'CORP')+'</b> pill shows which network the session is on. <b>'+m+' message'+(m===1?'':'s')+'</b> in the thread.';},
+        tip:function(){return 'BattleCat assessments and drill events post here as system messages.';}},
+      {id:'impact',g:'Understand',t:'Tenant impact replay',sel:"openImpact()",open:function(){openImpact();},
+        d:function(){return 'A seven-phase replay of the outage on a satellite map of Loudoun County: site mapping, tagging, the trigger, transfer to generator, fuel logistics from Sterling and Leesburg, BESS bridging, and the post-mortem with the recommended investment. Rotate the phone to landscape.';},
+        tip:function(){return 'Play runs the phases; Prev / Next steps them. The fuel bar and resilience clock are live.';}},
+      {id:'crews',g:'Understand',t:'On-call',sel:"go('crews')",open:function(){go('crews');},
+        d:function(){return 'Who is on shift, who is en route, and vendor call-outs. Tap a contact to call; the call is logged to the site channel so the NOC knows who reached whom.';},
+        tip:function(){return 'The amber badge is the number of people already responding.';}},
+      {id:'battlecat',g:'Assess',t:'BattleCat — autonomous assessment',sel:"go('battlecat')",open:function(){go('battlecat');},
+        d:function(){var m=n(BATTLECAT.summary)||{rdy:0,out:0};return 'Three cats live in kennels on the ring road (on the gen bus, with battery). A SONAR alert dispatches the nearest one; it drives to the outage, mates its arm to the asset’s <b>diagnostic port</b> — never the live bus — runs a checklist and pushes an assessment with confidence and a revised ETR here, to the channel and to ADMIN. Fleet now: <b>'+m.rdy+' ready</b>, <b>'+m.out+' on sortie</b>.';},
+        tip:function(){return 'Try it: tap DEPLOY on an outage and watch the sortie on the embedded campus map.';},
+        tryIt:function(){go('battlecat');var o=(n(outages)||[])[0];if(o)BATTLECAT.deploy(o.id,o.name);}},
+      {id:'blackstart',g:'Assess',t:'Black start drill',sel:"go('blackstart')",open:function(){go('blackstart');},
+        d:function(){var b=n(function(){return BLACKSTART._st();})||{phase:-1};return 'The annual pull-the-plug drill: open the utility tie, UPS ride-through, black-start the dead generator bus, cooling first, then IT tiers, then resync. The <b>cooling clock</b> — cold aisle rising toward 27°C — is the real limit, not the UPS. Drill state: <b>'+(b.phase<0?'planned':b.phase>=5?'complete':'step '+(b.phase+1)+' of 6')+'</b>.';},
+        tip:function(){return 'Try it: Auto-run the sequence, then answer the Director load-shed decision at T2.';},
+        tryIt:function(){go('blackstart');BLACKSTART.view('seq');if(BLACKSTART._st().phase<0)BLACKSTART.auto();}},
+      {id:'map',g:'Assess',t:'Live map · ISO campus',sel:"openMap()",open:function(){openMap();},
+        d:function(){var o=n(outages)||[];return 'The campus in isometric view with every outage pinned to its asset — <b>'+o.length+' pinned now</b> — plus the kennels and cats. Drag to pan, pinch to zoom, twist or ⟲ ⟳ to rotate, double-tap to reset. SATELLITE flips to imagery.';},
+        tip:function(){return 'Tap a chip in the outage rail to highlight its pin.';}},
+      {id:'noc',g:'Respond',t:'Call NOC',sel:"callEOC()",
+        d:function(){return 'One tap dials the NOC. On the phone it uses the dialer; in a browser the call is logged to the bus as a message so ADMIN sees you reached out.';},tip:function(){return 'Use it when the channel is not fast enough.';}},
+      {id:'aid',g:'Sustain',t:'Fuel &amp; vendors',sel:"go('aid')",open:function(){go('aid');},
+        d:function(){return 'Diesel on hand, the fuel truck SLA, and mutual-aid requests. A request publishes to the site channel with an ETA and can be cancelled from the same card.';},tip:function(){return 'Amber badge = open request.';}},
+      {id:'comp',g:'Sustain',t:'SLA &amp; compliance',sel:"go('comp')",open:function(){go('comp');},
+        d:function(){return 'Uptime Tier III, TIA-942, NFPA 110 test cadence and tenant SLA exposure. Outage minutes count against the availability evidence here.';},tip:function(){return 'Findings from a Black start drill roll into this view.';}},
+      {id:'drill',g:'Train',t:'Drill builder',sel:"openBuilder()",open:function(){openBuilder();},
+        d:function(){return 'Build an exercise: pick the trigger, severity, load and coverage, and it releases tagged SONAR alerts into Outages — which also sets BattleCat auto-dispatch in motion. Good for demos and for training the shift.';},tip:function(){return 'Everything a drill releases is marked EXERCISE.';}},
+      {id:'drop',g:'Train',t:'Drop Zone',sel:"go('drop')",open:function(){go('drop');},
+        d:function(){return 'Files and scenario snapshots shared with ADMIN and the ie-SRS hub. Anything dropped here is copied to the peers, and incoming drops badge the tile.';},tip:function(){return 'The drill builder can send its scenario straight here.';}},
+      {id:'custs',g:'Sustain',t:'Tenants',sel:"go('custs')",open:function(){go('custs');},
+        d:function(){return 'Tenant contacts by hall with SLA tier and notification status — who has been told, who has not.';},tip:function(){return 'BattleCat notes tenant impact on a load shed.';}},
+      {id:'link',g:'Basics',t:'Link to ADMIN',sel:"go('link')",open:function(){go('link');},
+        d:function(){var c=n(function(){return bus.cfg();})||{};return 'Enter the PASS key issued for this device, then your security key, to link the phone to ADMIN over the bus. Transport now: <b>'+(c.transport||'off')+'</b>. Lock, log out and device status live here too.';},tip:function(){return 'The sample edition runs unlinked; Navy links live.';}}
+    ];
+    var cur=-1,touring=false;
+    function doneCount(){return L.filter(function(l){return st.done[l.id];}).length;}
+    function badge(){var b=$('hl-guide');if(!b)return;var d=doneCount();b.className='nl gd on'+(d>=L.length?' done':'');b.textContent=d>=L.length?'DONE':d?Math.round(d/L.length*100)+'%':'NEW';}
+    function render(){var h=$('gd-hero');if(!h)return;var d=doneCount();if(!st.keepOpen)st.open={};st.keepOpen=false;
+      h.innerHTML='<div class="lbl"><span>NEW USER TRAINING · '+esc(S.siteName||'')+'</span><span>'+d+' / '+L.length+'</span></div><div class="st"><span class="dot"></span>'+(d>=L.length?'Training complete':d?'Keep going':'Learn SONARmobile')+'</div><div class="sub">'+(d>=L.length?'Every lesson done · reset to run it again for a new shift':d?L.length-d+' lessons left · lessons update with the live app':L.length+' short lessons · about 10 minutes · each opens the real feature')+'</div><div class="gd-prog"><i style="width:'+Math.round(d/L.length*100)+'%"></i></div>';
+      var t=$('gd-tour');if(t)t.textContent=d>=L.length?'Run the tour again':d?'Continue the tour':'Start the guided tour';
+      var groups=[];L.forEach(function(l){if(groups.indexOf(l.g)<0)groups.push(l.g);});var open=st.open||{};
+      $('gd-lists').innerHTML=groups.map(function(g){var ls=L.filter(function(l){return l.g===g;}),dn=ls.filter(function(l){return st.done[l.id];}).length,all=dn>=ls.length;
+        return '<div class="gd-ch'+(open[g]?' open':'')+'" data-g="'+esc(g)+'"><button class="hd" onclick="GUIDE.toggle(\''+esc(g)+'\')" aria-expanded="'+(open[g]?'true':'false')+'"><span class="car"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span><div class="t">'+esc(g)+'<small>'+(DESC[g]||'')+'</small></div><span class="ct'+(all?' done':'')+'">'+dn+' / '+ls.length+'</span></button><div class="body"><div class="gd-list">'+
+          ls.map(function(l){var i=L.indexOf(l);return '<button onclick="GUIDE.show('+i+')"><div class="ic'+(st.done[l.id]?' done':'')+'">'+(st.done[l.id]?'✓':(i+1))+'</div><div class="n">'+l.t+'</div><div class="m">'+l.d().replace(/<[^>]+>/g,'').slice(0,96)+'…</div><span class="st'+(st.done[l.id]?' done':'')+'">'+(st.done[l.id]?'DONE':'LESSON')+'</span></button>';}).join('')+'</div></div></div>';}).join('');}
+    var DESC={Basics:'The home screen and linking to ADMIN',Respond:'Outages, alerts, messaging and the NOC',Understand:'Impact replay and who is on call',Assess:'BattleCat, Black start and the live map',Sustain:'Fuel, SLA evidence and tenants',Train:'Drills and the drop zone'};
+    function toggle(g){st.open=st.open||{};st.open[g]=!st.open[g];var ch=document.querySelector('.gd-ch[data-g="'+g.replace(/"/g,'')+'"]');if(ch){ch.classList.toggle('open',!!st.open[g]);var b=ch.querySelector('.hd');if(b)b.setAttribute('aria-expanded',st.open[g]?'true':'false');}}
+    function place(){var sp=$('coach-spot'),card=$('coach-card'),l=L[cur];if(!l)return;var el=l.target?l.target():tile(l.sel);
+      if(el&&$('p-home').classList.contains('on')){var r=el.getBoundingClientRect();sp.className='spot';sp.style.left=(r.left-8)+'px';sp.style.top=(r.top-8)+'px';sp.style.width=(r.width+16)+'px';sp.style.height=(r.height+16)+'px';
+        var below=window.innerHeight-r.bottom;card.style.top='';card.style.bottom='';if(below>300){card.style.top=(r.bottom+14)+'px';}else{card.style.bottom='12px';}}
+      else{sp.className='spot none';card.style.top='';card.style.bottom='12px';}}
+    function show(i){closeAll();cur=i;var l=L[i];if(!l)return;go('home');st.started=1;saveG();
+      var dots=L.map(function(x,k){return '<i class="'+(k===i?'on':st.done[x.id]?'done':'')+'"></i>';}).join('');
+      $('coach-card').innerHTML='<div class="ey"><span>'+esc(l.g)+' · lesson '+(i+1)+' of '+L.length+'</span><span>'+(st.done[l.id]?'DONE':'')+'</span></div><h3>'+l.t+'</h3><div class="d">'+l.d()+'</div><div class="tip">'+esc(l.tip())+'</div>'+
+        '<div class="btns">'+(i>0?'<button class="btn ghost" onclick="GUIDE.show('+(i-1)+')">Back</button>':'')+(l.open?'<button class="btn" onclick="GUIDE.openStep()">Open it</button>':'')+(l.tryIt?'<button class="btn" onclick="GUIDE.tryIt()">Try it</button>':'')+'<button class="btn pri" onclick="GUIDE.next()">'+(i<L.length-1?'Got it · next':'Finish')+'</button></div><div class="dots">'+dots+'</div>';
+      $('coach').classList.add('on');requestAnimationFrame(place);}
+    function openStep(){var l=L[cur];if(!l)return;st.done[l.id]=1;saveG();badge();$('coach').classList.remove('on');if(l.open)l.open();else if(l.sel==="callEOC()")callEOC();
+      toast('Guide','Lesson '+(cur+1)+' · '+l.t.replace(/&amp;/g,'&')+' — open the Guide tile to continue','amber');}
+    function tryIt(){var l=L[cur];if(!l||!l.tryIt)return;st.done[l.id]=1;saveG();badge();$('coach').classList.remove('on');try{l.tryIt();}catch(e){}toast('Guide','Try it · '+l.t.replace(/&amp;/g,'&'),'amber');}
+    function next(){var l=L[cur];if(l){st.done[l.id]=1;saveG();badge();}if(cur<L.length-1){show(cur+1);}else{close();touring=false;go('guide');toast('Guide','Training complete · '+L.length+' lessons','green');}}
+    function close(){$('coach').classList.remove('on');var l=L[cur];cur=-1;touring=false;if(l){st.open={};st.open[l.g]=true;st.keepOpen=true;}if($('p-home').classList.contains('on'))go('guide');}
+    function tour(){touring=true;var i=L.findIndex(function(l){return !st.done[l.id];});if(i<0){st.done={};saveG();i=0;}show(i);}
+    function reset(){st={done:{},started:0};saveG();badge();render();toast('Guide','Progress reset','');}
+    window.addEventListener('resize',function(){if($('coach').classList.contains('on'))place();});
+    return {render:render,show:show,openStep:openStep,tryIt:tryIt,next:next,close:close,tour:tour,reset:reset,badge:badge,toggle:toggle,_L:L,_st:function(){return st;}};
+  })();
   /* ══ BATTLECAT · autonomous outage-assessment fleet (kennels on the gen bus · diagnostic-port docking · assessment push) ══ */
   window.BATTLECAT=(function(){
     var KEY='sonarmobile_dc_battlecat';
@@ -3468,7 +3610,7 @@ window.SRADropZone=(function(){
     var h=$('hstat');if(!h)return;h.className='hstat '+cls;
     h.innerHTML='<i></i><div><b>'+head+'</b><div style="color:var(--ink2);font-size:12px">'+out+' active outage'+(out===1?'':'s')+' · '+pend+' pending · '+(st.health?'ADM-04 '+st.health.toLowerCase():'no ADMIN snapshot')+'</div></div><span class="r">›</span>';
   }
-  function renderBadges(){try{if(window.BATTLECAT)BATTLECAT.badge();}catch(e){}var _hd=$('hl-drop');if(_hd){_hd.textContent=S.unreadDrop||'';_hd.classList.toggle('on',!!S.unreadDrop);}
+  function renderBadges(){try{if(window.BATTLECAT)BATTLECAT.badge();}catch(e){}try{if(window.GUIDE)GUIDE.badge();}catch(e){}var _hd=$('hl-drop');if(_hd){_hd.textContent=S.unreadDrop||'';_hd.classList.toggle('on',!!S.unreadDrop);}
     renderHome();
     ['nl-msg','hl-msg'].forEach(function(id){var nl=$(id);if(nl){nl.textContent=S.unreadMsg;nl.classList.toggle('on',S.unreadMsg>0);}});
     var pw=pendingWO().length;['nl-map','nl-out','hl-map','hl-out'].forEach(function(id){var e=$(id);if(e){e.textContent=pw;e.classList.toggle('on',pw>0);}});
